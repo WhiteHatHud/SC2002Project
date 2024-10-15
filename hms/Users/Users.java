@@ -1,4 +1,4 @@
-package hms.users;
+package SC2002Project.hms.Users;
 
 public abstract class Users {
     // Attributes
@@ -61,3 +61,5 @@ public abstract class Users {
     // For role specific menu
     public abstract void displayMenu();
 }
+
+

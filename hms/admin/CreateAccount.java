@@ -1,11 +1,11 @@
-package hms.users;
 import java.util.*;
 
 public class CreateAccount {
     // HashMap to store accounts
-    private HashMap<String, Users> accounts;
+    private HashMap<String, User> accounts;
 
-
+    // ONLY ADMIN CAN ACCESS THIS PAGE 
+    
     public CreateAccount() {
         accounts = new HashMap<>();  
     }
@@ -23,10 +23,11 @@ public class CreateAccount {
         Scanner sc = new Scanner(System.in);
         
         
-        System.out.println ("Please choose following options:" +
+        System.out.println ("Choose a new account to create:" +
         					"1. Patient account" + 
-        					"2. Doctor account" );
-        
+        					"2. Doctor account" +
+        					"3. Pharmacist account" );
+
         int choice= sc.nextInt();
         
         switch (choice) {
@@ -64,7 +65,7 @@ public class CreateAccount {
 
         System.out.println("List of accounts:");
         for (String userID : accounts.keySet()) {
-            User user = accounts.get(userID);
+            Users user = accounts.get(userID);
             System.out.println("User ID: " + userID + ", Name: " + user.getName() + ", Role: " + user.getRole());
         }
     }

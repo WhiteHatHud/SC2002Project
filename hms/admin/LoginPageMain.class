@@ -1,0 +1,47 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.util.Scanner;
+
+public class LoginPageMain {
+   public LoginPageMain() {
+   }
+
+   public static void main(String[] var0) {
+      Scanner var1 = new Scanner(System.in);
+      byte var2 = 80;
+      String[] var3 = new String[]{"H   H  M   M  SSSSS", "H   H  MM MM  S     ", "HHHHH  M M M  SSSSS ", "H   H  M   M      S ", "H   H  M   M  SSSSS "};
+      String var4 = "Welcome to the Hospital Management System";
+      String[] var5 = new String[]{"1. Login", "2. Reset password", "3. Forget UserID", "4. Quit \n", "Please enter your choice: "};
+      String[] var6 = var3;
+      int var7 = var3.length;
+
+      int var8;
+      String var9;
+      for(var8 = 0; var8 < var7; ++var8) {
+         var9 = var6[var8];
+         printCentered(var9, var2);
+      }
+
+      System.out.println();
+      printCentered(var4, var2);
+      System.out.println();
+      var6 = var5;
+      var7 = var5.length;
+
+      for(var8 = 0; var8 < var7; ++var8) {
+         var9 = var6[var8];
+         printCentered(var9, var2);
+      }
+
+      int var10 = var1.nextInt();
+   }
+
+   public static void printCentered(String var0, int var1) {
+      int var2 = (var1 - var0.length()) / 2;
+
+      for(int var3 = 0; var3 < var2; ++var3) {
+         System.out.print(" ");
+      }
+
+      System.out.println(var0);
+   }
+}
