@@ -1,8 +1,11 @@
+package SC2002Project.hms.admin;
 import java.util.*;
+
+
 
 public class CreateAccount {
     // HashMap to store accounts
-    private HashMap<String, User> accounts;
+    private HashMap<String, Users> accounts;
 
     // ONLY ADMIN CAN ACCESS THIS PAGE 
     
