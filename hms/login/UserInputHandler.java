@@ -4,9 +4,15 @@ import java.util.Scanner;
 
 public class UserInputHandler {
 
-        public int getUserChoice() {
         Scanner sc = new Scanner(System.in);
+        public int getUserChoice() {
+        
         return sc.nextInt();
     }
+
+    public String getInput() {
+        return sc.next();  // Gets string inputs like ID or password
+    }
+    
 
 }

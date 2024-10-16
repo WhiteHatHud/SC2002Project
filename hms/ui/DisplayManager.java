@@ -16,10 +16,45 @@ public class DisplayManager {
         }
     }
 
+        public void showLoginScreen() {
+
+            String[] loginMenu = {"I am a...\n", "1. Patient", "2. Staff"};
+            for (String line : loginMenu) {
+                printCentered(line, 80);
+            }
+
+        }
+
+        public void showPatientLoginID() {
+
+            String[] msg = {"Please enter your patient ID : "};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+
+        }
+        public void showEnterPW() {
+
+            String[] msg = {"Please enter your password : "};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+
+        }
+
+
+
+        }
+
+
+
         private void printCentered(String text, int width) {
             int padding = (width - text.length()) / 2;
             System.out.print(" ".repeat(padding));
             System.out.println(text);
         }
-    
+
+        
 }
+    
+

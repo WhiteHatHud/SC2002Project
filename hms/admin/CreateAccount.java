@@ -1,4 +1,5 @@
 package SC2002Project.hms.admin;
+import SC2002Project.hms.Users.*;
 import java.util.*;
 
 
@@ -55,7 +56,7 @@ public class CreateAccount {
     }
 
     // Method to retrieve an account by userID
-    public User getAccount(String userID) {
+    public Users getAccount(String userID) {
         return accounts.get(userID);  // Returns null if the userID is not found
     }
 
