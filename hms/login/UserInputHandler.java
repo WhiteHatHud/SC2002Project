@@ -5,9 +5,10 @@ import java.util.Scanner;
 public class UserInputHandler {
 
         Scanner sc = new Scanner(System.in);
-        public int getUserChoice() {
-        
-        return sc.nextInt();
+
+
+    public int getUserChoice() {
+        return sc.nextInt(); // Ints only
     }
 
     public String getInput() {

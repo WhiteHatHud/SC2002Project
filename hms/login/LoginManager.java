@@ -11,10 +11,20 @@ class LoginManager {
     }
 
     public void startLoginProcess() {
-        displayManager.showWelcomeScreen();
-        int choice = inputHandler.getUserChoice(); 
-        LoginController.handleChoice(choice); 
+        displayManager.showWelcomeScreen();  // Show welcome screen
+        int userChoice = inputHandler.getUserChoice();  // Capture user choice
+        handleChoice(userChoice);  // Delegate the handling to the controller
     }
+    public void handleChoice(int userChoice) {
+        LoginController loginController = new LoginController(displayManager, inputHandler);
+        loginController.handleChoice(userChoice);  // Pass choice to LoginController
+    }
+
+    public int userChoice() {
+        int choice = inputHandler.getUserChoice();
+        return choice;
+    }
+    
     
 
 }

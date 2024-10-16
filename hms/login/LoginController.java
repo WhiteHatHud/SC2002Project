@@ -19,11 +19,14 @@ public class LoginController {
         switch (choice) {
             case 1:
                 // If login is selected, determine whether they are a patient or staff
+                
+                displayManager.showLoginScreen();
                 int option = inputHandler.getUserChoice();
+
                 if (option == 1) { // Patient
-                    patientLoginManager.handlePatientLogin();  // Delegate to PatientLoginManager
-                } else if (option == 2) { // Staff
-                    staffLoginManager.handleStaffLogin();      // Delegate to StaffLoginManager
+                    patientLoginManager.start();  // Delegate to PatientLoginManager
+                } else if (option == 2) { // Staffh
+                    staffLoginManager.start();      // Delegate to StaffLoginManager
                 } else {
                     System.out.println("Invalid choice! Please reselect.");
                 }
