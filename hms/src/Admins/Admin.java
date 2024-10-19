@@ -1,5 +1,6 @@
 package Admins;
+import Users.*;
 
-public class Admin {
+public class Admin{
     
 }
