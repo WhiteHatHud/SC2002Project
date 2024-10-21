@@ -6,12 +6,13 @@ public abstract class Users {
     protected String password;
     protected String name;
     protected String role;    
-    
-    // userID is the first col in excel
-    public Users(String userID, String name, String role) {
+    protected String dob;
+
+
+    public Users(String userID, String name, String dob) {
         this.userID = userID;
         this.name = name;
-        this.role = role;
+        this.dob = dob;
         this.password = "password";  // Default password
     }
     

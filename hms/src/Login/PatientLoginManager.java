@@ -16,11 +16,13 @@ public class PatientLoginManager implements LoginInt {
         String userID = inputHandler.getInput();  
         displayManager.showEnterPW();  // Show prompt to enter Password
         String password = inputHandler.getInput();  
-        authenticate(userID, password);
-    }
 
+        
+        //authenticate(userID, password);
+    }
+/* 
     public void authenticate(String userID, String password) {
-                // auth user
+                 auth user
                 AuthenticationService authService = new AuthenticationService();
                 boolean isAuthenticated = authService.authenticate(userID, password);
         
@@ -32,4 +34,5 @@ public class PatientLoginManager implements LoginInt {
                     // Retry logic or terminate
                 }
     }
+                */
 }
