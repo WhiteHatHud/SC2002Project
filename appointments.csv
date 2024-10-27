@@ -1,0 +1,9 @@
+AppointmentID,Date,Time,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome
+1,1/10/24,9:00,PT001,John Doe,DR001,Dr. Smith,Cancelled,Successful
+2,1/10/24,10:00,PT002,Jane Roe,DR002,Dr. Brown,Completed,Checkup successful
+3,1/10/24,11:00,PT003,Michael Smith,DR001,Dr. Smith,Cancelled,123
+1,1/10/24,9:00,PT001,John Doe,DR001,Dr. Smith,Cancelled,Successful
+123,2002,07:00,P123,pa,123,AP,Cancelled,123
+123,2002,07:00,P123,pa,123,AP,Cancelled,123
+123,2001/12/12,10;00,56,12,DR001,Smith,Scheduled,
+A123,2022/01/01,9:00,192,saarah,DR001,Smith,Rescheduled,Successful
