@@ -67,6 +67,22 @@ public class ApptData {
         }
     }
 
+    // Method to update all appointments in the CSV file
+    public void updateAllAppointments(List<Appointment> updatedAppointments) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            // Write header
+            bw.write("AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome");
+            bw.newLine();
+
+            for (Appointment appointment : updatedAppointments) {
+                bw.write(appointment.toCSV());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Method to print out one appointment by its ID
     public void printAppointmentById(String appointmentID) {
         List<Appointment> appointments = getAllAppointments();

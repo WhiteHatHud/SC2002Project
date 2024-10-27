@@ -14,6 +14,11 @@ public class ApptController {
 
     // Method to schedule a new appointment for a doctor
     public void scheduleDoctorAppointment(String appointmentID, Calendar appointmentTime, String patientID, String patientName, String doctorID, String doctorName) {
+        if (isClashingAppointment(doctorID, appointmentTime)) {
+            System.out.println("Error: Appointment time clashes with an existing appointment for Dr. " + doctorName);
+            return;
+        }
+
         DoctorAppointment newAppointment = new DoctorAppointment(
             appointmentID, appointmentTime, patientID, patientName, doctorID, doctorName, "Scheduled"
         );
@@ -21,25 +26,16 @@ public class ApptController {
         System.out.println("Doctor appointment scheduled successfully!");
     }
 
-    // Method to cancel an existing doctor appointment
-    public void cancelDoctorAppointment(String appointmentID) {
-        List<Appointment> appointments = apptData.getAllAppointments();
-        for (Appointment appointment : appointments) {
-            if (appointment.getAppointmentID().equals(appointmentID)) {
-                appointment.setAppointmentStatus("Cancelled");
-                apptData.updateAppointment(appointment);
-                System.out.println("Doctor appointment cancelled successfully.");
-                return;
-            }
-        }
-        System.out.println("No appointment found with ID: " + appointmentID);
-    }
-
     // Method to reschedule an appointment for a doctor
     public void rescheduleDoctorAppointment(String appointmentID, Calendar newAppointmentTime) {
         List<Appointment> appointments = apptData.getAllAppointments();
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentID().equals(appointmentID)) {
+                if (isClashingAppointment(appointment.getDoctorID(), newAppointmentTime)) {
+                    System.out.println("Error: Appointment time clashes with an existing appointment for Dr. " + appointment.getDoctorName());
+                    return;
+                }
+
                 appointment.setAppointmentTime(newAppointmentTime);
                 appointment.setAppointmentStatus("Rescheduled");
                 apptData.updateAppointment(appointment);
@@ -50,12 +46,37 @@ public class ApptController {
         System.out.println("No appointment found with ID: " + appointmentID);
     }
 
+    // Method to cancel an appointment for a doctor
+    public void cancelDoctorAppointment(String appointmentID) {
+        List<Appointment> appointments = apptData.getAllAppointments();
+        for (int i = 0; i < appointments.size(); i++) {
+            if (appointments.get(i).getAppointmentID().equals(appointmentID)) {
+                appointments.remove(i);
+                apptData.updateAllAppointments(appointments);
+                System.out.println("Appointment with ID " + appointmentID + " has been successfully cancelled.");
+                return;
+            }
+        }
+        System.out.println("No appointment found with ID: " + appointmentID);
+    }
+
+    // Method to check if there is a clashing appointment for the doctor
+    private boolean isClashingAppointment(String doctorID, Calendar newAppointmentTime) {
+        List<Appointment> appointments = apptData.getAllAppointments();
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctorID().equals(doctorID) && appointment.getAppointmentTime().equals(newAppointmentTime)) {
+                return true; // Clash found
+            }
+        }
+        return false;
+    }
+
     // Method to view all appointments for a doctor
     public List<Appointment> viewAppointmentsByDoctor(String doctorID) {
         List<Appointment> appointments = apptData.getAllAppointments();
         List<Appointment> doctorAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            if (appointment.doctorID.equals(doctorID)) {
+            if (appointment.getDoctorID().equals(doctorID)) {
                 doctorAppointments.add(appointment);
             }
         }

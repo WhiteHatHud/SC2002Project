@@ -54,6 +54,14 @@ public abstract class Appointment {
         return patientName;
     }
 
+    public String getDoctorID() {
+        return doctorID;
+    }
+
+    public String getDoctorName() {
+        return doctorName;
+    }
+
     public void setPatientName(String patientName) {
         this.patientName = patientName;
     }
