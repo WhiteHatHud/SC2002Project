@@ -1,9 +1,11 @@
 package appt;
 
+import java.util.Calendar; //Uses calendar as per the example, this ensures the format of the date and time when users do appointments
+import java.text.SimpleDateFormat;
+
 public abstract class Appointment {
     protected String appointmentID;
-    protected String date;
-    protected String time;
+    protected Calendar appointmentTime; // Use Calendar to represent both date and time
     protected String patientID;
     protected String patientName;
     protected String doctorID;
@@ -12,11 +14,10 @@ public abstract class Appointment {
     protected String outcome;
 
     // Constructor for common attributes
-    public Appointment(String appointmentID, String date, String time, String patientID,
+    public Appointment(String appointmentID, Calendar appointmentTime, String patientID,
                        String patientName, String doctorID, String doctorName, String appointmentStatus) {
         this.appointmentID = appointmentID;
-        this.date = date;
-        this.time = time;
+        this.appointmentTime = appointmentTime;
         this.patientID = patientID;
         this.patientName = patientName;
         this.doctorID = doctorID;
@@ -33,20 +34,12 @@ public abstract class Appointment {
         this.appointmentStatus = status;
     }
 
-    public String getDate() {
-        return date;
+    public Calendar getAppointmentTime() {
+        return appointmentTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public void setAppointmentTime(Calendar appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 
     public String getPatientID() {
@@ -75,7 +68,9 @@ public abstract class Appointment {
 
     // Convert the appointment to a CSV format for easy data storage
     public String toCSV() {
-        return String.join(",", appointmentID, date, time, patientID, patientName, doctorID, doctorName, appointmentStatus, outcome == null ? "" : outcome);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String formattedDateTime = dateFormatter.format(appointmentTime.getTime());
+        return String.join(",", appointmentID, formattedDateTime, patientID, patientName, doctorID, doctorName, appointmentStatus, outcome == null ? "" : outcome);
     }
 
     // Abstract method for managing the appointment - to be implemented by subclasses

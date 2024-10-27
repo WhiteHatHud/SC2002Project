@@ -2,12 +2,15 @@ package appt;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 public class DoctorUI {
     private ApptController apptController;
     private Scanner scanner;
     private String doctorID;
     private String doctorName;
+    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     // Constructor
     public DoctorUI(ApptController apptController, String doctorID, String doctorName) {
@@ -63,16 +66,21 @@ public class DoctorUI {
     private void createAppointment() {
         System.out.println("\nEnter Appointment ID:");
         String appointmentID = scanner.nextLine();
-        System.out.println("Enter Date (YYYY-MM-DD):");
-        String date = scanner.nextLine();
-        System.out.println("Enter Time (e.g., 09:00 AM):");
-        String time = scanner.nextLine();
+        System.out.println("Enter Date and Time (YYYY-MM-DD HH:mm):");
+        String dateTime = scanner.nextLine();
+        Calendar appointmentTime = Calendar.getInstance();
+        try {
+            appointmentTime.setTime(dateFormatter.parse(dateTime));
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please try again.");
+            return;
+        }
         System.out.println("Enter Patient ID:");
         String patientID = scanner.nextLine();
         System.out.println("Enter Patient Name:");
         String patientName = scanner.nextLine();
 
-        apptController.scheduleDoctorAppointment(appointmentID, date, time, patientID, patientName, doctorID, doctorName);
+        apptController.scheduleDoctorAppointment(appointmentID, appointmentTime, patientID, patientName, doctorID, doctorName);
     }
 
     // Method to view the doctor's schedule
@@ -81,8 +89,7 @@ public class DoctorUI {
         List<Appointment> appointments = apptController.viewAppointmentsByDoctor(doctorID);
         for (Appointment appointment : appointments) {
             System.out.println("Appointment ID: " + appointment.getAppointmentID());
-            System.out.println("Date: " + appointment.getDate());
-            System.out.println("Time: " + appointment.getTime());
+            System.out.println("Date and Time: " + dateFormatter.format(appointment.getAppointmentTime().getTime()));
             System.out.println("Patient ID: " + appointment.getPatientID());
             System.out.println("Patient Name: " + appointment.getPatientName());
             System.out.println("Outcome: " + (appointment.getOutcome() == null ? "Pending" : appointment.getOutcome()));
@@ -94,12 +101,17 @@ public class DoctorUI {
     private void rescheduleAppointment() {
         System.out.println("\nEnter Appointment ID to Reschedule:");
         String appointmentID = scanner.nextLine();
-        System.out.println("Enter New Date (YYYY-MM-DD):");
-        String newDate = scanner.nextLine();
-        System.out.println("Enter New Time (e.g., 09:00 AM):");
-        String newTime = scanner.nextLine();
+        System.out.println("Enter New Date and Time (YYYY-MM-DD HH:mm):");
+        String newDateTime = scanner.nextLine();
+        Calendar newAppointmentTime = Calendar.getInstance();
+        try {
+            newAppointmentTime.setTime(dateFormatter.parse(newDateTime));
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please try again.");
+            return;
+        }
 
-        apptController.rescheduleDoctorAppointment(appointmentID, newDate, newTime);
+        apptController.rescheduleDoctorAppointment(appointmentID, newAppointmentTime);
     }
 
     // Method to cancel an appointment
@@ -120,7 +132,7 @@ public class DoctorUI {
 
     // Main method to test DoctorUI
     public static void main(String[] args) {
-        ApptData apptData = new ApptData(); // Removed the incorrect constructor parameter
+        ApptData apptData = new ApptData();
         ApptController controller = new ApptController(apptData);
 
         // Assuming doctorID and doctorName are known beforehand

@@ -2,6 +2,7 @@ package appt;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ApptController {
     private ApptData apptData;
@@ -12,9 +13,9 @@ public class ApptController {
     }
 
     // Method to schedule a new appointment for a doctor
-    public void scheduleDoctorAppointment(String appointmentID, String date, String time, String patientID, String patientName, String doctorID, String doctorName) {
+    public void scheduleDoctorAppointment(String appointmentID, Calendar appointmentTime, String patientID, String patientName, String doctorID, String doctorName) {
         DoctorAppointment newAppointment = new DoctorAppointment(
-            appointmentID, date, time, patientID, patientName, doctorID, doctorName, "Scheduled"
+            appointmentID, appointmentTime, patientID, patientName, doctorID, doctorName, "Scheduled"
         );
         apptData.addAppointment(newAppointment);
         System.out.println("Doctor appointment scheduled successfully!");
@@ -35,12 +36,11 @@ public class ApptController {
     }
 
     // Method to reschedule an appointment for a doctor
-    public void rescheduleDoctorAppointment(String appointmentID, String newDate, String newTime) {
+    public void rescheduleDoctorAppointment(String appointmentID, Calendar newAppointmentTime) {
         List<Appointment> appointments = apptData.getAllAppointments();
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentID().equals(appointmentID)) {
-                appointment.setDate(newDate);
-                appointment.setTime(newTime);
+                appointment.setAppointmentTime(newAppointmentTime);
                 appointment.setAppointmentStatus("Rescheduled");
                 apptData.updateAppointment(appointment);
                 System.out.println("Doctor appointment rescheduled successfully.");
@@ -68,7 +68,7 @@ public class ApptController {
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentID().equals(appointmentID)) {
                 if (appointment instanceof DoctorAppointment) {
-                    ((DoctorAppointment) appointment).recordOutcome(outcome);
+                    ((DoctorAppointment) appointment).setOutcome(outcome);
                     apptData.updateAppointment(appointment);
                     System.out.println("Outcome recorded successfully.");
                 }
