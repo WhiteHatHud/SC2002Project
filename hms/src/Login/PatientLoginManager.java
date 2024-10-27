@@ -1,38 +1,59 @@
 package Login;
+import Patients.PatientController;
+import Utilities.Masking;
+import Utilities.UserInputHandler;
+import java.util.Map;
 
 public class PatientLoginManager implements LoginInt {
     private DisplayManager displayManager;
     private UserInputHandler inputHandler;
+    private AuthenticationService authenticationService;
+    private boolean returnToMenu = false; // Flag to indicate if user wants to return to menu
 
-    public PatientLoginManager(DisplayManager displayManager, UserInputHandler inputHandler) {
+    public PatientLoginManager(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
+        this.authenticationService = new AuthenticationService(registries);
     }
 
     @Override
-    public void start() { //need to implement nonfunc req - press x to exit while inputting incase select wrong option
+    public void start() {
+        returnToMenu = false;  
+        boolean isAuthenticated = false;
+    
+        while (!isAuthenticated) {
+            displayManager.showPatientLoginID();
+            String userID = inputHandler.getInput();
+    
+            // Check if the user wants to go back
+            if (userID.equals("~")) {
+                System.out.println("Returning to the previous menu...");
+                returnToMenu = true; 
+                return;
+            }
+    
+            displayManager.showEnterPW();
+            Masking mask = new Masking();
 
-        displayManager.showPatientLoginID();   // Show prompt to enter Patient ID
-        String userID = inputHandler.getInput();  
-        displayManager.showEnterPW();  // Show prompt to enter Password
-        String password = inputHandler.getInput();  
+            String password = mask.readPasswordWithMasking();
+    
+            isAuthenticated = authenticationService.authenticate("patient", userID, password);
+    
+            if (isAuthenticated) {
+                System.out.println("Login successful! Welcome, Patient.");
+                PatientController pc = new PatientController();
+                pc.start();
+            } else {
+                System.out.println("Invalid credentials. Please try again.");
+                System.out.println("Enter ~ to go back to the main menu.");
+            }
+        }
+    }
+    
 
-        
-        //authenticate(userID, password);
+    
+    // Getter for returnToMenu flag
+    public boolean shouldReturnToMenu() {
+        return returnToMenu;
     }
-/* 
-    public void authenticate(String userID, String password) {
-                 auth user
-                AuthenticationService authService = new AuthenticationService();
-                boolean isAuthenticated = authService.authenticate(userID, password);
-        
-                if (isAuthenticated) {
-                    System.out.println("Login successful! Welcome, Patient.");
-                    // pass control to Patient.java
-                } else {
-                    System.out.println("Invalid credentials. Please try again.");
-                    // Retry logic or terminate
-                }
-    }
-                */
 }

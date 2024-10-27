@@ -1,14 +1,18 @@
 package Login;
+import java.util.Map;
+import Utilities.UserInputHandler;
 
-public class LoginController {
+public class LoginController implements ControllerInt{
     private DisplayManager displayManager;
     private UserInputHandler inputHandler;
-    private LoginInt loginManager;  // Using interface type for polymorphism
+    private LoginInt loginManager;  
+    private Map<String, UserRegistry> registries; 
 
-    public LoginController(DisplayManager displayManager, UserInputHandler inputHandler) {
+    public LoginController(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
-        this.loginManager = null;  // Initialize loginManager as null
+        this.registries = registries; // Initialize the registries map
+        this.loginManager = null;  
     }
 
     public void handleChoice(int choice) {
@@ -16,31 +20,34 @@ public class LoginController {
             case 1:
                 boolean validChoice = false;
 
-                // Retry logic for invalid selections until a valid manager is assigned
                 while (!validChoice) {
-                    // Show login screen
+                    
                     displayManager.showLoginScreen();
                     int option = inputHandler.getUserChoice();
 
-                    
                     if (option == 1) {  // Patient
-                        loginManager = new PatientLoginManager(displayManager,inputHandler);  // Assign PatientLoginManager
-                        validChoice = true;  
+                        loginManager = new PatientLoginManager(displayManager, inputHandler, registries);
+                        validChoice = true;
                     } else if (option == 2) {  // Staff
-                        loginManager = new StaffLoginManager();  // Assign StaffLoginManager
-                        validChoice = true; 
+                        loginManager = new StaffLoginManager();
+                        validChoice = true;
                     } else {
-                        System.out.println("Invalid choice! Please reselect.");//later implement back
+                        System.out.println("Invalid choice! Please reselect.");
                     }
-                }
 
-                if (loginManager != null) {
-                    loginManager.start();  // Polymorphic method call
+                    if (loginManager != null) {
+                        loginManager.start();
+
+                        
+                        if (loginManager instanceof PatientLoginManager && ((PatientLoginManager) loginManager).shouldReturnToMenu()) {
+                            validChoice = false; // Reset validChoice to re-display the "I am a..." menu
+                        }
+                    }
                 }
                 break;
 
             case 2:
-                // Reset password 
+                System.out.println("Resetting password functionality...");
                 break;
 
             case 3:

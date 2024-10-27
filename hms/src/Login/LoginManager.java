@@ -1,25 +1,22 @@
 package Login;
+import Utilities.UserInputHandler;
+import java.util.Map;
 
-
-class LoginManager {
+public class LoginManager {
     private DisplayManager displayManager;
     private UserInputHandler inputHandler;
+    private Map<String, UserRegistry> registries; // Store the registries map
 
-    public LoginManager(DisplayManager displayManager, UserInputHandler inputHandler) {
+    public LoginManager(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
+        this.registries = registries; // Initialize the registries map
     }
 
     public void startLoginProcess() {
-        displayManager.showWelcomeScreen(); 
-        int userChoice = inputHandler.getUserChoice();  
-        handleChoice(userChoice);  // Delegate the handling to the controller
+        LoginController loginController = new LoginController(displayManager, inputHandler, registries);
+        displayManager.showWelcomeScreen();
+        int userChoice = inputHandler.getUserChoice();
+        loginController.handleChoice(userChoice); 
     }
-    public void handleChoice(int userChoice) {
-        LoginController loginController = new LoginController(displayManager, inputHandler);
-        loginController.handleChoice(userChoice);  // Pass choice to LoginController
-    }
-
-    
-
 }

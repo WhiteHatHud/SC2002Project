@@ -1,4 +1,5 @@
-package Login;
+package Utilities;
+
 import java.util.Scanner;
 
 

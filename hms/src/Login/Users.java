@@ -59,8 +59,6 @@ public abstract class Users {
         this.password = newPassword;
     }
     
-    // For role specific menu
-    public abstract void displayMenu();
 }
 
 

@@ -1,6 +1,6 @@
 package Login;
 
-public class DisplayManager {
+public class DisplayManager extends DisplayFormat {
 
     public void showWelcomeScreen() {
         String[] hmsLogo = {"H   H  M   M  SSSSS", "H   H  MM MM  S     ", "HHHHH  M M M  SSSSS", "H   H  M   M      S", "H   H  M   M  SSSSS"};
@@ -30,7 +30,7 @@ public class DisplayManager {
 
         public void showPatientLoginID() {
 
-            String[] msg = {"Please enter your patient ID : "};
+            String[] msg = {"Please enter your patient ID (Enter ~ to return to previous menu): "};
             for (String line : msg) {
                 printCentered(line, 80);
             }
@@ -44,19 +44,6 @@ public class DisplayManager {
             }
 
         }
-
-        public void divider(){
-            System.out.println("=========================================================================");
-        }
-
-
-        private void printCentered(String text, int width) {
-            int padding = (width - text.length()) / 2;
-            System.out.print(" ".repeat(padding));
-            System.out.println(text);
-        }
-
-        
     }
     
 
