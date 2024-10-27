@@ -2,7 +2,7 @@ package Utilities;
 
 public class Masking {
     
-    protected String readPasswordWithMasking() {
+    public String readPasswordWithMasking() {
         StringBuilder password = new StringBuilder();
         try {
             while (true) {

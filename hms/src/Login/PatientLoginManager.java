@@ -1,8 +1,8 @@
 package Login;
 import Patients.PatientController;
-import java.util.Map;
 import Utilities.Masking;
 import Utilities.UserInputHandler;
+import java.util.Map;
 
 public class PatientLoginManager implements LoginInt {
     private DisplayManager displayManager;
@@ -33,7 +33,9 @@ public class PatientLoginManager implements LoginInt {
             }
     
             displayManager.showEnterPW();
-            String password = readPasswordWithMasking();
+            Masking mask = new Masking();
+
+            String password = mask.readPasswordWithMasking();
     
             isAuthenticated = authenticationService.authenticate("patient", userID, password);
     
