@@ -41,13 +41,10 @@ public class PatientLoginManager implements LoginInt {
     
             if (isAuthenticated) {
                 displayManager.clearScreen();
-                System.out.println("Login successful! Welcome, Patient.");
+                displayManager.loginSuccess();
                 PatientController pc = new PatientController();
                 pc.start();
-            } else {
-                System.out.println("Invalid credentials. Please try again.");
-                System.out.println("Enter ~ to go back to the main menu.");
-            }
+            } 
         }
     }
     

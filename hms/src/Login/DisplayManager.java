@@ -45,6 +45,21 @@ public class DisplayManager extends DisplayFormat {
             }
 
         }
+
+        public void loginSuccess(){
+            String[] msg = {"Login successful! Welcome, Patient."};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+        }
+
+        public void retMainMenu() {
+            String[] msg = {"Enter ~ to go back to the main menu."};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+
+        }
     }
     
 

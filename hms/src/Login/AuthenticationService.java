@@ -26,7 +26,9 @@ public class AuthenticationService {
             System.out.println("Authentication successful for userID: " + userID);
             return true;
         } else {
-            System.out.println("Authentication failed: Invalid userID or password.");
+            System.out.print("\033[H\033[2J");  
+            System.out.flush();
+            System.out.println("              Authentication failed: Invalid userID or password.");
             return false;
         }
     }

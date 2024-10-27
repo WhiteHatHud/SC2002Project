@@ -1,6 +1,7 @@
 package Patients;
+import Login.DisplayManager;
 
-public class PatientDisplayManager {
+public class PatientDisplayManager extends DisplayManager {
     
     public void displayMenu() {
         System.out.println("1. View Medical Record");

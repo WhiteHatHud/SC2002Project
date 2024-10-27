@@ -1,6 +1,4 @@
 package Patients;
-import Users.*;
-
 import Login.Users;
 
 public class Patient extends Users {
