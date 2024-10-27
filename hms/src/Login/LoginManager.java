@@ -1,5 +1,5 @@
 package Login;
-
+import Utilities.UserInputHandler;
 import java.util.Map;
 
 public class LoginManager {
@@ -7,7 +7,6 @@ public class LoginManager {
     private UserInputHandler inputHandler;
     private Map<String, UserRegistry> registries; // Store the registries map
 
-    // Update constructor to accept Map<String, UserRegistry>
     public LoginManager(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;

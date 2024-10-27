@@ -1,7 +1,8 @@
 package Login;
 import java.util.Map;
+import Utilities.UserInputHandler;
 
-public class LoginController {
+public class LoginController implements ControllerInt{
     private DisplayManager displayManager;
     private UserInputHandler inputHandler;
     private LoginInt loginManager;  
@@ -20,7 +21,7 @@ public class LoginController {
                 boolean validChoice = false;
 
                 while (!validChoice) {
-                    // Display the "I am a..." menu
+                    
                     displayManager.showLoginScreen();
                     int option = inputHandler.getUserChoice();
 
@@ -33,14 +34,14 @@ public class LoginController {
                     } else {
                         System.out.println("Invalid choice! Please reselect.");
                     }
-                }
 
-                if (loginManager != null) {
-                    loginManager.start();
+                    if (loginManager != null) {
+                        loginManager.start();
 
-                    // Check if user wants to return to the main menu after `PatientLoginManager.start()`
-                    if (loginManager instanceof PatientLoginManager && ((PatientLoginManager) loginManager).shouldReturnToMenu()) {
-                        validChoice = false; // Reset validChoice to re-display the "I am a..." menu
+                        
+                        if (loginManager instanceof PatientLoginManager && ((PatientLoginManager) loginManager).shouldReturnToMenu()) {
+                            validChoice = false; // Reset validChoice to re-display the "I am a..." menu
+                        }
                     }
                 }
                 break;

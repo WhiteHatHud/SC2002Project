@@ -1,6 +1,6 @@
 package Login;
-
 import Patients.PatientRegistry;
+import Utilities.UserInputHandler;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,10 +18,6 @@ public class LoginPageMain {
         AccountsInit patientInit = new AccountsInit("/Users/tanjunhern/Documents/Patient List CSV.csv", registries);
         patientInit.start();
 
-        // Print all patients to verify data was loaded correctly
-        patientRegistry.printAllPatients();
-
-        // Initialize LoginManager with registries map
         LoginManager loginManager = new LoginManager(displayManager, inputHandler, registries);
         loginManager.startLoginProcess();
     }
