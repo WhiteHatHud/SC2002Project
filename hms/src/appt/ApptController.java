@@ -1,7 +1,7 @@
 package appt;
 
 import java.util.List;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class ApptController {
     private ApptData apptData;
@@ -12,25 +12,7 @@ public class ApptController {
     }
 
     // Method to schedule a new appointment for a doctor
-    public void scheduleDoctorAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("Enter Appointment ID:");
-        String appointmentID = scanner.nextLine();
-        System.out.println("Enter Date (YYYY-MM-DD):");
-        String date = scanner.nextLine();
-        System.out.println("Enter Time (e.g., 09:00 AM):");
-        String time = scanner.nextLine();
-        System.out.println("Enter Patient ID:");
-        String patientID = scanner.nextLine();
-        System.out.println("Enter Patient Name:");
-        String patientName = scanner.nextLine();
-        System.out.println("Enter Doctor ID:");
-        String doctorID = scanner.nextLine();
-        System.out.println("Enter Doctor Name:");
-        String doctorName = scanner.nextLine();
-
-        // Instantiate as DoctorAppointment
+    public void scheduleDoctorAppointment(String appointmentID, String date, String time, String patientID, String patientName, String doctorID, String doctorName) {
         DoctorAppointment newAppointment = new DoctorAppointment(
             appointmentID, date, time, patientID, patientName, doctorID, doctorName, "Scheduled"
         );
@@ -53,17 +35,10 @@ public class ApptController {
     }
 
     // Method to reschedule an appointment for a doctor
-    public void rescheduleDoctorAppointment(String appointmentID) {
-        Scanner scanner = new Scanner(System.in);
-        
+    public void rescheduleDoctorAppointment(String appointmentID, String newDate, String newTime) {
         List<Appointment> appointments = apptData.getAllAppointments();
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentID().equals(appointmentID)) {
-                System.out.println("Enter New Date (YYYY-MM-DD):");
-                String newDate = scanner.nextLine();
-                System.out.println("Enter New Time (e.g., 09:00 AM):");
-                String newTime = scanner.nextLine();
-                
                 appointment.setDate(newDate);
                 appointment.setTime(newTime);
                 appointment.setAppointmentStatus("Rescheduled");
@@ -75,20 +50,31 @@ public class ApptController {
         System.out.println("No appointment found with ID: " + appointmentID);
     }
 
-    // Method to view an appointment by ID
-    public void viewDoctorAppointment(String appointmentID) {
-        apptData.printAppointmentById(appointmentID);
+    // Method to view all appointments for a doctor
+    public List<Appointment> viewAppointmentsByDoctor(String doctorID) {
+        List<Appointment> appointments = apptData.getAllAppointments();
+        List<Appointment> doctorAppointments = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.doctorID.equals(doctorID)) {
+                doctorAppointments.add(appointment);
+            }
+        }
+        return doctorAppointments;
     }
 
-    // Test the ApptController
-    public static void main(String[] args) {
-        ApptData apptData = new ApptData();
-        ApptController controller = new ApptController(apptData);
-
-        // Example usage
-        controller.scheduleDoctorAppointment();
-        controller.viewDoctorAppointment("1");
-        controller.cancelDoctorAppointment("1");
-        controller.viewDoctorAppointment("1");
+    // Method to record the outcome of an appointment
+    public void recordOutcome(String appointmentID, String outcome) {
+        List<Appointment> appointments = apptData.getAllAppointments();
+        for (Appointment appointment : appointments) {
+            if (appointment.getAppointmentID().equals(appointmentID)) {
+                if (appointment instanceof DoctorAppointment) {
+                    ((DoctorAppointment) appointment).recordOutcome(outcome);
+                    apptData.updateAppointment(appointment);
+                    System.out.println("Outcome recorded successfully.");
+                }
+                return;
+            }
+        }
+        System.out.println("No appointment found with ID: " + appointmentID);
     }
 }

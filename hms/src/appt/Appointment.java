@@ -49,6 +49,30 @@ public abstract class Appointment {
         this.time = time;
     }
 
+    public String getPatientID() {
+        return patientID;
+    }
+
+    public void setPatientID(String patientID) {
+        this.patientID = patientID;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public String getOutcome() {
+        return outcome;
+    }
+
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
+    }
+
     // Convert the appointment to a CSV format for easy data storage
     public String toCSV() {
         return String.join(",", appointmentID, date, time, patientID, patientName, doctorID, doctorName, appointmentStatus, outcome == null ? "" : outcome);
