@@ -19,6 +19,11 @@ public class ApptController {
             return;
         }
 
+        if (!isValidTimeInterval(appointmentTime)) {
+            System.out.println("Error: Appointment time must be in 30-minute intervals (e.g., 09:30, 10:00).");
+            return;
+        }
+
         DoctorAppointment newAppointment = new DoctorAppointment(
             appointmentID, appointmentTime, patientID, patientName, doctorID, doctorName, "Scheduled"
         );
@@ -36,24 +41,15 @@ public class ApptController {
                     return;
                 }
 
+                if (!isValidTimeInterval(newAppointmentTime)) {
+                    System.out.println("Error: Appointment time must be in 30-minute intervals (e.g., 09:30, 10:00).");
+                    return;
+                }
+
                 appointment.setAppointmentTime(newAppointmentTime);
                 appointment.setAppointmentStatus("Rescheduled");
-                apptData.updateAppointment(appointment);
-                System.out.println("Doctor appointment rescheduled successfully.");
-                return;
-            }
-        }
-        System.out.println("No appointment found with ID: " + appointmentID);
-    }
-
-    // Method to cancel an appointment for a doctor
-    public void cancelDoctorAppointment(String appointmentID) {
-        List<Appointment> appointments = apptData.getAllAppointments();
-        for (int i = 0; i < appointments.size(); i++) {
-            if (appointments.get(i).getAppointmentID().equals(appointmentID)) {
-                appointments.remove(i);
                 apptData.updateAllAppointments(appointments);
-                System.out.println("Appointment with ID " + appointmentID + " has been successfully cancelled.");
+                System.out.println("Doctor appointment rescheduled successfully.");
                 return;
             }
         }
@@ -69,6 +65,26 @@ public class ApptController {
             }
         }
         return false;
+    }
+
+    // Method to check if the appointment time is in 30-minute intervals
+    private boolean isValidTimeInterval(Calendar appointmentTime) {
+        int minutes = appointmentTime.get(Calendar.MINUTE);
+        return minutes == 0 || minutes == 30;
+    }
+
+    // Method to cancel an appointment for a doctor
+    public void cancelDoctorAppointment(String appointmentID) {
+        List<Appointment> appointments = apptData.getAllAppointments();
+        for (int i = 0; i < appointments.size(); i++) {
+            if (appointments.get(i).getAppointmentID().equals(appointmentID)) {
+                appointments.remove(i);
+                apptData.updateAllAppointments(appointments);
+                System.out.println("Appointment with ID " + appointmentID + " has been successfully cancelled.");
+                return;
+            }
+        }
+        System.out.println("No appointment found with ID: " + appointmentID);
     }
 
     // Method to view all appointments for a doctor
@@ -90,7 +106,7 @@ public class ApptController {
             if (appointment.getAppointmentID().equals(appointmentID)) {
                 if (appointment instanceof DoctorAppointment) {
                     ((DoctorAppointment) appointment).setOutcome(outcome);
-                    apptData.updateAppointment(appointment);
+                    apptData.updateAllAppointments(appointments);
                     System.out.println("Outcome recorded successfully.");
                 }
                 return;
