@@ -15,6 +15,7 @@ public class DisplayManager extends DisplayFormat {
             printCentered(line, 80);
         }
         divider();
+        
     }
 
         public void showLoginScreen() {

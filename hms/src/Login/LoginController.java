@@ -1,6 +1,6 @@
 package Login;
-import java.util.Map;
 import Utilities.UserInputHandler;
+import java.util.Map;
 
 public class LoginController implements ControllerInt{
     private DisplayManager displayManager;
@@ -24,7 +24,8 @@ public class LoginController implements ControllerInt{
                     
                     displayManager.showLoginScreen();
                     int option = inputHandler.getUserChoice();
-
+                    displayManager.clearScreen();
+                    
                     if (option == 1) {  // Patient
                         loginManager = new PatientLoginManager(displayManager, inputHandler, registries);
                         validChoice = true;
