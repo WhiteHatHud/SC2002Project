@@ -15,6 +15,7 @@ public class DisplayManager extends DisplayFormat {
             printCentered(line, 80);
         }
         divider();
+        
     }
 
         public void showLoginScreen() {
@@ -39,6 +40,21 @@ public class DisplayManager extends DisplayFormat {
         public void showEnterPW() {
 
             String[] msg = {"Please enter your password : "};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+
+        }
+
+        public void loginSuccess(){
+            String[] msg = {"Login successful! Welcome, Patient."};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+        }
+
+        public void retMainMenu() {
+            String[] msg = {"Enter ~ to go back to the main menu."};
             for (String line : msg) {
                 printCentered(line, 80);
             }

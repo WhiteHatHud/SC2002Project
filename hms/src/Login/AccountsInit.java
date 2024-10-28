@@ -43,7 +43,7 @@ public class AccountsInit {
                 }
             }
     
-            System.out.println("Accounts successfully initialized from " + csvFilePath + ". The " + userType + " accounts.");
+            //System.out.println("Accounts successfully initialized from " + csvFilePath + ". The " + userType + " accounts.");
         } catch (IOException e) {
             e.printStackTrace();
         }

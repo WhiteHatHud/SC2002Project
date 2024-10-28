@@ -3,10 +3,11 @@ import Login.ControllerInt;
 
 public class PatientController implements ControllerInt {
 
-    PatientDisplayManager patientDM = new PatientDisplayManager();
+    PatientShared patientInstances = new PatientShared();
+
 
     public void start(){
-        patientDM.displayMenu();
+        patientInstances.getDisplayManager().displayMenu();
 
     }
 
