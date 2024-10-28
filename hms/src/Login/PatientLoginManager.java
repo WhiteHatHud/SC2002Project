@@ -1,4 +1,5 @@
 package Login;
+import Patients.Patient;
 import Patients.PatientController;
 import Utilities.Masking;
 import Utilities.UserInputHandler;
@@ -19,9 +20,9 @@ public class PatientLoginManager implements LoginInt {
     @Override
     public void start() {
         returnToMenu = false;  
-        boolean isAuthenticated = false;
+        Patient authenticatedPatient = null;
     
-        while (!isAuthenticated) {
+        while (authenticatedPatient == null) {
             displayManager.showPatientLoginID();
             String userID = inputHandler.getInput();
     
@@ -34,23 +35,22 @@ public class PatientLoginManager implements LoginInt {
     
             displayManager.showEnterPW();
             Masking mask = new Masking();
-
             String password = mask.readPasswordWithMasking();
     
-            isAuthenticated = authenticationService.authenticate("patient", userID, password);
+            authenticatedPatient = authenticationService.authenticate("patient", userID, password);
     
-            if (isAuthenticated) {
+            if (authenticatedPatient != null) {
                 displayManager.clearScreen();
                 displayManager.loginSuccess();
-                PatientController pc = new PatientController();
+                PatientController pc = new PatientController(authenticatedPatient); // Pass authenticated patient to PatientController
                 pc.start();
-            } 
+            } else {
+                System.out.println("Authentication failed. Please try again.");
+            }
         }
     }
     
 
-    
-    // Getter for returnToMenu flag
     public boolean shouldReturnToMenu() {
         return returnToMenu;
     }

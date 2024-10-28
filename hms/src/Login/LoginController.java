@@ -14,8 +14,8 @@ public class LoginController implements ControllerInt{
         this.registries = registries; // Initialize the registries map
         this.loginManager = null;  
     }
-
-    public void handleChoice(int choice) {
+    @Override
+    public boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
                 boolean validChoice = false;
@@ -41,7 +41,7 @@ public class LoginController implements ControllerInt{
 
                         
                         if (loginManager instanceof PatientLoginManager && ((PatientLoginManager) loginManager).shouldReturnToMenu()) {
-                            validChoice = false; // Reset validChoice to re-display the "I am a..." menu
+                            validChoice = false;
                         }
                     }
                 }
@@ -59,5 +59,6 @@ public class LoginController implements ControllerInt{
             default:
                 System.out.println("Invalid choice");
         }
+        return true;
     }
 }

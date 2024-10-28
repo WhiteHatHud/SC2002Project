@@ -17,7 +17,7 @@ public class LoginManager {
         LoginController loginController = new LoginController(displayManager, inputHandler, registries);
         displayManager.showWelcomeScreen();
         int userChoice = inputHandler.getUserChoice();
-        displayManager.clearScreen();
+        DisplayManager.clearScreen();
         loginController.handleChoice(userChoice); 
         
     }
