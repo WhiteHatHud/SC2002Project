@@ -20,14 +20,19 @@ public class ApptData {
                 String[] data = line.split(",");
                 Calendar appointmentTime = Calendar.getInstance();
                 appointmentTime.setTime(dateFormatter.parse(data[1])); // Parse the date and time
-                // Create a DoctorAppointment object from CSV data (currently only handling doctor appointments)
+
+                // Create a DoctorAppointment object from CSV data
                 DoctorAppointment appointment = new DoctorAppointment(
                     data[0], appointmentTime, data[2], data[3], data[4], data[5], data[6]
                 );
-                // Set outcome if it exists
-                if (data.length > 7) {
-                    appointment.recordOutcome(data[7]);
-                }
+
+                // Set additional attributes if they exist
+                if (data.length > 7) appointment.setOutcome(data[7]);
+                if (data.length > 8) appointment.setService(data[8]);
+                if (data.length > 9) appointment.setMedicine(data[9]);
+                if (data.length > 10) appointment.setMedicineStatus(data[10]);
+                if (data.length > 11) appointment.setNotes(data[11]);
+
                 appointments.add(appointment);
             }
         } catch (Exception e) {
@@ -51,7 +56,7 @@ public class ApptData {
         List<Appointment> appointments = getAllAppointments();
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
             // Write header
-            bw.write("AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome");
+            bw.write("AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes");
             bw.newLine();
 
             for (Appointment appointment : appointments) {
@@ -71,7 +76,7 @@ public class ApptData {
     public void updateAllAppointments(List<Appointment> updatedAppointments) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
             // Write header
-            bw.write("AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome");
+            bw.write("AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes");
             bw.newLine();
 
             for (Appointment appointment : updatedAppointments) {
