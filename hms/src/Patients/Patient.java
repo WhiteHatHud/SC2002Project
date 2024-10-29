@@ -1,5 +1,5 @@
 package Patients;
-import Login.Users;
+import Users.Users;
 
 public class Patient extends Users {
 
@@ -10,7 +10,7 @@ public class Patient extends Users {
 
 
     public Patient(String patientID, String name, String dob, String gender, String bloodType, String contactInfo) {
-        super(patientID, name, dob); 
+        super(patientID, name); 
         this.dob = dob;             
         this.gender = gender;
         this.bloodType = bloodType;
