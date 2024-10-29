@@ -1,5 +1,5 @@
 package Login;
 
 public interface  ControllerInt {
-    void handleChoice(int choice);
+    boolean handleChoice(int choice);
 }

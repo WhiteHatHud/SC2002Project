@@ -1,27 +1,28 @@
 package Login;
+
 import Utilities.UserInputHandler;
 import java.util.Map;
 
-public class LoginController implements ControllerInt{
+public class LoginController implements ControllerInt {
     private DisplayManager displayManager;
     private UserInputHandler inputHandler;
-    private LoginInt loginManager;  
-    private Map<String, UserRegistry> registries; 
+    private LoginInt loginManager;
+    private Map<String, UserRegistry> registries;
 
     public LoginController(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
-        this.registries = registries; // Initialize the registries map
-        this.loginManager = null;  
+        this.registries = registries;
+        this.loginManager = null;
     }
 
-    public void handleChoice(int choice) {
+    @Override
+    public boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
                 boolean validChoice = false;
 
                 while (!validChoice) {
-                    
                     displayManager.showLoginScreen();
                     int option = inputHandler.getUserChoice();
                     displayManager.clearScreen();
@@ -37,11 +38,10 @@ public class LoginController implements ControllerInt{
                     }
 
                     if (loginManager != null) {
-                        loginManager.start();
-
+                        boolean continueToMainMenu = !loginManager.start(); 
                         
-                        if (loginManager instanceof PatientLoginManager && ((PatientLoginManager) loginManager).shouldReturnToMenu()) {
-                            validChoice = false; // Reset validChoice to re-display the "I am a..." menu
+                        if (continueToMainMenu) {
+                            validChoice = false; // Reset validChoice to re-display the main menu
                         }
                     }
                 }
@@ -49,7 +49,7 @@ public class LoginController implements ControllerInt{
 
             case 2:
                 System.out.println("Resetting password functionality...");
-                break;
+                return true; // Continue to show main menu
 
             case 3:
                 System.out.println("System shutting down...");
@@ -59,5 +59,6 @@ public class LoginController implements ControllerInt{
             default:
                 System.out.println("Invalid choice");
         }
+        return true;
     }
 }

@@ -10,26 +10,26 @@ public class AuthenticationService {
         this.registries = registries;
     }
 
-
-    public boolean authenticate(String userType, String userID, String password) {
-
+    public Patient authenticate(String userType, String userID, String password) {
         UserRegistry registry = registries.get(userType);
 
         // Ensure that the registry exists for the given user type
         if (registry == null) {
             System.out.println("No registry found for user type: " + userType);
-            return false;
+            return null; 
         }
 
         Patient patient = (Patient) registry.findUserByID(userID);
+        
+        // Check if the patient exists and the password matches
         if (patient != null && patient.getPassword().equals(password)) {
             System.out.println("Authentication successful for userID: " + userID);
-            return true;
+            return patient; 
+
         } else {
-            System.out.print("\033[H\033[2J");  
-            System.out.flush();
+            DisplayFormat.clearScreen();
             System.out.println("              Authentication failed: Invalid userID or password.");
-            return false;
+            return null; 
         }
     }
 }

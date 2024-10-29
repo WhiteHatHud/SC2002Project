@@ -2,12 +2,8 @@ package Login;
 
 
 public class StaffLoginManager implements LoginInt {
-
-    public StaffLoginManager(){
-
-    }
     @Override
-    public void start() {
-
+    public boolean start() {
+        return true;
     }
 }

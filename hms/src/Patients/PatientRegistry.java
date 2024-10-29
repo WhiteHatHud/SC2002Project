@@ -27,9 +27,8 @@ public class PatientRegistry implements UserRegistry<Patient> {
     }
         // Method to print each patient in the registry
         public void printAllPatients() {
-            // Get the list of patients from the registry
+
             for (Patient patient : getAllUsers()) {
-                // Print patient details
                 System.out.println("Patient ID: " + patient.getUserID());
                 System.out.println("Name: " + patient.getName());
                 System.out.println("Date of Birth: " + patient.getDateOfBirth());

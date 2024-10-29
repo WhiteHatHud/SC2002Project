@@ -16,5 +16,8 @@ public class UserInputHandler {
         return sc.next();  // Gets string inputs like ID or password
     }
     
+    public String getNextLine() {
+        return sc.next();
+    }
 
 }
