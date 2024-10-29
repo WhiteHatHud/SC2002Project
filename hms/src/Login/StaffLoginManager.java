@@ -3,7 +3,7 @@ package Login;
 
 public class StaffLoginManager implements LoginInt {
     @Override
-    public void start() {
-
+    public boolean start() {
+        return true;
     }
 }

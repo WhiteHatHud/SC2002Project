@@ -1,7 +1,7 @@
 package Patients;
+import Login.DisplayManager;
 
 public class ViewMedicalRecord {
-    
 
     public void viewMedicalRecord(Patient patient) {
         System.out.println("=== Medical Record ===");
@@ -13,5 +13,10 @@ public class ViewMedicalRecord {
         System.out.println("Blood Type       : " + patient.getBloodType());
         
         System.out.println("=======================");
+
+        DisplayManager.retMainMenuAny();
+        PatientShared.getUserInputHandler().getNextLine();
+        DisplayManager.clearScreen();
+
     }
 }

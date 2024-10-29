@@ -1,5 +1,5 @@
 package Login;
 
 public interface LoginInt {
-    void start();  
+    boolean start();  
 }

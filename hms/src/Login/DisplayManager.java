@@ -53,8 +53,15 @@ public class DisplayManager extends DisplayFormat {
             }
         }
 
-        public void retMainMenu() {
+        public static void retMainMenu() {
             String[] msg = {"Enter ~ to go back to the main menu."};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+
+        }
+        public static void retMainMenuAny() {
+            String[] msg = {"Enter any key to go back to the main menu."};
             for (String line : msg) {
                 printCentered(line, 80);
             }

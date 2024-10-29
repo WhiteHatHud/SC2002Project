@@ -18,7 +18,7 @@ public class PatientLoginManager implements LoginInt {
     }
 
     @Override
-    public void start() {
+    public boolean start() {
         returnToMenu = false;  
         Patient authenticatedPatient = null;
     
@@ -30,7 +30,7 @@ public class PatientLoginManager implements LoginInt {
             if (userID.equals("~")) {
                 System.out.println("Returning to the previous menu...");
                 returnToMenu = true; 
-                return;
+                return false;
             }
     
             displayManager.showEnterPW();
@@ -48,6 +48,7 @@ public class PatientLoginManager implements LoginInt {
                 System.out.println("Authentication failed. Please try again.");
             }
         }
+        return false;
     }
     
 
