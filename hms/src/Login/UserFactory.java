@@ -1,5 +1,6 @@
 package Login;
 import Patients.Patient;
+import Users.Users;
 
 public class UserFactory {
 

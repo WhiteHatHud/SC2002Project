@@ -1,5 +1,5 @@
 package Login;
-
+import Users.Users;
 import java.util.List;
 
 public interface UserRegistry<T extends Users> {
