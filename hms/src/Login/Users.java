@@ -5,14 +5,14 @@ public abstract class Users {
     protected String userID;
     protected String password;
     protected String name;
-    protected String role;    
-    protected String dob;
+    //protected String role; only for Staf class
+    //protected String dob; dob should only be for patient class
+    public Users(){
+    }
 
-
-    public Users(String userID, String name, String dob) {
+    public Users(String userID, String name) {
         this.userID = userID;
         this.name = name;
-        this.dob = dob;
         this.password = "password";  // Default password
     }
     
@@ -40,15 +40,6 @@ public abstract class Users {
     public void setName(String name) {
         this.name = name;
     }
-    
-    public String getRole() {
-        return role;
-    }
-    
-    public void setRole(String role) {
-        this.role = role;
-    }
-    
 
     public boolean login(String inputPassword) {
         return this.password.equals(inputPassword);
