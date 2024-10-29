@@ -40,6 +40,10 @@ public abstract class Appointment {
         this.appointmentStatus = status;
     }
 
+    public String getAppointmentStatus() {
+        return appointmentStatus;
+    }
+
     public Calendar getAppointmentTime() {
         return appointmentTime;
     }

@@ -19,7 +19,7 @@ public class DoctorUI {
         boolean running = true;
         while (running) {
             System.out.println("\nWelcome, Dr. " + doctorName);
-            System.out.println("1. View Appointments on a Specific Date");
+            System.out.println("1. View Appointments and Sessions");
             System.out.println("2. Exit");
             System.out.print("Please select an option: ");
 

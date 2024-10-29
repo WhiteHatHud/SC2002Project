@@ -1,3 +1,5 @@
 AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes
-1,2024-10-28 9:00,PT001,John Doe,DR001,Dr. Smith,Cancelled,Completed,Consultation,,,
-2,2024-10-28 10:00,PT002,Jane Roe,DR002,Dr. Brown,Completed,Rescheduled,X-ray,,,
+1,2024-10-29 09:00,PT001,John Doe,DR001,Dr. Smith,Booked,Completed,Consultation,Nil,Nil,Nil
+2,2024-10-29,PT002,Jane Roe,DR002,Dr. Brown,Booked,Completed,X-ray,Nil,Nil,NIl
+3,2024-10-30,PT001,John Doe,DR001,Dr. Smith,Cancelled,Completed,Consultation,Nil,Nil,Nil1,2024-10-29 09:00,PT001,John Doe,DR001,Dr. Smith,Booked,Completed,Consultation,Nil,Nil,Nil
+4,2024-10-29 14:00,PT001,John Doe,DR001,Dr. Smith,Booked,Completed,Consultation,Nil,Nil,Nil
