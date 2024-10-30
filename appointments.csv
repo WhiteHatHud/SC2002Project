@@ -1,6 +1,4 @@
 appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes
-1,2024-10-30 09:00,PT001,John Doe,DR001,Dr. Smith,Booked,Completed,Consultation,Nil,Nil,Nil
-2,2024-10-30 00:00,PT002,Jane Roe,DR002,Dr. Brown,Booked,Completed,X-ray,Nil,Nil,NIl
-3,2024-10-30 00:00,PT001,John Doe,DR001,Dr. Smith,Cancelled,Completed,Consultation,Nil,Nil,Nil1
-4,2024-10-30 14:00,PT001,John Doe,DR001,Dr. Smith,Booked,Completed,Consultation,Nil,Nil,Nil
-A0005,2024-10-30 11:00,P101,Peter,DR001,Dr. Smith,PendingToPatient,,,,,
+A0001,2024-10-30 11:00,P101,Peter,DR001,Dr. Smith,PendingToPatient,,,,,
+A0002,2024-10-30 09:00,P102,Rauf,DR001,Dr. Smith,PendingToPatient,,,,,
+851a061d-e213-44d9-9f27-460ccceb570d,2024-10-30 14:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,

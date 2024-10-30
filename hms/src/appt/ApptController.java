@@ -325,6 +325,36 @@ private String getSessionStatus(List<Appointment> appointments, LocalDate date, 
         apptData.addAppointment(newAppointment);
         System.out.println("New appointment created successfully with ID: " + newAppointmentID);
     }
+    //==============================================================================================
+    public void printUpcomingSessions(String doctorID) {
+        List<Appointment> doctorAppointments = viewAppointmentsByDoctor(doctorID);
+    
+        // Filter out blocked appointments and sort by Appointment ID
+        doctorAppointments.stream()
+                .filter(appointment -> !appointment.getAppointmentStatus().equalsIgnoreCase("Blocked"))
+                .sorted((a1, a2) -> a1.getAppointmentID().compareTo(a2.getAppointmentID()))
+                .forEach(appointment -> {
+                    Calendar appointmentTime = appointment.getAppointmentTime();
+                    LocalDate appointmentDate = LocalDate.of(
+                            appointmentTime.get(Calendar.YEAR),
+                            appointmentTime.get(Calendar.MONTH) + 1,
+                            appointmentTime.get(Calendar.DAY_OF_MONTH)
+                    );
+    
+                    System.out.printf("Appointment ID: %s\n", appointment.getAppointmentID());
+                    System.out.printf("Date: %s\n", appointmentDate);
+                    System.out.printf("Patient ID: %s\n", appointment.getPatientID());
+                    System.out.printf("Patient Name: %s\n", appointment.getPatientName());
+                    System.out.printf("Appointment Status: %s\n", appointment.getAppointmentStatus());
+                    System.out.println("------------------------------");
+                });
+    
+        if (doctorAppointments.stream()
+                .noneMatch(appointment -> !appointment.getAppointmentStatus().equalsIgnoreCase("Blocked"))) {
+            System.out.println("No upcoming sessions available.");
+        }
+    }
+    
     
 
 }

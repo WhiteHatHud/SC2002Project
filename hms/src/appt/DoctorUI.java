@@ -19,8 +19,9 @@ public class DoctorUI {
         boolean running = true;
         while (running) {
             System.out.println("\nWelcome, Dr. " + doctorName);
-            System.out.println("1. View Appointments and Sessions");
-            System.out.println("2. Exit");
+            System.out.println("1. View Schedule");
+            System.out.println("2. View Upcoming Sessions");
+            System.out.println("3. Exit");
             System.out.print("Please select an option: ");
 
             int choice = scanner.nextInt();
@@ -28,7 +29,8 @@ public class DoctorUI {
 
             switch (choice) {
                 case 1 -> apptController.printDoctorScheduleOnDate(doctorID);
-                case 2 -> {
+                case 2 -> apptController.printUpcomingSessions(doctorID);
+                case 3 -> {
                     running = false;
                     System.out.println("Goodbye, Dr. " + doctorName + "!");
                 }
