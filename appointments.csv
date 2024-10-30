@@ -1,11 +1,9 @@
-AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome
-1,2024-10-01 09:00,PT001,John Doe,DR001,Dr. Smith,Cancelled,Successful
-2,2024-10-01 10:00,PT002,Jane Roe,DR002,Dr. Brown,Completed,Checkup successful
-3,2024-10-01 11:00,PT003,Michael Smith,DR001,Dr. Smith,Cancelled,123
-1,2024-10-01 09:00,PT001,John Doe,DR001,Dr. Smith,Cancelled,Successful
-123,2002-01-01 07:00,P123,pa,123,AP,Cancelled,123
-123,2002-01-01 07:00,P123,pa,123,AP,Cancelled,123
-123,2001-12-12 10:00,56,12,DR001,Smith,Scheduled,
-A123,2022-01-01 09:00,192,saarah,DR001,Smith,Rescheduled,Successful
-A123,2022-04-10 09:30,A123,Mark,DR001,Smith,Scheduled,
-A123,2001-04-20 09:30,123,A123,DR001,Smith,Scheduled,
+appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes
+A0001,2024-10-31 11:00,P101,Peter,DR001,Dr. Smith,Rescheduled,,,,,
+A0002,2024-10-31 09:00,P102,Rauf,DR001,Dr. Smith,Rescheduled,,,,,
+A0003,2024-10-31 14:00,PT001,John Doe,DR001,Dr. Smith,PendingToPatient,,,,,
+A0004,2024-10-30 09:00,PT001,John Doe,DR001,Dr. Smith,PendingToPatient,,,,,
+A0006,2024-10-30 09:00,PT001,John Doe,DR001,Dr. Smith,PendingToDoctor,,,,,
+A0007,2024-10-30 14:00,PT001,John Doe,DR001,Dr. Smith,PendingToDoctor,,,,,
+A0008,2024-11-01 09:00,PT002,Hud,DR001,Dr. Smith,PendingToDoctor,,,,,
+A0009,2024-11-05 09:00,PT002,Hud,DR001,Dr. Smith,PendingToDoctor,,,,,
