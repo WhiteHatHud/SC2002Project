@@ -189,21 +189,23 @@ private String getSessionStatus(List<Appointment> appointments, LocalDate date, 
         switch (status) {
             case "Available" -> {
                 System.out.println("This session is available.");
-                System.out.print("Do you want to block this session? (y/n): ");
+                System.out.print("Do you want to block this session or create a new appointment? (block/create): ");
                 String input = scanner.nextLine().trim();
     
-                if (input.equalsIgnoreCase("y")) {
+                if (input.equalsIgnoreCase("block")) {
                     blockSession(date, sessionTime, appointments.get(0).getDoctorID(), appointments.get(0).getDoctorName());
+                } else if (input.equalsIgnoreCase("create")) {
+                    newAppointment(date, sessionTime, appointments.get(0).getDoctorID(), appointments.get(0).getDoctorName());
                 } else {
                     System.out.println("Returning to previous menu...");
                 }
             }
             case "Blocked" -> {
                 System.out.println("This session is currently blocked.");
-                System.out.print("Do you want to unblock this session? (y/n): ");
+                System.out.print("Do you want to unblock this session? (yes/no): ");
                 String input = scanner.nextLine().trim();
     
-                if (input.equalsIgnoreCase("y")) {
+                if (input.equalsIgnoreCase("yes")) {
                     unblockSessionByDateAndTime(date, sessionTime, appointments);
                 } else {
                     System.out.println("Returning to previous menu...");
@@ -214,6 +216,7 @@ private String getSessionStatus(List<Appointment> appointments, LocalDate date, 
             }
         }
     }
+    
         
     // Helper method to count booked sessions on a given date
     private int countBookedSessions(LocalDate date, String doctorID) {
@@ -291,6 +294,36 @@ private String getSessionStatus(List<Appointment> appointments, LocalDate date, 
             }
         }
         System.out.println("No blocked session found for the given date and time.");
+    }
+    
+    private void newAppointment(LocalDate date, LocalTime time, String doctorID, String doctorName) {
+        // Generate a new appointment ID by incrementing the largest existing one
+        List<Appointment> appointments = apptData.getAllAppointments();
+        int maxID = appointments.stream()
+                                .mapToInt(app -> Integer.parseInt(app.getAppointmentID().replaceAll("[^0-9]", "")))
+                                .max()
+                                .orElse(0);
+        String newAppointmentID = String.format("A%04d", maxID + 1);
+    
+        // Prompt the doctor to enter patient details
+        System.out.print("Enter Patient ID: ");
+        String patientID = scanner.nextLine().trim();
+    
+        System.out.print("Enter Patient Name: ");
+        String patientName = scanner.nextLine().trim();
+    
+        // Create a new appointment object with the status "PendingToPatient"
+        Calendar appointmentTime = Calendar.getInstance();
+        appointmentTime.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(),
+                            time.getHour(), time.getMinute());
+    
+        Appointment newAppointment = new DoctorAppointment(
+                newAppointmentID, appointmentTime, patientID, patientName,
+                doctorID, doctorName, "PendingToPatient");
+    
+        // Add the new appointment to the data
+        apptData.addAppointment(newAppointment);
+        System.out.println("New appointment created successfully with ID: " + newAppointmentID);
     }
     
 
