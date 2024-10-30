@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
+
 
 public class ApptController {
     private ApptData apptData;
@@ -26,6 +28,34 @@ public class ApptController {
         }
         return doctorAppointments;
     }
+
+    // Helper method to get session status
+private String getSessionStatus(List<Appointment> appointments, LocalDate date, LocalTime sessionTime) {
+    for (Appointment appointment : appointments) {
+        Calendar appointmentTime = appointment.getAppointmentTime();
+        LocalDate appointmentDate = LocalDate.of(
+                appointmentTime.get(Calendar.YEAR),
+                appointmentTime.get(Calendar.MONTH) + 1,
+                appointmentTime.get(Calendar.DAY_OF_MONTH)
+        );
+        LocalTime appointmentLocalTime = LocalTime.of(
+                appointmentTime.get(Calendar.HOUR_OF_DAY),
+                appointmentTime.get(Calendar.MINUTE)
+        );
+
+        if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
+            // Check if the session is blocked
+            if (appointment.getAppointmentStatus().equalsIgnoreCase("Blocked")) {
+                return "Blocked";
+            }
+            // Otherwise, it is booked
+            return "Booked";
+        }
+    }
+    // If no matching appointment is found, the session is available
+    return "Available";
+}
+
 
     // Integrated method to prompt the user to select a date and view session details
     public void printDoctorScheduleOnDate(String doctorID) {
@@ -82,44 +112,48 @@ public class ApptController {
             LocalTime.of(11, 0),
             LocalTime.of(14, 0)
         };
-
+    
         // Display available sessions with their statuses
         for (int i = 0; i < sessions.length; i++) {
             String status = getSessionStatus(appointments, date, sessions[i]);
             System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
         }
-
+    
         System.out.println("--------------------");
         System.out.print("Select a session to view details (1-3) or '~' to return: ");
         String input = scanner.nextLine().trim();
-
+    
         if (input.equals("~")) {
             System.out.println("Returning to the previous menu...");
             return;
         }
-
+    
         try {
             int sessionChoice = Integer.parseInt(input);
-
+    
             if (sessionChoice < 1 || sessionChoice > 3) {
                 System.out.println("Invalid selection. Please try again.");
                 return;
             }
-
+    
             LocalTime selectedSession = sessions[sessionChoice - 1];
-            printSessionDetails(appointments, date, selectedSession);
+            printSessionDetailsAndManage(appointments, date, selectedSession);
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
         }
     }
+    
 
     // Helper method to print session details
-    private void printSessionDetails(List<Appointment> appointments, LocalDate date, LocalTime sessionTime) {
+    private void printSessionDetailsAndManage(List<Appointment> appointments, LocalDate date, LocalTime sessionTime) {
+        String status = getSessionStatus(appointments, date, sessionTime);
+    
         System.out.printf("\nDetails for session at %s:\n", sessionTime);
         System.out.println("====================");
-
+    
         boolean hasAppointments = false;
-
+    
+        // Check and display appointment details if the session is booked
         for (Appointment appointment : appointments) {
             Calendar appointmentTime = appointment.getAppointmentTime();
             LocalDate appointmentDate = LocalDate.of(
@@ -127,12 +161,11 @@ public class ApptController {
                     appointmentTime.get(Calendar.MONTH) + 1,
                     appointmentTime.get(Calendar.DAY_OF_MONTH)
             );
-
             LocalTime appointmentLocalTime = LocalTime.of(
                     appointmentTime.get(Calendar.HOUR_OF_DAY),
                     appointmentTime.get(Calendar.MINUTE)
             );
-
+    
             if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
                 hasAppointments = true;
                 System.out.printf("Patient ID: %s\n", appointment.getPatientID());
@@ -147,34 +180,41 @@ public class ApptController {
                 System.out.println("--------------------");
             }
         }
-
+    
         if (!hasAppointments) {
             System.out.println("No appointments scheduled for this session.");
         }
-    }
-
-    // Helper method to get session status
-    private String getSessionStatus(List<Appointment> appointments, LocalDate date, LocalTime sessionTime) {
-        for (Appointment appointment : appointments) {
-            Calendar appointmentTime = appointment.getAppointmentTime();
-            LocalDate appointmentDate = LocalDate.of(
-                    appointmentTime.get(Calendar.YEAR),
-                    appointmentTime.get(Calendar.MONTH) + 1,
-                    appointmentTime.get(Calendar.DAY_OF_MONTH)
-            );
-
-            LocalTime appointmentLocalTime = LocalTime.of(
-                    appointmentTime.get(Calendar.HOUR_OF_DAY),
-                    appointmentTime.get(Calendar.MINUTE)
-            );
-
-            if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
-                return "Booked";
+    
+        // Handle options based on the session status
+        switch (status) {
+            case "Available" -> {
+                System.out.println("This session is available.");
+                System.out.print("Do you want to block this session? (y/n): ");
+                String input = scanner.nextLine().trim();
+    
+                if (input.equalsIgnoreCase("y")) {
+                    blockSession(date, sessionTime, appointments.get(0).getDoctorID(), appointments.get(0).getDoctorName());
+                } else {
+                    System.out.println("Returning to previous menu...");
+                }
+            }
+            case "Blocked" -> {
+                System.out.println("This session is currently blocked.");
+                System.out.print("Do you want to unblock this session? (y/n): ");
+                String input = scanner.nextLine().trim();
+    
+                if (input.equalsIgnoreCase("y")) {
+                    unblockSessionByDateAndTime(date, sessionTime, appointments);
+                } else {
+                    System.out.println("Returning to previous menu...");
+                }
+            }
+            case "Booked" -> {
+                System.out.println("This session is booked and cannot be modified.");
             }
         }
-        return "Available";
     }
-
+        
     // Helper method to count booked sessions on a given date
     private int countBookedSessions(LocalDate date, String doctorID) {
         List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
@@ -208,4 +248,50 @@ public class ApptController {
         }
         return bookedCount;
     }
+
+    //Task 1 Block or Unblock Available Dates
+    public void blockSession(LocalDate date, LocalTime time, String doctorID, String doctorName) {
+        String status = getSessionStatus(apptData.getAllAppointments(), date, time);
+    
+        if (status.equals("Available")) {
+            Calendar appointmentTime = Calendar.getInstance();
+            appointmentTime.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(),
+                                time.getHour(), time.getMinute());
+    
+            Appointment blockedAppointment = new DoctorAppointment(
+                    UUID.randomUUID().toString(), appointmentTime, "BLOCKED", "N/A", 
+                    doctorID, doctorName, "Blocked");
+    
+            apptData.addAppointment(blockedAppointment);
+            System.out.println("Session blocked successfully.");
+        } else {
+            System.out.println("This session is already booked or blocked.");
+        }
+    }
+    
+
+    public void unblockSessionByDateAndTime(LocalDate date, LocalTime time, List<Appointment> appointments) {
+        for (Appointment appointment : appointments) {
+            Calendar appointmentTime = appointment.getAppointmentTime();
+            LocalDate appointmentDate = LocalDate.of(
+                    appointmentTime.get(Calendar.YEAR),
+                    appointmentTime.get(Calendar.MONTH) + 1,
+                    appointmentTime.get(Calendar.DAY_OF_MONTH)
+            );
+            LocalTime appointmentLocalTime = LocalTime.of(
+                    appointmentTime.get(Calendar.HOUR_OF_DAY),
+                    appointmentTime.get(Calendar.MINUTE)
+            );
+    
+            if (appointmentDate.equals(date) && appointmentLocalTime.equals(time) &&
+                appointment.getAppointmentStatus().equalsIgnoreCase("Blocked")) {
+                apptData.deleteAppointment(appointment.getAppointmentID());
+                System.out.println("Session unblocked successfully.");
+                return;
+            }
+        }
+        System.out.println("No blocked session found for the given date and time.");
+    }
+    
+
 }

@@ -3,6 +3,7 @@ package appt;
 import java.util.Calendar; // Ensures the format of the date and time when users do appointments
 import java.text.SimpleDateFormat;
 
+
 public abstract class Appointment {
     protected String appointmentID;
     protected Calendar appointmentTime; // Use Calendar to represent both date and time

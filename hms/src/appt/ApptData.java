@@ -3,6 +3,9 @@ package appt;
 import java.io.*;
 import java.util.*;
 import java.text.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 
 public class ApptData {
     private static final String FILE_PATH = "appointments.csv";
@@ -65,6 +68,68 @@ public class ApptData {
         }
         return appointments;
     }
+
+    public void addAppointment(Appointment appointment) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+            writer.write(appointment.toCSV());
+            writer.newLine();
+            System.out.println("Appointment added successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing appointment to file.");
+            e.printStackTrace();
+        }
+    }
+
+    // Method to delete an appointment from the CSV file based on appointment ID
+    public void deleteAppointment(String appointmentID) {
+        List<Appointment> appointments = getAllAppointments();
+        boolean removed = appointments.removeIf(app -> app.getAppointmentID().equals(appointmentID));
+
+        if (removed) {
+            updateCSV(appointments);
+            System.out.println("Appointment deleted successfully.");
+        } else {
+            System.out.println("Appointment not found.");
+        }
+    }
+
+    // Method to check the status of an appointment slot
+    public String statusAppointment(LocalDate date, LocalTime time, String doctorID) {
+        List<Appointment> appointments = getAllAppointments();
+        for (Appointment app : appointments) {
+            Calendar appointmentTime = app.getAppointmentTime();
+            LocalDate appointmentDate = LocalDate.of(
+                    appointmentTime.get(Calendar.YEAR),
+                    appointmentTime.get(Calendar.MONTH) + 1,
+                    appointmentTime.get(Calendar.DAY_OF_MONTH)
+            );
+            LocalTime appointmentLocalTime = LocalTime.of(
+                    appointmentTime.get(Calendar.HOUR_OF_DAY),
+                    appointmentTime.get(Calendar.MINUTE)
+            );
+
+            if (appointmentDate.equals(date) && appointmentLocalTime.equals(time) 
+                && app.getDoctorID().equals(doctorID)) {
+                return app.getAppointmentStatus();
+            }
+        }
+        return "Available";
+    }
+
+    private void updateCSV(List<Appointment> appointments) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            writer.write("appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes");
+            writer.newLine();
+            for (Appointment app : appointments) {
+                writer.write(app.toCSV());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating the CSV file.");
+            e.printStackTrace();
+        }
+    }
+    
 
     public static void main(String[] args) {
         ApptData apptData = new ApptData();
