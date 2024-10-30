@@ -129,9 +129,35 @@ public class ApptData {
             e.printStackTrace();
         }
     }
+
+    public void updateAppointmentInCSV(Appointment updatedAppointment) {
+        List<Appointment> appointments = getAllAppointments(); // Read existing appointments
     
+        // Replace the old appointment with the updated one
+        for (int i = 0; i < appointments.size(); i++) {
+            if (appointments.get(i).getAppointmentID().equals(updatedAppointment.getAppointmentID())) {
+                appointments.set(i, updatedAppointment);
+                break;
+            }
+        }
+    
+        // Write the updated list back to the CSV
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            // Write the CSV header
+            writer.write("AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes\n");
+    
+            // Write each appointment as a CSV row
+            for (Appointment appointment : appointments) {
+                writer.write(appointment.toCSV());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to the CSV file.");
+            e.printStackTrace();
+        }
+    }
+
 
     public static void main(String[] args) {
-        ApptData apptData = new ApptData();
     }
 }
