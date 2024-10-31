@@ -13,8 +13,6 @@ public abstract class Appointment {
     protected String doctorName;
     protected String appointmentStatus;
     protected String outcome;
-
-    // New attributes
     protected String service;
     protected String medicine;
     protected String medicineStatus;
