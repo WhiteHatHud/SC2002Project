@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import Medicine.Medicine;
+
 public class StaffData {
     private static final String FILE_PATH = "././Staff_List.csv";
     Staff temp;
@@ -45,6 +47,40 @@ public class StaffData {
         }
         return null;
     }
+    public boolean addStaff(Staff staff){
+        if (exists(staff.getUserID())){
+            return false;
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+            writer.write(staff.toCSV());
+            writer.newLine();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean removeStaffByID(String staffId){
+        List<Staff> staffList = getAllStaff();
+        return staffList.removeIf(n -> (n.getUserID().equals(staffId))) && updateStaffList(staffList);
+    }
+
+    public boolean updateStaffList(List<Staff> staffList){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            writer.write("Medicine Name,Initial Stock,Low Stock Level Alert");
+            writer.newLine();
+            for (Staff staff : staffList) {
+                writer.write(staff.toCSV());
+                writer.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean exists(String ID){
         if (getStaffByID(ID) != null){
             return true;

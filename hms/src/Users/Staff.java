@@ -29,4 +29,9 @@ public class Staff extends Users{
     public void setAge(int age){
         this.age = age;
     }
+    public String toCSV(){
+        String stringID = String.valueOf(userID);
+        String stringAge = String.valueOf(age);
+        return String.join(",", stringID, name, role, gender, stringAge);
+    }
 }
