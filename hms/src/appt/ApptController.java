@@ -48,51 +48,52 @@ public class ApptController {
     
 
 
-public LocalDate selectDateFromSchedule(String doctorID) {
-    LocalDate today = LocalDate.now();
-    List<LocalDate> next7Days = new ArrayList<>();
-
-    System.out.println("\n====================");
-    System.out.println(" Select a Date ");
-    System.out.println("====================");
-    System.out.println("Or type '~' to return to the previous menu:");
-    System.out.println("--------------------");
-
-    // Generate the next 7 days with booked sessions count
-    for (int i = 0; i < 7; i++) {
-        LocalDate date = today.plusDays(i);
-        next7Days.add(date);
-
-        int bookedSessions = countBookedSessions(date, doctorID); // Count booked sessions
-        System.out.printf("%d. %s [%d/3]\n", (i + 1), date, bookedSessions); // Display with [x/3]
-    }
-
-    System.out.println("--------------------");
-    System.out.print("Enter a number (1-7) or '~' to return: ");
-    String input = scanner.nextLine().trim();
-
-    if (input.equals("~")) {
-        System.out.println("Returning to the previous menu...");
-        return null;  // Indicate that the user canceled
-    }
-
-    try {
-        int choice = Integer.parseInt(input);
-
-        if (choice < 1 || choice > 7) {
-            System.out.println("Invalid selection. Please try again.");
+    public LocalDate selectDateFromSchedule(String doctorID) {
+        LocalDate today = LocalDate.now();
+        List<LocalDate> next7Days = new ArrayList<>();
+    
+        System.out.println("\n====================");
+        System.out.println(" Select a Date ");
+        System.out.println("====================");
+        System.out.println("Or type '~' to return to the previous menu:");
+        System.out.println("--------------------");
+    
+        // Generate the next 7 days with booked sessions count
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = today.plusDays(i);
+            next7Days.add(date);
+    
+            // This method already has a null check on appointment times
+            int bookedSessions = countBookedSessions(date, doctorID); 
+            System.out.printf("%d. %s [%d/3]\n", (i + 1), date, bookedSessions); // Display with [x/3]
+        }
+    
+        System.out.println("--------------------");
+        System.out.print("Enter a number (1-7) or '~' to return: ");
+        String input = scanner.nextLine().trim();
+    
+        if (input.equals("~")) {
+            System.out.println("Returning to the previous menu...");
+            return null;  // Indicate that the user canceled
+        }
+    
+        try {
+            int choice = Integer.parseInt(input);
+    
+            if (choice < 1 || choice > 7) {
+                System.out.println("Invalid selection. Please try again.");
+                return selectDateFromSchedule(doctorID);  // Retry on invalid input
+            }
+    
+            LocalDate selectedDate = next7Days.get(choice - 1);
+            System.out.printf("Selected Date: %s\n", selectedDate);
+            return selectedDate;
+    
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number (1-7) or '~' to return.");
             return selectDateFromSchedule(doctorID);  // Retry on invalid input
         }
-
-        LocalDate selectedDate = next7Days.get(choice - 1);
-        System.out.printf("Selected Date: %s\n", selectedDate);
-        return selectedDate;
-
-    } catch (NumberFormatException e) {
-        System.out.println("Invalid input. Please enter a number (1-7) or '~' to return.");
-        return selectDateFromSchedule(doctorID);  // Retry on invalid input
-    }
-}
+    }    
 
 public void printDoctorScheduleOnDate(String doctorID) {
     LocalDate selectedDate = selectDateFromSchedule(doctorID);
@@ -280,17 +281,21 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         for (LocalTime session : sessions) {
             for (Appointment appointment : appointments) {
                 Calendar appointmentTime = appointment.getAppointmentTime();
+                
+                // Skip this appointment if appointmentTime is null
+                if (appointmentTime == null) continue;
+        
                 LocalDate appointmentDate = LocalDate.of(
                         appointmentTime.get(Calendar.YEAR),
                         appointmentTime.get(Calendar.MONTH) + 1,
                         appointmentTime.get(Calendar.DAY_OF_MONTH)
                 );
-
+        
                 LocalTime appointmentLocalTime = LocalTime.of(
                         appointmentTime.get(Calendar.HOUR_OF_DAY),
                         appointmentTime.get(Calendar.MINUTE)
                 );
-
+        
                 if (appointmentDate.equals(date) && appointmentLocalTime.equals(session)) {
                     bookedCount++;
                     break;
@@ -441,24 +446,46 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                 .orElse(null);
     
         if (appointment != null) {
-            // Update appointment status to "Cancelled"
-            appointment.setAppointmentStatus("Cancelled");
-            apptData.updateAppointmentInCSV(appointment);  // Save the updated status in the CSV
-            System.out.println("Appointment successfully marked as cancelled.");
-    
-            // Notify the other party to rebook if necessary
+            // Format the cancellation message based on userType
             if ("Doctor".equalsIgnoreCase(userType)) {
                 System.out.printf("The patient with ID %s has been informed to rebook a session.\n", appointment.getPatientID());
-                // Additional logic can be added here to inform the patient (e.g., update patient UI)
+    
+                // Update the appointment status with details of doctor cancellation
+                appointment.setAppointmentStatus(
+                    String.format("Cancelled by %s, ID %s on Session: %s",
+                                  appointment.getDoctorName(),
+                                  appointment.getDoctorID(),
+                                  toLocalDate(appointment.getAppointmentTime()) + " " + toLocalTime(appointment.getAppointmentTime()))
+                );
+    
             } else if ("Patient".equalsIgnoreCase(userType)) {
                 System.out.printf("The doctor with ID %s has been informed to rebook a session.\n", appointment.getDoctorID());
-                // Additional logic can be added here to inform the doctor (e.g., update doctor UI)
+    
+                // Update the appointment status with details of patient cancellation
+                appointment.setAppointmentStatus(
+                    String.format("Cancelled by Patient %s, ID %s on Session: %s",
+                                  appointment.getPatientName(),
+                                  appointment.getPatientID(),
+                                  toLocalDate(appointment.getAppointmentTime()) + " " + toLocalTime(appointment.getAppointmentTime()))
+                );
             }
+    
+            // Set the outcome to "Cancelled"
+            appointment.setOutcome("Cancelled");
+    
+            // Set the appointment time to a placeholder value instead of null
+            Calendar placeholderTime = Calendar.getInstance();
+            placeholderTime.set(0, Calendar.JANUARY, 1, 0, 0, 0);
+            appointment.setAppointmentTime(placeholderTime);
+    
+            // Save the updated status and outcome to the CSV
+            apptData.updateAppointmentInCSV(appointment);
+            System.out.println("Appointment successfully marked as cancelled.");
+    
         } else {
             System.out.println("Appointment not found. Unable to cancel.");
         }
     }
-    
     
 
     private void rescheduleAppointment(Appointment appointment, String userType) {
@@ -516,6 +543,15 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         appointments.stream()
                 .filter(app -> app.getPatientID().equals(patientID))
+                .filter(app -> {
+                    Calendar appointmentTime = app.getAppointmentTime();
+                    // Exclude appointments with placeholder date and time (0001-01-01 00:00)
+                    return !(appointmentTime.get(Calendar.YEAR) == 1 &&
+                             appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
+                             appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
+                             appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
+                             appointmentTime.get(Calendar.MINUTE) == 0);
+                })
                 .forEach(app -> {
                     Calendar appointmentTime = app.getAppointmentTime();
                     LocalDate date = LocalDate.of(
@@ -536,15 +572,23 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                     System.out.println("------------------------------");
                 });
     
-        if (appointments.stream().noneMatch(app -> app.getPatientID().equals(patientID))) {
+        if (appointments.stream()
+                .filter(app -> app.getPatientID().equals(patientID))
+                .noneMatch(app -> {
+                    Calendar appointmentTime = app.getAppointmentTime();
+                    return !(appointmentTime.get(Calendar.YEAR) == 1 &&
+                             appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
+                             appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
+                             appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
+                             appointmentTime.get(Calendar.MINUTE) == 0);
+                })) {
             System.out.println("No upcoming appointments.");
         }
     }
-
-    public void bookNewAppointment(String patientID, String patientName) {
+    
+    
+    public void bookNewAppointment(String patientID, String patientName, String doctorID, String doctorName) {
         System.out.println("\nBooking a New Appointment:");
-        System.out.print("Enter Doctor ID: ");
-        String doctorID = scanner.nextLine().trim();
     
         // Select a date for the new appointment
         LocalDate appointmentDate = selectDateFromSchedule(doctorID);
@@ -578,7 +622,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         Appointment newAppointment = new DoctorAppointment(
                 newAppointmentID, newAppointmentTime, patientID, patientName,
-                doctorID, "Dr. Smith", "PendingToDoctor"
+                doctorID, doctorName, "PendingToDoctor"
         );
     
         // Save the new appointment to the CSV
@@ -586,6 +630,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         System.out.println("Appointment successfully booked with ID: " + newAppointmentID);
     }
+    
     
     
     
@@ -681,7 +726,9 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
 
 //====================================Call methods===================
 // Helper method to convert Calendar to LocalDate
+// Updated Helper method to convert Calendar to LocalDate
 private LocalDate toLocalDate(Calendar calendar) {
+    if (calendar == null) return null;
     return LocalDate.of(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH) + 1,
@@ -689,13 +736,15 @@ private LocalDate toLocalDate(Calendar calendar) {
     );
 }
 
-// Helper method to convert Calendar to LocalTime
+// Updated Helper method to convert Calendar to LocalTime
 private LocalTime toLocalTime(Calendar calendar) {
+    if (calendar == null) return null;
     return LocalTime.of(
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE)
     );
 }
+
 
 //==============================Completed Sessions===================
 
@@ -723,7 +772,96 @@ public void updateCompletedSessions() {
         }
     }
 }
+//=======================Handles cancelled appts=======================
+public void printCancelledAppointments(String userType, String userID) {
+    List<Appointment> appointments = apptData.getAllAppointments();
+    
+    // Filter canceled appointments with placeholder date "0001-01-01 00:00" and based on user type
+    List<Appointment> cancelledAppointments = appointments.stream()
+            .filter(app -> app.getAppointmentStatus().toLowerCase().contains("cancelled"))
+            .filter(app -> {
+                Calendar appointmentTime = app.getAppointmentTime();
+                return appointmentTime != null &&
+                       appointmentTime.get(Calendar.YEAR) == 1 &&
+                       appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
+                       appointmentTime.get(Calendar.DAY_OF_MONTH) == 1;
+            })
+            .filter(app -> (userType.equalsIgnoreCase("doctor") && 
+                            app.getDoctorID().equals(userID) && 
+                            app.getAppointmentStatus().toLowerCase().contains("cancelled by patient")) ||
+                           (userType.equalsIgnoreCase("patient") && 
+                            app.getPatientID().equals(userID) &&
+                            app.getAppointmentStatus().toLowerCase().contains("cancelled by dr")))
+            .toList();
 
-   
-        
+    if (cancelledAppointments.isEmpty()) {
+        System.out.println("No canceled appointments to display.");
+        return;
+    }
+
+    // Display canceled appointments
+    System.out.println("\nThese are your canceled appointments:");
+    cancelledAppointments.forEach(app -> {
+        System.out.printf("Appointment ID: %s\n", app.getAppointmentID());
+        System.out.printf("Patient ID: %s\n", app.getPatientID());
+        System.out.printf("Patient Name: %s\n", app.getPatientName());
+        System.out.printf("Doctor ID: %s\n", app.getDoctorID());
+        System.out.printf("Doctor Name: %s\n", app.getDoctorName());
+        System.out.printf("Status: %s\n", app.getAppointmentStatus());
+        System.out.println("------------------------------");
+    });
+
+    // Prompt for specific appointment to manage
+    System.out.print("\nKey an Appointment ID you want to edit: ");
+    String selectedAppointmentID = scanner.nextLine().trim();
+
+    // Find the selected appointment
+    Appointment selectedAppointment = cancelledAppointments.stream()
+            .filter(app -> app.getAppointmentID().equals(selectedAppointmentID))
+            .findFirst()
+            .orElse(null);
+
+    if (selectedAppointment == null) {
+        System.out.println("Invalid Appointment ID. Returning to the main menu...");
+        return;
+    }
+
+    // Display options for managing the selected appointment
+    System.out.println("\nSelect an option:");
+    System.out.println("1. Acknowledge the cancellation (delete)");
+    System.out.println("2. Rebook the appointment");
+    System.out.println("3. Exit");
+
+    System.out.print("Enter your choice (1-3): ");
+    int choice = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
+
+    switch (choice) {
+        case 1 -> {
+            // Acknowledge and delete the appointment
+            apptData.deleteAppointment(selectedAppointmentID);
+            System.out.println("Appointment acknowledged and deleted successfully.");
+        }
+        case 2 -> {
+            // Book a new appointment
+            System.out.println("Proceeding to book a new appointment...");
+            if (userType.equalsIgnoreCase("doctor")) {
+                bookNewAppointment(
+                        selectedAppointment.getPatientID(),
+                        selectedAppointment.getPatientName(),
+                        selectedAppointment.getDoctorID(),
+                        selectedAppointment.getDoctorName());
+            } else if (userType.equalsIgnoreCase("patient")) {
+                bookNewAppointment(
+                        selectedAppointment.getPatientID(),
+                        selectedAppointment.getPatientName(),
+                        selectedAppointment.getDoctorID(),
+                        selectedAppointment.getDoctorName());
+            }
+        }
+        case 3 -> System.out.println("Exiting without changes.");
+        default -> System.out.println("Invalid choice. Returning to the main menu...");
+    }
+}
+           
 }

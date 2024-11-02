@@ -14,6 +14,10 @@ public class ApptData {
 
     // Method to parse a date with different formats
     private Calendar parseDate(String dateStr) throws ParseException {
+        if (dateStr == null || dateStr.trim().isEmpty() || dateStr.equals("0000-00-00 00:00")) {
+            return null;  // Return null if the date string is empty or the placeholder
+        }
+    
         Calendar appointmentTime = Calendar.getInstance();
         try {
             appointmentTime.setTime(dateFormatterWithTime.parse(dateStr));
@@ -23,6 +27,7 @@ public class ApptData {
         }
         return appointmentTime;
     }
+    
 
     // Method to read all appointments from the CSV file
     public List<Appointment> getAllAppointments() {
