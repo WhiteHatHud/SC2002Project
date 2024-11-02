@@ -32,6 +32,11 @@ public class PatientController implements ControllerInt {
                 ViewMedicalRecord view = new ViewMedicalRecord();
                 view.viewMedicalRecord(patient);
                 break;
+            case 2: // Update personnal info 
+                UpdateInfo updateInfo = new UpdateInfo(patient);
+                break;
+                
+
             case 9: 
                 LogoutTimer.confirmLogout();
                 return false; 

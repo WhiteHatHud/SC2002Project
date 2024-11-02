@@ -15,7 +15,15 @@ public class PatientDisplayManager extends DisplayManager {
         System.out.println("9. Logout");
     }
 
-    
+    public void getUpdateMenu() {
+
+            System.out.println("\nWhat would you like to update?");
+            System.out.println("1. Email");
+            System.out.println("2. Contact Number");
+            System.out.println("3. Emergency Contact");
+            System.out.println("4. Done (Exit Update)");
+            System.out.print("Enter your choice: ");
+    }
 
 
 
