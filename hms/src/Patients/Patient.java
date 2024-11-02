@@ -45,7 +45,7 @@ public class Patient extends Users {
         return number;
     }
 
-    public String enumber() {
+    public String getenumber() {
         return enumber;
     }
     public void setNumber(String number) {
