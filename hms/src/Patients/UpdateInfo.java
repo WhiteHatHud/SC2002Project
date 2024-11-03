@@ -7,7 +7,6 @@ public class UpdateInfo {
     public UpdateInfo(Patient patient) {
         this.patient = patient;
         displayCurrentProfile();
-        updatePersonalInformation();
     }
 
     private void displayCurrentProfile() {
@@ -16,7 +15,7 @@ public class UpdateInfo {
         System.out.println("========================\n");
     }
 
-    private void updatePersonalInformation() {
+    public void updatePersonalInformation() {
         boolean updating = true;
         
         while (updating) {

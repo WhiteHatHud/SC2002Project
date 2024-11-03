@@ -1,7 +1,9 @@
 package Login;
-import Admins.AdminController;
-import Doctors.DoctorController;
+
+import Admins.Admin;
+import Doctors.Doctor;
 import Pharmacists.PharmaController;
+import Pharmacists.Pharmacist;
 import Users.Staff;
 import Utilities.Masking;
 import Utilities.UserInputHandler;
@@ -10,24 +12,20 @@ import java.util.Map;
 public class StaffLoginManager implements LoginInt {
     private DisplayManager displayManager;
     private UserInputHandler inputHandler;
-    private AuthenticationService authenticationService;
     private AuthStaff authStaff;
     private boolean returnToMenu = false;
-    private boolean exist = false;
 
     public StaffLoginManager(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
-        this.authenticationService = new AuthenticationService(registries);
         this.authStaff = new AuthStaff("Staff_List.csv");
     }
 
     @Override
     public boolean start() {
         returnToMenu = false;
-        Staff authenticatedStaff = null;
 
-        while (authenticatedStaff == null) {
+        while (true) {
             displayManager.showStaffLoginID();
             String userID = inputHandler.getInput();
 
@@ -38,36 +36,30 @@ public class StaffLoginManager implements LoginInt {
                 return false;
             }
 
-            exist = true;
             displayManager.showEnterPW();
             Masking mask = new Masking();
             String password = mask.readPasswordWithMasking();
-            AuthStaff auth = new AuthStaff("Staff_List.csv");
 
-            if (auth.authenticateUser(userID, password)) {
-                ControllerInt generic ;
+            Staff staffMember = authStaff.authenticateAndRetrieve(userID, password);
 
+            if (staffMember != null) {
                 DisplayFormat.clearScreen();
-                char roleIndicator = Character.toUpperCase(userID.charAt(0));  // Get the first character to determine role
-                switch (roleIndicator) {
-                    case 'P':
-                        generic = new PharmaController();
-                        generic.handleChoice(1);
-                        break;
-                    case 'A':
-                        generic = new AdminController();
-                        generic.handleChoice(1);
-                        break;
-                    case 'D':
-                        generic = new DoctorController();
-                        generic.handleChoice(1);
+                System.out.println("Authentication successful!");
 
-                        break;
-                    default:
-                        System.out.println("Invalid role indicator. Please ensure the user ID or password is correct.");
-                        //authenticatedStaff = null;  // Reset to re-prompt for login
-                        break;
+                // Determine the role and start the appropriate controller
+                if (staffMember instanceof Pharmacist) {
+                    PharmaController pharmaController = new PharmaController((Pharmacist) staffMember);
+                    pharmaController.start();
+                } else if (staffMember instanceof Doctor) {
+                    //DoctorController doctorController = new DoctorController((Doctor) staffMember);
+                    //doctorController.start();
+                } else if (staffMember instanceof Admin) {
+                    //AdminController adminController = new AdminController((Admin) staffMember);
+                    //adminController.start();
+                } else {
+                    System.out.println("Unknown role type. Cannot start controller.");
                 }
+                break; 
             } else {
                 System.out.println("Authentication failed. Please try again.");
             }

@@ -1,5 +1,7 @@
 package Login;
 
+import Pharmacists.Pharmacist;
+import Users.Staff;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,21 +13,39 @@ public class AuthStaff {
         this.csvFilePath = csvFilePath;
     }
 
-    public boolean authenticateUser(String userID, String password) {
+    public Staff authenticateAndRetrieve(String userID, String password) {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
             String line;
-            br.readLine(); // Skip the header row
+            br.readLine(); 
 
             while ((line = br.readLine()) != null) {
-                String[] data = line.split(","); 
+                String[] data = line.split(",");
 
-                if (data.length > 1 && data[0].equals(userID) && data[6].equals(password)) {
-                    return true; // User and password match
+                if (data.length > 6 && data[0].trim().equals(userID) && data[6].trim().equals(password)) {
+
+                    String id = data[0].trim();
+                    String name = data[1].trim();
+                    String role = data[2].trim();
+                    String gender = data[3].trim();
+                    int age = Integer.parseInt(data[4].trim());
+                    String officeNumber = data[5].trim();
+
+                    switch (role.toLowerCase()) {
+                        case "pharmacist":
+                            return new Pharmacist(id, name, role, gender, age, officeNumber);
+                        case "doctor":
+                            //return new Doctor(id, name, role, gender, age, officeNumber);
+                        case "admin":
+                            //return new Admin(id, name, role, gender, age, officeNumber);
+                        default:
+                            System.out.println("Role not recognized: " + role);
+                            return null;
+                    }
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading CSV file: " + e.getMessage());
         }
-        return false; // User not found or password mismatch
+        return null; // User not found or password mismatch
     }
 }

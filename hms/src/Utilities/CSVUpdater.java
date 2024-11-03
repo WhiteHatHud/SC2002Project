@@ -11,7 +11,7 @@ public class CSVUpdater {
     }
 
 
-    public void updatePatientField(String patientID, String fieldName, String newValue) {
+    public void updatePatientField(String userID, String fieldName, String newValue) {
         List<String[]> csvData = new ArrayList<>();
         String[] headers = null;
 
@@ -31,7 +31,7 @@ public class CSVUpdater {
                 }
 
                 // If this is the row of the patient to update, modify the specified field
-                if (data[0].equals(patientID)) {
+                if (data[0].equals(userID)) {
                     for (int i = 0; i < headers.length; i++) {
                         if (headers[i].trim().equalsIgnoreCase(fieldName)) {
                             data[i] = newValue;  // Update the specific field
