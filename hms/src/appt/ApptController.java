@@ -69,7 +69,7 @@ public class ApptController {
         }
     
         System.out.println("--------------------");
-        System.out.print("Enter a number (1-7) or '~' to return: ");
+        System.out.print("Enter the date (1-7):");
         String input = scanner.nextLine().trim();
     
         if (input.equals("~")) {
@@ -95,6 +95,11 @@ public class ApptController {
         }
     }    
 
+
+//============================== Doctor [View Personal Schedule] =====================
+
+
+
 public void printDoctorScheduleOnDate(String doctorID) {
     LocalDate selectedDate = selectDateFromSchedule(doctorID);
 
@@ -109,7 +114,7 @@ public void printDoctorScheduleOnDate(String doctorID) {
     viewSessionDetailsForDate(selectedDate, doctorID);
 }
 
-    // Integrated method to view session details for a selected date
+
     private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
         List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
         LocalTime[] sessions = {
@@ -212,6 +217,7 @@ private void printSessionDetailsForDate(LocalDate date, LocalTime sessionTime, S
 
         if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
             hasAppointments = true;
+            System.out.printf("Appointment ID: %s\n", appointment.getAppointmentID());
             System.out.printf("Patient ID: %s\n", appointment.getPatientID());
             System.out.printf("Patient Name: %s\n", appointment.getPatientName());
             System.out.printf("Doctor Name: %s\n", appointment.getDoctorName());
@@ -767,11 +773,190 @@ public void updateCompletedSessions() {
                 // Update status to "Completed" for past appointments
                 appointment.setAppointmentStatus("Completed");
                 apptData.updateAppointmentInCSV(appointment);
-                System.out.println("Updated session to Completed: " + appointment.getAppointmentID());
             }
         }
     }
 }
+
+//==============================Print Completed Sessions===================
+
+public void printCompletedSessions(String doctorID) {
+    List<Appointment> appointments = apptData.getAllAppointments();
+
+    // Filter completed appointments for the specific doctor
+    List<Appointment> completedAppointments = appointments.stream()
+            .filter(app -> app.getDoctorID().equals(doctorID))
+            .filter(app -> app.getAppointmentStatus().equalsIgnoreCase("Completed"))
+            .toList();
+
+    if (completedAppointments.isEmpty()) {
+        System.out.println("No completed sessions to display.");
+        return;
+    }
+
+    System.out.println("\nCompleted Sessions for Dr. " + doctorID + ":");
+    System.out.println("==============================");
+
+    for (Appointment app : completedAppointments) {
+        Calendar appointmentTime = app.getAppointmentTime();
+        LocalDate appointmentDate = toLocalDate(appointmentTime);
+        LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
+
+        System.out.printf("Appointment ID: %s\n", app.getAppointmentID());
+        System.out.printf("Date: %s\n", appointmentDate);
+        System.out.printf("Time: %s\n", appointmentLocalTime);
+        System.out.printf("Patient ID: %s\n", app.getPatientID());
+        System.out.printf("Patient Name: %s\n", app.getPatientName());
+        System.out.printf("Status: %s\n", app.getAppointmentStatus());
+        System.out.println("------------------------------");
+    }
+}
+
+//===========================Fill in Completed Sessions==============+
+
+public void fillCompletedSessions(String doctorID) {
+    List<Appointment> appointments = apptData.getAllAppointments();
+
+    // Filter for completed appointments specific to the doctor
+    List<Appointment> completedAppointments = appointments.stream()
+            .filter(app -> app.getDoctorID().equals(doctorID))
+            .filter(app -> app.getAppointmentStatus().equalsIgnoreCase("Completed"))
+            .toList();
+
+    if (completedAppointments.isEmpty()) {
+        System.out.println("No completed sessions available for updates.");
+        return;
+    }
+
+    System.out.println("\nSelect a completed session to fill details:");
+    for (int i = 0; i < completedAppointments.size(); i++) {
+        Appointment app = completedAppointments.get(i);
+        Calendar appointmentTime = app.getAppointmentTime();
+        LocalDate appointmentDate = toLocalDate(appointmentTime);
+        LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
+        
+        System.out.printf("%d. Appointment ID: %s | Date: %s | Time: %s | Patient: %s\n",
+                i + 1, app.getAppointmentID(), appointmentDate, appointmentLocalTime, app.getPatientName());
+    }
+
+    System.out.print("Enter the number of the session you want to fill details for: ");
+    int choice = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
+
+    if (choice < 1 || choice > completedAppointments.size()) {
+        System.out.println("Invalid selection. Returning to main menu...");
+        return;
+    }
+
+    // Select the chosen completed appointment
+    Appointment selectedAppointment = completedAppointments.get(choice - 1);
+
+    // Display a summary of the appointment details before filling
+    System.out.println("\nCurrent Appointment Details:");
+    Calendar appointmentTime = selectedAppointment.getAppointmentTime();
+    LocalDate appointmentDate = toLocalDate(appointmentTime);
+    LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
+    
+    System.out.printf("Appointment ID: %s\n", selectedAppointment.getAppointmentID());
+    System.out.printf("Date: %s\n", appointmentDate);
+    System.out.printf("Time: %s\n", appointmentLocalTime);
+    System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
+    System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
+    System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
+
+    // Prompt the doctor to fill in details for the completed appointment
+    System.out.print("Do you want to update the outcome of the appointment? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the outcome: ");
+        selectedAppointment.setOutcome(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to update the service provided? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the service: ");
+        selectedAppointment.setService(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to update the prescribed medicine? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the medicine: ");
+        selectedAppointment.setMedicine(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to update the medicine status? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the medicine status (Given/Not Given): ");
+        selectedAppointment.setMedicineStatus(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to add additional notes? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter notes: ");
+        selectedAppointment.setNotes(scanner.nextLine().trim());
+    }
+
+    // Display summary of the filled details
+    System.out.println("\nUpdated Appointment Summary:");
+    System.out.printf("Appointment ID: %s\n", selectedAppointment.getAppointmentID());
+    System.out.printf("Date: %s\n", appointmentDate);
+    System.out.printf("Time: %s\n", appointmentLocalTime);
+    System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
+    System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
+    System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
+    System.out.printf("Outcome: %s\n", selectedAppointment.getOutcome());
+    System.out.printf("Service: %s\n", selectedAppointment.getService());
+    System.out.printf("Prescribed Medicine: %s\n", selectedAppointment.getMedicine());
+    System.out.printf("Medicine Status: %s\n", selectedAppointment.getMedicineStatus());
+    System.out.printf("Additional Notes: %s\n", selectedAppointment.getNotes());
+
+    // Save the updated appointment to the CSV file
+    apptData.updateAppointmentInCSV(selectedAppointment);
+    System.out.println("Appointment details filled and saved successfully.");
+}
+
+//========================print for Patients===========================
+
+public void printCompletedSessionsPatient(String patientID) {
+    List<Appointment> appointments = apptData.getAllAppointments();
+
+    // Filter completed appointments for the specific patient
+    List<Appointment> completedAppointments = appointments.stream()
+            .filter(app -> app.getPatientID().equals(patientID))
+            .filter(app -> app.getAppointmentStatus().equalsIgnoreCase("Completed"))
+            .toList();
+
+    if (completedAppointments.isEmpty()) {
+        System.out.println("No completed sessions to display.");
+        return;
+    }
+
+    System.out.println("\nCompleted Sessions for Patient " + patientID + ":");
+    System.out.println("==============================");
+
+    int count = 1;
+    for (Appointment app : completedAppointments) {
+        Calendar appointmentTime = app.getAppointmentTime();
+        LocalDate appointmentDate = toLocalDate(appointmentTime);
+        LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
+
+        // Summary line for the appointment
+        System.out.printf("%d. Appointment ID: %s | Date: %s | Time: %s | Doctor: %s (%s)\n",
+                count, app.getAppointmentID(), appointmentDate, appointmentLocalTime,
+                app.getDoctorName(), app.getDoctorID());
+        
+        // Detailed information
+        System.out.println("   Outcome: " + app.getOutcome());
+        System.out.println("   Service Provided: " + app.getService());
+        System.out.println("   Prescribed Medicine: " + app.getMedicine());
+        System.out.println("   Medicine Status: " + app.getMedicineStatus());
+        System.out.println("   Additional Notes: " + app.getNotes());
+        System.out.println("------------------------------");
+        
+        count++;
+    }
+}
+
+
 //=======================Handles cancelled appts=======================
 public void printCancelledAppointments(String userType, String userID) {
     List<Appointment> appointments = apptData.getAllAppointments();
