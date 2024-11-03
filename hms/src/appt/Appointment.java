@@ -119,12 +119,24 @@ public abstract class Appointment {
     // Convert the appointment to a CSV format for easy data storage
     public String toCSV() {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String formattedDateTime = dateFormatter.format(appointmentTime.getTime());
-        return String.join(",", appointmentID, formattedDateTime, patientID, patientName, doctorID, 
-                doctorName, appointmentStatus, outcome == null ? "" : outcome,
-                service == null ? "" : service, medicine == null ? "" : medicine,
-                medicineStatus == null ? "" : medicineStatus, notes == null ? "" : notes);
+        String formattedDateTime = (appointmentTime == null) ? "0000-00-00 00:00" : dateFormatter.format(appointmentTime.getTime());
+        
+        return String.join(",", 
+            appointmentID, 
+            formattedDateTime, 
+            patientID, 
+            patientName, 
+            doctorID, 
+            doctorName, 
+            appointmentStatus, 
+            outcome == null ? "" : outcome, 
+            service == null ? "" : service, 
+            medicine == null ? "" : medicine, 
+            medicineStatus == null ? "" : medicineStatus, 
+            notes == null ? "" : notes
+        );
     }
+    
 
     // Abstract method for managing the appointment - to be implemented by subclasses
     public abstract void manageAppointment();
