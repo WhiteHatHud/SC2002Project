@@ -19,12 +19,12 @@ public class DoctorUI {
         boolean running = true;
         while (running) {
             System.out.println("\nWelcome, Dr. " + doctorName);
-            System.out.println("1. View Schedule");
-            System.out.println("2. View Upcoming Sessions");
-            System.out.println("3. View Pending Requests");
-            System.out.println("4. View Canceled Appointments");  // New option for canceled appointments
-            System.out.println("5. Update Completed Sessions");  // Option for completed sessions
-            System.out.println("6. Exit");
+            System.out.println("1. View/Edit Personal Schedule");
+            System.out.println("2. Accept/Decline Appointment Requests");
+            System.out.println("3. View Upcoming Appointments");
+            System.out.println("4. View Cancelled Appointments by Patients");
+            System.out.println("5. Record Appointment Outcome");
+            System.out.println("6. Logout");
             System.out.print("Please select an option: ");
 
             int choice = scanner.nextInt();
@@ -32,10 +32,10 @@ public class DoctorUI {
 
             switch (choice) {
                 case 1 -> apptController.printDoctorScheduleOnDate(doctorID);
-                case 2 -> apptController.printUpcomingSessions(doctorID, "doctor");
-                case 3 -> viewPendingAppointments();
-                case 4 -> viewCanceledAppointments();  // Calls the new method for canceled appointments
-                case 5 -> apptController.updateCompletedSessions();  // Calls the method for completed sessions
+                case 2 -> viewPendingAppointments();
+                case 3 -> apptController.printUpcomingSessions(doctorID, "doctor");
+                case 4 -> viewCanceledAppointments();
+                case 5 -> recordAppointmentOutcome(); // New method for recording outcome
                 case 6 -> {
                     running = false;
                     System.out.println("Goodbye, Dr. " + doctorName + "!");
@@ -55,6 +55,13 @@ public class DoctorUI {
     private void viewCanceledAppointments() {
         System.out.println("\nViewing Canceled Appointments:");
         apptController.printCancelledAppointments("doctor", doctorID); // Pass "doctor" as the userType
+    }
+
+    // New method to record the outcome of completed appointments
+    private void recordAppointmentOutcome() {
+        System.out.println("\nRecording Outcome for Completed Sessions:");
+        apptController.updateCompletedSessions();
+        apptController.fillCompletedSessions(doctorID); // Calls fillCompletedSessions method in ApptController
     }
 
     public static void main(String[] args) {

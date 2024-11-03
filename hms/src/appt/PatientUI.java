@@ -23,7 +23,8 @@ public class PatientUI {
             System.out.println("2. Book a New Appointment");
             System.out.println("3. View Pending Appointments");
             System.out.println("4. View Canceled Appointments");
-            System.out.println("5. Exit");
+            System.out.println("5. View Completed Appointment Outcomes"); // New option
+            System.out.println("6. Exit");
             System.out.print("Please select an option: ");
 
             int choice = scanner.nextInt();
@@ -34,7 +35,8 @@ public class PatientUI {
                 case 2 -> bookNewAppointment(); // Book a new appointment using patient and doctor info
                 case 3 -> viewPendingAppointments(); // View pending appointments
                 case 4 -> viewCanceledAppointments(); // View canceled appointments
-                case 5 -> {
+                case 5 -> viewCompletedOutcomes(); // View completed appointment outcomes
+                case 6 -> {
                     running = false;
                     System.out.println("Goodbye, " + patientName + "!");
                 }
@@ -65,6 +67,12 @@ public class PatientUI {
     private void viewCanceledAppointments() {
         System.out.println("\nViewing Canceled Appointments:");
         apptController.printCancelledAppointments("patient", patientID); // Pass "patient" as the userType
+    }
+
+    // Method to view completed appointment outcomes
+    private void viewCompletedOutcomes() {
+        System.out.println("\nViewing Completed Appointment Outcomes:");
+        apptController.printCompletedSessionsPatient(patientID); // Calls method to print completed sessions
     }
 
     public static void main(String[] args) {
