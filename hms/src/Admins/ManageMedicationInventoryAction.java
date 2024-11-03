@@ -1,6 +1,7 @@
 package Admins;
 import Login.DisplayManager;
 import Medicine.MedicineUI;
+import java.util.Scanner;
 
 public class ManageMedicationInventoryAction implements MenuAction{
 
@@ -29,10 +30,10 @@ public class ManageMedicationInventoryAction implements MenuAction{
                     viewInventory();
                     break;
                 case 2:
-                    //addMedication();
+                    addMedication();
                     break;
                 case 3:
-                    //updateStockLevel();
+                    updateStockLevel();
                     break;
                 case 4:
                     //removeMedication();
@@ -58,15 +59,27 @@ public class ManageMedicationInventoryAction implements MenuAction{
 private void viewInventory() {
     DisplayManager.clearScreen();
     System.out.println("Displaying current medication inventory...\n");
-
     med.displayAllMedicines();
+}
 
+private void addMedication() {
+    DisplayManager.clearScreen();
+    System.out.println("Adding a new type of medicine...\n");
+    med.addNewMedicine();
+}
+
+private void updateStockLevel() {
+    DisplayManager.clearScreen();
+    System.out.println("Updating stock level...\n");
+    med.updateMedicine(name, changeAmount);
+    
 }
 
 @Override
 public String getDescription() {
     return "Manage Inventory";
 }
+
 
 
 }
