@@ -40,8 +40,7 @@ public class PatientLoginManager implements LoginInt {
             authenticatedPatient = authenticationService.authenticate("patient", userID, password);
     
             if (authenticatedPatient != null) {
-                displayManager.clearScreen();
-                displayManager.loginSuccess();
+                DisplayFormat.clearScreen();
                 PatientController pc = new PatientController(authenticatedPatient); // Pass authenticated patient to PatientController
                 pc.start();
             } else {

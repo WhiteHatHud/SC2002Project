@@ -4,12 +4,15 @@ public class Staff extends Users{
     protected String role;
     protected String gender;
     protected int age;
+    protected String officeNumber;
+
     public Staff(){}
-    public Staff(String staffID, String name, String role, String gender, int age){
+    public Staff(String staffID, String name, String role, String gender, int age, String officeNumber){
         super(staffID, name);
         this.role = role;
         this.gender = gender;
         this.age = age;
+        this.officeNumber = officeNumber;
     }
     public String getRole(){
         return role;
@@ -28,6 +31,12 @@ public class Staff extends Users{
     }
     public void setAge(int age){
         this.age = age;
+    }
+    public String getOfficeNumber(){
+        return officeNumber;
+    }
+    public void setOfficeNumber(String officeNumber){
+        this.officeNumber = officeNumber;
     }
     public String toCSV(){
         String stringID = String.valueOf(userID);

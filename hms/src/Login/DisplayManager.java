@@ -28,6 +28,14 @@ public class DisplayManager extends DisplayFormat {
             divider();
 
         }
+        public void showStaffLoginID() {
+
+            String[] msg = {"Please enter your staff ID (Enter ~ to return to previous menu): "};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+
+        }
 
         public void showPatientLoginID() {
 
@@ -44,13 +52,6 @@ public class DisplayManager extends DisplayFormat {
                 printCentered(line, 80);
             }
 
-        }
-
-        public void loginSuccess(){
-            String[] msg = {"Login successful! Welcome, Patient."};
-            for (String line : msg) {
-                printCentered(line, 80);
-            }
         }
 
         public static void retMainMenu() {
