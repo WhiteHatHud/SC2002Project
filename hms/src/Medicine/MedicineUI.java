@@ -12,7 +12,7 @@ public class MedicineUI extends Medicine {
         System.out.println("");
     }
     
-    public void updateMedicine(String name, int changeAmount) {
+    public void updateStock(String name, int changeAmount) {
         if (!dataInterface.updateStock(name, changeAmount)) {
             print("Failed to update stock. Medicine may not exist.\n");
         } else {

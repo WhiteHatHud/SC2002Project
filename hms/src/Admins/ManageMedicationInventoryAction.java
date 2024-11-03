@@ -71,10 +71,20 @@ private void addMedication() {
 private void updateStockLevel() {
     DisplayManager.clearScreen();
     System.out.println("Updating stock level...\n");
-    med.updateMedicine(name, changeAmount);
-    
-}
 
+    Scanner scanner = new Scanner(System.in);
+
+    // Ask the user for the name of the medicine
+    System.out.print("Enter the name of the medicine: ");
+    String name = scanner.nextLine().trim();
+
+    // Ask the user for the change amount
+    System.out.print("Enter the amount to change the stock level (positive to increase, negative to decrease): ");
+    int changeAmount = scanner.nextInt();
+
+
+    med.updateStock(name, changeAmount);
+}
 @Override
 public String getDescription() {
     return "Manage Inventory";
