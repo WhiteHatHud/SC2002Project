@@ -50,15 +50,4 @@ public class DoctorUI {
         apptController.viewRequests("doctor", doctorID); // Pass "patient" as the userType
     }
 
-    public static void main(String[] args) {
-        ApptData apptData = new ApptData();
-        ApptController apptController = new ApptController(apptData);
-
-        // Sample doctor details for testing
-        String doctorID = "DR001";
-        String doctorName = "Smith";
-
-        DoctorUI doctorUI = new DoctorUI(apptController, doctorID, doctorName);
-        doctorUI.start();
-    }
 }

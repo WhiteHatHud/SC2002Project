@@ -76,6 +76,13 @@ public class DisplayManager extends DisplayFormat {
             }
         }
 
+        public static void passowrdUpdate() {
+            String[] msg = {"Please enter your new password"};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+        }
+
     }
     
 

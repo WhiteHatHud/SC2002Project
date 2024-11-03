@@ -1,9 +1,9 @@
 package Login;
-
-import Admins.Admin;
 import Doctors.Doctor;
 import Pharmacists.PharmaController;
 import Pharmacists.Pharmacist;
+import Admins.AdminController;
+import Admins.Admin;
 import Users.Staff;
 import Utilities.Masking;
 import Utilities.UserInputHandler;
@@ -54,8 +54,8 @@ public class StaffLoginManager implements LoginInt {
                     //DoctorController doctorController = new DoctorController((Doctor) staffMember);
                     //doctorController.start();
                 } else if (staffMember instanceof Admin) {
-                    //AdminController adminController = new AdminController((Admin) staffMember);
-                    //adminController.start();
+                    AdminController adminController = new AdminController((Admin) staffMember);
+                    adminController.start();
                 } else {
                     System.out.println("Unknown role type. Cannot start controller.");
                 }

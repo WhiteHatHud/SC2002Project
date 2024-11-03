@@ -1,5 +1,5 @@
 package Login;
-
+import Admins.Admin;
 import Pharmacists.Pharmacist;
 import Users.Staff;
 import java.io.BufferedReader;
@@ -35,8 +35,8 @@ public class AuthStaff {
                             return new Pharmacist(id, name, role, gender, age,officeNumber);
                         case "doctor":
                             //return new Doctor(id, name, role, gender, age, officeNumber);
-                        case "admin":
-                            //return new Admin(id, name, role, gender, age, officeNumber);
+                        case "administrator":
+                            return new Admin(id, name, role, gender, age, officeNumber);
                         default:
                             System.out.println("Role not recognized: " + role);
                             return null;
