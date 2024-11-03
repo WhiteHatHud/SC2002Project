@@ -1,14 +1,14 @@
-package Patients;
+package Admins;
 import Login.DisplayFormat;
 import Utilities.CSVUpdater;
 import Utilities.UserInputHandler;
 
 
-public class PatientShared {
+public class AdminShared {
     private static final UserInputHandler userInputHandler = new UserInputHandler();
-    private static final PatientDisplayManager displayManager = new PatientDisplayManager();
+    private static final AdminDisplayManager displayManager = new AdminDisplayManager();
     private static final DisplayFormat displayFormat = new DisplayFormat();
-    private static  CSVUpdater csvUpdater = new CSVUpdater("Patient List CSV.csv");
+    private static final CSVUpdater csvUpdater = new CSVUpdater("Staff_List.csv");
 
 
     public static CSVUpdater getCSVUpdater() {
@@ -19,7 +19,7 @@ public class PatientShared {
         return userInputHandler;
     }
 
-    public static PatientDisplayManager getDisplayManager() {
+    public static AdminDisplayManager getDisplayManager() {
         return displayManager;
     }
     public static DisplayFormat getDisplayFormat() {

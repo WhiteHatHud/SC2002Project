@@ -1,8 +1,13 @@
 package Admins;
-import Users.*;
+import Users.Staff;
+
 
 public class Admin extends Staff{
-    public Admin(String adminID, String name, String gender, int age){
-        super(adminID, name, "admin", gender, age);
+    public Admin() {
+        super();
+    }
+
+    public Admin(String staffID, String name, String role, String gender, int age, String officeNumber) {
+        super(staffID, name, role, gender, age, officeNumber);
     }
 }

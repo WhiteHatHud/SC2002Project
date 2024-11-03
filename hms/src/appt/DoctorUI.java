@@ -64,15 +64,4 @@ public class DoctorUI {
         apptController.fillCompletedSessions(doctorID); // Calls fillCompletedSessions method in ApptController
     }
 
-    public static void main(String[] args) {
-        ApptData apptData = new ApptData();
-        ApptController apptController = new ApptController(apptData);
-
-        // Sample doctor details for testing
-        String doctorID = "DR001";
-        String doctorName = "Smith";
-
-        DoctorUI doctorUI = new DoctorUI(apptController, doctorID, doctorName);
-        doctorUI.start();
-    }
 }

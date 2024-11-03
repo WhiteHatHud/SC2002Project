@@ -28,6 +28,14 @@ public class DisplayManager extends DisplayFormat {
             divider();
 
         }
+        public void showStaffLoginID() {
+
+            String[] msg = {"Please enter your staff ID (Enter ~ to return to previous menu): "};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+
+        }
 
         public void showPatientLoginID() {
 
@@ -46,13 +54,6 @@ public class DisplayManager extends DisplayFormat {
 
         }
 
-        public void loginSuccess(){
-            String[] msg = {"Login successful! Welcome, Patient."};
-            for (String line : msg) {
-                printCentered(line, 80);
-            }
-        }
-
         public static void retMainMenu() {
             String[] msg = {"Enter ~ to go back to the main menu."};
             for (String line : msg) {
@@ -67,6 +68,21 @@ public class DisplayManager extends DisplayFormat {
             }
 
         }
+
+        public static void authFail() {
+            String[] msg = {"Authentication failed. Please try again."};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+        }
+
+        public static void passowrdUpdate() {
+            String[] msg = {"Please enter your new password"};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+        }
+
     }
     
 

@@ -1,6 +1,6 @@
 package Utilities;
-import java.util.Scanner;
 import Login.DisplayFormat;
+import java.util.Scanner;
 
 
 public class LogoutTimer {

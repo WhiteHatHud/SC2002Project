@@ -6,6 +6,7 @@ import Utilities.LogoutTimer;
 public class PatientController implements ControllerInt {
     private Patient patient;
     private PatientShared instance = new PatientShared();
+    
     public PatientController(Patient patient) {
         this.patient = patient;
     }
@@ -32,6 +33,12 @@ public class PatientController implements ControllerInt {
                 ViewMedicalRecord view = new ViewMedicalRecord();
                 view.viewMedicalRecord(patient);
                 break;
+            case 2: // Update personnal info 
+                UpdateInfo updateInfo = new UpdateInfo(patient);
+                updateInfo.updatePersonalInformation();
+                break;
+                
+
             case 9: 
                 LogoutTimer.confirmLogout();
                 return false; 

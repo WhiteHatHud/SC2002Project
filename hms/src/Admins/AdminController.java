@@ -1,9 +1,29 @@
 package Admins;
 
-public class AdminController {
-    Admin admin;
+import Login.ControllerInt;
+import Login.DisplayFormat;
 
-    public Admin getAdmin(String adminID, String Name){
-        return admin;
+public class AdminController implements ControllerInt {
+    private final Admin admin;
+
+    public AdminController(Admin admin) {
+        this.admin = admin;
+    }
+
+    public boolean start() {
+        DisplayFormat.clearScreen();
+        System.out.println("Welcome, " + admin.getName());
+
+        AdminMenu adminMenu = new AdminMenu();
+        adminMenu.displayMenu();
+
+        // When displayMenu returns, it means the user chose to logout
+        return false;  
+    }
+
+    @Override
+    public boolean handleChoice(int choice) {
+        System.out.println("In admin now");
+        return true;
     }
 }

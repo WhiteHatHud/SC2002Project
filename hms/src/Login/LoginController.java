@@ -25,13 +25,13 @@ public class LoginController implements ControllerInt {
                 while (!validChoice) {
                     displayManager.showLoginScreen();
                     int option = inputHandler.getUserChoice();
-                    displayManager.clearScreen();
+                    DisplayFormat.clearScreen();
                     
                     if (option == 1) {  // Patient
                         loginManager = new PatientLoginManager(displayManager, inputHandler, registries);
                         validChoice = true;
                     } else if (option == 2) {  // Staff
-                        loginManager = new StaffLoginManager();
+                        loginManager = new StaffLoginManager(displayManager, inputHandler, registries);
                         validChoice = true;
                     } else {
                         System.out.println("Invalid choice! Please reselect.");
