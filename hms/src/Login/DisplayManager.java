@@ -68,6 +68,14 @@ public class DisplayManager extends DisplayFormat {
             }
 
         }
+
+        public static void authFail() {
+            String[] msg = {"Authentication failed. Please try again."};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+        }
+
     }
     
 

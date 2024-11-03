@@ -44,7 +44,7 @@ public class PatientLoginManager implements LoginInt {
                 PatientController pc = new PatientController(authenticatedPatient); // Pass authenticated patient to PatientController
                 pc.start();
             } else {
-                System.out.println("Authentication failed. Please try again.");
+                System.out.println("-");
             }
         }
         return false;

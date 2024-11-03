@@ -1,3 +1,3 @@
-PrescriptionID,PatientID,PatientName,DoctorID,DoctorName,DatePrescribed,Medications,Status,Notes
-PR001,P1001,Alice Brown,D1001,Dr. Smith,2023-11-01,Paracetamol:500mg; Ibuprofen:200mg,Pending,Take with food
-PR002,P1002,Bob Stone,D1002,Dr. Jones,2023-11-02,Aspirin:100mg; Cough Syrup:10ml,Pending,Avoid alcohol
+PrescriptionID,PatientID,PatientName,DoctorID,DoctorName,DatePrescribed,Medications(mg),Status,Notes
+PR001,P1001,Alice Brown,D1001,Dr. Smith,2023-11-01,Paracetamol:500; Ibuprofen:200,Dispensed,Take with food
+PR002,P1002,Bob Stone,D1002,Dr. Jones,2023-11-02,Aspirin:100; Amoxicillin:10000,Pending,Avoid alcohol

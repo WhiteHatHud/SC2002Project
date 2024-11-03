@@ -58,7 +58,7 @@ public class UpdateInfo {
         if (!newEmail.isBlank()) {
             patient.setEmail(newEmail);
             Login.DisplayFormat.clearScreen();
-            PatientShared.getCSVUpdater().updatePatientField(patient.getUserID(),"Contact Information",newEmail);
+            PatientShared.getCSVUpdater().updateField(patient.getUserID(),"Contact Information",newEmail);
             System.out.println("Email updated successfully.");
         } else {
             System.out.println("Email remains unchanged.");
@@ -71,7 +71,7 @@ public class UpdateInfo {
         if (!newContactNumber.isBlank()) {
             patient.setNumber(newContactNumber);
             Login.DisplayFormat.clearScreen();
-            PatientShared.getCSVUpdater().updatePatientField(patient.getUserID(),"Number",newContactNumber);
+            PatientShared.getCSVUpdater().updateField(patient.getUserID(),"Number",newContactNumber);
             System.out.println("Contact number updated successfully.");
         } else {
             System.out.println("Contact number remains unchanged.");
@@ -84,7 +84,7 @@ public class UpdateInfo {
         if (!newEmergencyContact.isBlank()) {
             patient.setenumber(newEmergencyContact);
             Login.DisplayFormat.clearScreen();
-            PatientShared.getCSVUpdater().updatePatientField(patient.getUserID(),"Emergency Number",newEmergencyContact);
+            PatientShared.getCSVUpdater().updateField(patient.getUserID(),"Emergency Number",newEmergencyContact);
 
             System.out.println("Emergency contact updated successfully.");
         } else {

@@ -11,7 +11,7 @@ public class CSVUpdater {
     }
 
 
-    public void updatePatientField(String userID, String fieldName, String newValue) {
+    public void updateField(String userID, String fieldName, String newValue) {
         List<String[]> csvData = new ArrayList<>();
         String[] headers = null;
 

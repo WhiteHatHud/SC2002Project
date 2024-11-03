@@ -61,7 +61,8 @@ public class StaffLoginManager implements LoginInt {
                 }
                 break; 
             } else {
-                System.out.println("Authentication failed. Please try again.");
+                DisplayFormat.clearScreen();
+                DisplayManager.authFail();
             }
         }
         return false;

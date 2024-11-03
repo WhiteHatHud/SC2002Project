@@ -17,7 +17,7 @@ public class UserInputHandler {
     }
     
     public String getNextLine() {
-        return sc.next();
+        return sc.nextLine();
     }
 
 }
