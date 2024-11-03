@@ -3,7 +3,6 @@ import Login.DisplayFormat;
 import Utilities.CSVUpdater;
 import Utilities.UserInputHandler;
 
-
 public class PharmaShared {
     private static final UserInputHandler userInputHandler = new UserInputHandler();
     private static final PharmaDisplayManager displayManager = new PharmaDisplayManager();
