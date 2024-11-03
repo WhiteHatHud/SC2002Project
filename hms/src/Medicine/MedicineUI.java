@@ -6,6 +6,7 @@ public class MedicineUI extends Medicine{
         for (Medicine med : dataInterface.getAllMedicines()){
             print(med);
         }
+        System.out.println("");
     }
     public void updateMedicine(String name, int changeAmount){
         if(dataInterface.updateStock(name, changeAmount) == false){
