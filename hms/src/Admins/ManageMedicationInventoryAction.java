@@ -36,7 +36,7 @@ public class ManageMedicationInventoryAction implements MenuAction{
                     updateStockLevel();
                     break;
                 case 4:
-                    //removeMedication();
+                    removeMedication();
                     break;
                 case 5:
                     //updateLowStockAlert();
@@ -81,9 +81,19 @@ private void updateStockLevel() {
     // Ask the user for the change amount
     System.out.print("Enter the amount to change the stock level (positive to increase, negative to decrease): ");
     int changeAmount = scanner.nextInt();
-
-
     med.updateStock(name, changeAmount);
+}
+
+private void removeMedication() {
+    DisplayManager.clearScreen();
+    System.out.println("Removing Medication...\n");
+
+    Scanner scanner = new Scanner(System.in);
+
+    // Ask the user for the name of the medicine
+    System.out.print("Enter the name of the medicine: ");
+    String name = scanner.nextLine().trim();
+    med.removeMedicine(name);
 }
 @Override
 public String getDescription() {

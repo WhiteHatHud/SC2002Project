@@ -65,6 +65,18 @@ public class MedicineUI extends Medicine {
             med.getLowStockLevelAlert()
         );
     }
+
+    public void removeMedicine(String name) {
+
+
+        boolean removed = dataInterface.removeMedicineByName(name);
+        
+        if (removed) {
+            System.out.println("Medicine successfully removed! \n");
+        } else {
+            System.out.println("Failed to remove medicine. Medicine may not exist in the database.\n");
+        }
+    }
     
     public void print(String s) {
         System.out.println(s);

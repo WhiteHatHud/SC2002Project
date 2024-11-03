@@ -115,4 +115,24 @@ public class MedicineData {
     public boolean stockLow(Medicine med) {
         return med.getInitialStock() <= med.getLowStockLevelAlert();
     }
+    // Removes a medicine from the list by name
+public boolean removeMedicineByName(String name) {
+    List<Medicine> medicineList = getAllMedicines();
+    boolean removed = false;
+
+    // Find and remove the medicine
+    for (Medicine med : medicineList) {
+        if (med.getMedicineName().equalsIgnoreCase(name)) {
+            medicineList.remove(med);
+            removed = true;
+            break;
+        }
+    }
+
+    if (removed) {
+        return updateAllStock(medicineList); // Write updated list back to file
+    }
+
+    return false;
+}
 }
