@@ -539,6 +539,19 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
 
     private void rescheduleAppointment(Appointment appointment, String userType) {
+        // Check if the appointment is pending for the patient to view
+        if ("PendingToPatient".equalsIgnoreCase(appointment.getAppointmentStatus())) {
+            System.out.println("The patient has not yet seen the previous message.");
+            System.out.print("Are you sure you want to reschedule? (y/n): ");
+            
+            String confirmation = scanner.nextLine().trim();
+            
+            if (!confirmation.equalsIgnoreCase("y")) {
+                System.out.println("Rescheduling canceled. Returning to the previous menu...");
+                return;
+            }
+        }
+    
         System.out.println("\nSelect a new date for the appointment.");
         LocalDate newDate = selectDateFromSchedule(appointment.getDoctorID());
     
@@ -586,6 +599,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         System.out.println("Appointment successfully rescheduled and saved.");
     }
     
+    
 
     //-==---------------Patient Methods -======================
     public void printPatientAppointments(String patientID) {
@@ -622,6 +636,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                     System.out.println("------------------------------");
                 });
     
+        // Check if there are no upcoming appointments
         if (appointments.stream()
                 .filter(app -> app.getPatientID().equals(patientID))
                 .noneMatch(app -> {
@@ -1189,6 +1204,143 @@ private void printSessionDetailsAndManageAdmin(List<Appointment> appointments, L
         }
     }
 }
+// ================= Reschedule for patients===========
+public void printUpcomingPatientSessions(String patientID, String userType) {
+    System.out.println("Upcoming Appointments for Patient ID: " + patientID);
+    
+    // Call printPatientAppointments to display upcoming appointments for the patient
+    printPatientAppointments(patientID);
+
+    // Prompt for Appointment ID to manage if there are any appointments
+    List<Appointment> patientAppointments = apptData.getAllAppointments().stream()
+            .filter(app -> app.getPatientID().equals(patientID))
+            .filter(app -> !app.getAppointmentStatus().equalsIgnoreCase("Blocked"))
+            .toList();
+
+    if (patientAppointments.isEmpty()) {
+        System.out.println("No upcoming appointments available.");
+        return;
+    }
+
+    System.out.print("\nEnter the Appointment ID to manage: ");
+    String appointmentID = scanner.nextLine().trim();
+    manageScheduledAppointmentsForPatient(appointmentID, userType, patientID);  // Pass userType and patientID
+}
+
+private void manageScheduledAppointmentsForPatient(String appointmentID, String userType, String patientID) {
+    Appointment appointment = apptData.getAllAppointments().stream()
+            .filter(app -> app.getAppointmentID().equals(appointmentID) && app.getPatientID().equals(patientID))
+            .findFirst()
+            .orElse(null);
+
+    if (appointment == null) {
+        System.out.println("Invalid Appointment ID. Returning to the previous menu...");
+        return;
+    }
+
+    System.out.printf("Managing Appointment ID: %s\n", appointmentID);
+    System.out.println("1. Cancel Appointment");
+    System.out.println("2. Reschedule Appointment");
+    System.out.print("Select an option: ");
+
+    int choice = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
+
+    switch (choice) {
+        case 1 -> cancelAppointmentByPatient(appointmentID, userType); // Pass userType to cancelAppointmentByPatient
+        case 2 -> rescheduleAppointmentByPatient(appointment, userType); // Pass userType to rescheduleAppointmentByPatient
+        default -> System.out.println("Invalid option. Returning to the previous menu...");
+    }
+}
+
+private void cancelAppointmentByPatient(String appointmentID, String userType) {
+    Appointment appointment = apptData.getAllAppointments().stream()
+            .filter(app -> app.getAppointmentID().equals(appointmentID))
+            .findFirst()
+            .orElse(null);
+
+    if (appointment != null) {
+        System.out.printf("The doctor with ID %s has been informed of your cancellation.\n", appointment.getDoctorID());
+
+        // Update the appointment status with details of patient cancellation
+        appointment.setAppointmentStatus(
+            String.format("Cancelled by Patient %s, ID %s on Session: %s",
+                          appointment.getPatientName(),
+                          appointment.getPatientID(),
+                          toLocalDate(appointment.getAppointmentTime()) + " " + toLocalTime(appointment.getAppointmentTime()))
+        );
+
+        // Set the outcome to "Cancelled"
+        appointment.setDiagnosis("Cancelled");
+
+        // Set the appointment time to a placeholder value instead of null
+        Calendar placeholderTime = Calendar.getInstance();
+        placeholderTime.set(0, Calendar.JANUARY, 1, 0, 0, 0);
+        appointment.setAppointmentTime(placeholderTime);
+
+        // Save the updated status and outcome to the CSV
+        apptData.updateAppointmentInCSV(appointment);
+        System.out.println("Appointment successfully marked as cancelled.");
+    } else {
+        System.out.println("Appointment not found. Unable to cancel.");
+    }
+}
+
+private void rescheduleAppointmentByPatient(Appointment appointment, String userType) {
+    // Check if the appointment is pending for the doctor to view
+    if ("PendingToDoctor".equalsIgnoreCase(appointment.getAppointmentStatus())) {
+        System.out.println("The doctor has not yet seen the previous message.");
+        System.out.print("Are you sure you want to reschedule? (y/n): ");
+        
+        String confirmation = scanner.nextLine().trim();
+        
+        if (!confirmation.equalsIgnoreCase("y")) {
+            System.out.println("Rescheduling canceled. Returning to the previous menu...");
+            return;
+        }
+    }
+
+    System.out.println("\nSelect a new date for the appointment.");
+    LocalDate newDate = selectDateFromSchedule(appointment.getDoctorID());
+
+    if (newDate == null) {
+        System.out.println("Rescheduling canceled. Returning to the previous menu...");
+        return;
+    }
+
+    // Use selectSessionFromDate to choose a new session time
+    LocalTime newTime = selectSessionFromDate(newDate, appointment.getDoctorID());
+
+    if (newTime == null) {
+        System.out.println("Rescheduling canceled. Returning to the previous menu...");
+        return;
+    }
+
+    // Check if the new session is available
+    String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+    System.out.println("Debug: Selected session status is: " + status);  // Debugging output
+
+    if (!status.equalsIgnoreCase("Available")) {
+        System.out.println("Selected session is not available. Please choose another session.");
+        return;
+    }
+
+    // Update appointment details
+    Calendar newAppointmentTime = Calendar.getInstance();
+    newAppointmentTime.set(newDate.getYear(), newDate.getMonthValue() - 1, newDate.getDayOfMonth(),
+                           newTime.getHour(), newTime.getMinute());
+
+    appointment.setAppointmentTime(newAppointmentTime);
+
+    // Set appointment status based on the user type
+    appointment.setAppointmentStatus("PendingToDoctor");
+
+    // Save the updated appointment to the CSV
+    apptData.updateAppointmentInCSV(appointment);
+
+    System.out.println("Appointment successfully rescheduled and saved.");
+}
+
 
 
            
