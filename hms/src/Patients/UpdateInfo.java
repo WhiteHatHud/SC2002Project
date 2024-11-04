@@ -10,9 +10,8 @@ public class UpdateInfo {
     }
 
     private void displayCurrentProfile() {
-        System.out.println("\n=== Current Profile ===");
         patient.getProfile();
-        System.out.println("========================\n");
+
     }
 
     public void updatePersonalInformation() {
@@ -34,6 +33,9 @@ public class UpdateInfo {
                     updateEmergencyContact();
                     break;
                 case 4:
+                    changePassword();
+                    break;
+                case 5:
                     updating = false;
                     System.out.println("Exiting update...");
                     try {
@@ -85,10 +87,36 @@ public class UpdateInfo {
             patient.setenumber(newEmergencyContact);
             Login.DisplayFormat.clearScreen();
             PatientShared.getCSVUpdater().updateField(patient.getUserID(),"Emergency Number",newEmergencyContact);
-
             System.out.println("Emergency contact updated successfully.");
         } else {
             System.out.println("Emergency contact remains unchanged.");
+        }
+    }
+
+    private void changePassword() {
+        System.out.print("Enter Current Password: ");
+        String currentPassword = PatientShared.getUserInputHandler().getInput();
+
+        // Verify current password
+        if (!patient.getPassword().equals(currentPassword)) {
+            System.out.println("Incorrect current password. Password change aborted.");
+            return;
+        }
+
+        // Prompt for new password
+        System.out.print("Enter New Password: ");
+        String newPassword = PatientShared.getUserInputHandler().getInput();
+
+        System.out.print("Confirm New Password: ");
+        String confirmPassword = PatientShared.getUserInputHandler().getInput();
+
+        // Check if the new password matches the confirmation
+        if (newPassword.equals(confirmPassword)) {
+            patient.setPassword(newPassword);  // Update password in the patient object
+            PatientShared.getCSVUpdater().updateField(patient.getUserID(), "Password", newPassword);
+            System.out.println("Password updated successfully.");
+        } else {
+            System.out.println("Passwords do not match. Password change aborted.");
         }
     }
 }

@@ -13,7 +13,8 @@ public class LoginPageMain {
 
         DisplayManager displayManager = new DisplayManager();
         UserInputHandler inputHandler = new UserInputHandler();
-        displayManager.clearScreen();
+        DisplayManager.clearScreen();
+        
         // Initialize AccountsInit to load patient data into patientRegistry
         AccountsInit patientInit = new AccountsInit("Patient List CSV.csv", registries);
         patientInit.start();

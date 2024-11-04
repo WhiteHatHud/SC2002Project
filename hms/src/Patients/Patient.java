@@ -9,8 +9,9 @@ public class Patient extends Users {
     private String email;
     private String number;
     private String enumber;
+    private String password;
 
-    public Patient(String patientID, String name, String dob, String gender, String bloodType, String contactInfo,String number, String enumber) {
+    public Patient(String patientID, String name, String dob, String gender, String bloodType, String contactInfo,String number, String enumber, String password) {
         super(patientID, name); 
         this.dob = dob;             
         this.gender = gender;
@@ -18,6 +19,7 @@ public class Patient extends Users {
         this.email = contactInfo;
         this.number = number;
         this.enumber = enumber;
+        this.password = password;
     }
     
     // Getter methods specific to Patient
@@ -31,6 +33,13 @@ public class Patient extends Users {
 
     public String getBloodType() {
         return bloodType;
+    }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
