@@ -67,6 +67,5 @@ public class Patient extends Users {
         System.out.printf("%-20s: %s%n", "Emergency Contact", enumber);
         System.out.println("========================");
     }
-    
-    
+
 }
