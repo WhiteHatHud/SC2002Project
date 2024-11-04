@@ -1,5 +1,6 @@
 package Medicine;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MedicineUI extends Medicine {
@@ -66,6 +67,25 @@ public class MedicineUI extends Medicine {
         );
     }
 
+    public boolean updateLowStockLevelAlert(String name, int newLowStockLevel) {
+    List<Medicine> medicineList = dataInterface.getAllMedicines();
+    boolean updated = false;
+
+    // Find the medicine and update its low stock level alert
+    for (Medicine med : medicineList) {
+        if (med.getMedicineName().equalsIgnoreCase(name)) {
+            dataInterface.setLowStockLevelAlert(name,newLowStockLevel); 
+            updated = true;
+            break;
+        }
+    }
+
+
+
+    return false; // Medicine not found
+}
+
+
     public void removeMedicine(String name) {
 
 
@@ -81,4 +101,6 @@ public class MedicineUI extends Medicine {
     public void print(String s) {
         System.out.println(s);
     }
+
+
 }

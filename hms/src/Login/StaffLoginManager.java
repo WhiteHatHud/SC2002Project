@@ -1,5 +1,6 @@
 package Login;
 import Doctors.Doctor;
+import Doctors.DoctorController;
 import Pharmacists.PharmaController;
 import Pharmacists.Pharmacist;
 import Admins.AdminController;
@@ -51,8 +52,8 @@ public class StaffLoginManager implements LoginInt {
                     PharmaController pharmaController = new PharmaController((Pharmacist) staffMember);
                     pharmaController.start();
                 } else if (staffMember instanceof Doctor) {
-                    //DoctorController doctorController = new DoctorController((Doctor) staffMember);
-                    //doctorController.start();
+                    DoctorController doctorController = new DoctorController((Doctor) staffMember);
+                    doctorController.start();
                 } else if (staffMember instanceof Admin) {
                     AdminController adminController = new AdminController((Admin) staffMember);
                     adminController.start();

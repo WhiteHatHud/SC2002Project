@@ -7,14 +7,14 @@ import java.util.List;
 public class MedicineData {
     private static final String FILE_PATH = "././Medicine_List.csv";
 
-    public MedicineData(){}
+    public MedicineData() {}
 
     // Fetches all medicines from the file
     public List<Medicine> getAllMedicines() {
         List<Medicine> medicines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
-            reader.readLine(); // Skip header row
+            reader.readLine(); 
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length < 3) continue;
@@ -36,7 +36,7 @@ public class MedicineData {
         return medicines;
     }
     
-    // Retrieves a single medicine by name case insens
+    // Retrieves a single medicine by name , case insensetive
     public Medicine getMedicineByName(String name) {
         List<Medicine> medicines = getAllMedicines();
         for (Medicine med : medicines) {
@@ -63,7 +63,7 @@ public class MedicineData {
         return false;
     }
 
-    // Checks if a medicine exists case insens
+    // Checks if a medicine exists (case-insensitive)
     public boolean exists(String name) {
         List<Medicine> medicines = getAllMedicines();
         for (Medicine med : medicines) {
@@ -88,7 +88,7 @@ public class MedicineData {
         }
         
         if (updated) {
-            return updateAllStock(medicineList); // Write updated stock back to file
+            return updateAllStock(medicineList);
         }
         
         return false; // Medicine not found
@@ -115,24 +115,67 @@ public class MedicineData {
     public boolean stockLow(Medicine med) {
         return med.getInitialStock() <= med.getLowStockLevelAlert();
     }
+    
     // Removes a medicine from the list by name
-public boolean removeMedicineByName(String name) {
-    List<Medicine> medicineList = getAllMedicines();
-    boolean removed = false;
+    public boolean removeMedicineByName(String name) {
+        List<Medicine> medicineList = getAllMedicines();
+        boolean removed = false;
 
-    // Find and remove the medicine
-    for (Medicine med : medicineList) {
-        if (med.getMedicineName().equalsIgnoreCase(name)) {
-            medicineList.remove(med);
-            removed = true;
-            break;
+        // Find and remove the medicine
+        for (Medicine med : medicineList) {
+            if (med.getMedicineName().equalsIgnoreCase(name)) {
+                medicineList.remove(med);
+                removed = true;
+                break;
+            }
         }
+
+        if (removed) {
+            return updateAllStock(medicineList); 
+        }
+
+        return false;
     }
 
-    if (removed) {
-        return updateAllStock(medicineList); // Write updated list back to file
-    }
+    public boolean setLowStockLevelAlert(String name, int newLowStockLevel) {
+        List<String[]> medicinesData = new ArrayList<>();
+        boolean updated = false;
 
-    return false;
-}
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // Case insensitive check for the medicine name
+                if (data[0].trim().equalsIgnoreCase(name) && data.length >= 3) {
+                    data[2] = String.valueOf(newLowStockLevel); // Update the low stock level alert 
+                    updated = true;
+                }
+                medicinesData.add(data); // Add the row to the list
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading medicine data.");
+            e.printStackTrace();
+            return false; // Error in reading file
+        }
+
+        // Write the updated list back to the CSV file if the medicine was found
+        if (updated) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+                for (String[] data : medicinesData) {
+                    writer.write(String.join(",", data));
+                    writer.newLine();
+                }
+            
+                System.out.println("Medicine " + name + " low level stock has been updated to " + newLowStockLevel);
+                return true; // Successfully updated and saved
+            } catch (IOException e) {
+                System.out.println("Failed to write updated data to CSV file.");
+                e.printStackTrace();
+            }
+        }
+
+        return false; // Medicine not found
+    }
 }
