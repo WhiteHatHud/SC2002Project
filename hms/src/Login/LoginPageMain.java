@@ -15,7 +15,7 @@ public class LoginPageMain {
         UserInputHandler inputHandler = new UserInputHandler();
         displayManager.clearScreen();
         // Initialize AccountsInit to load patient data into patientRegistry
-        AccountsInit patientInit = new AccountsInit("././Patient List CSV.csv", registries);
+        AccountsInit patientInit = new AccountsInit("Patient List CSV.csv", registries);
         patientInit.start();
 
         LoginManager loginManager = new LoginManager(displayManager, inputHandler, registries);

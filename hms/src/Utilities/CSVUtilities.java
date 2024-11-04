@@ -110,7 +110,53 @@ public class CSVUtilities {
         System.out.println("Error reading CSV file: " + e.getMessage());
     }
     return staffList;
+    
     }
+
+    public String getPatientNameByID(String patientID) {
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            boolean isHeader = true;
+    
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip header row
+                    continue;
+                }
+    
+                String[] data = line.split(",");
+                if (data.length > 1 && data[0].trim().equals(patientID)) {
+                    return data[1].trim(); // Assuming name is the second column
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+        return null; // Return null if no match is found
+    }
+
+    public String getDoctorNameByID(String doctorID) {
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            boolean isHeader = true;
+    
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip header row
+                    continue;
+                }
+    
+                String[] data = line.split(",");
+                if (data.length > 1 && data[0].trim().equals(doctorID)) {
+                    return data[1].trim(); 
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+        return null; // Return null if no match is found
+    }
+    
 
     
 }

@@ -116,7 +116,7 @@ public class ViewAndManageStaff implements MenuAction {
 
         switch (choice) {
             case 1:
-            AddDoctor addDoctor = new AddDoctor("Staff_List.csv"); 
+            AddDoctor addDoctor = new AddDoctor("Staff_List.csv","appointments.csv"); 
             addDoctor.start(); 
                 break;
             case 2:

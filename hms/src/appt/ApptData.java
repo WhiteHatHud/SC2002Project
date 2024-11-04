@@ -1,10 +1,10 @@
 package appt;
 
 import java.io.*;
-import java.util.*;
 import java.text.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.*;
 
 
 public class ApptData {
@@ -163,6 +163,4 @@ public class ApptData {
     }
 
 
-    public static void main(String[] args) {
-    }
 }

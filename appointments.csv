@@ -11,6 +11,12 @@ A00012,2024-11-04 14:00,PT003,Hud,DR001,Dr. Smith,PendingToPatient
 A0016,2024-11-02 11:00,PT002,Hud,DR001,Dr. Smith,Completed,Success,Massage,Drugs,GIven
 A0018,0001-01-01 00:00,PT001,Fat,DR001,Dr. Smith,Cancelled by Dr. Smith, ID DR001 on Session: 2024-11-05 09:00,Cancelled
 A0019,2024-11-07 09:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
-A0021,2024-11-06 09:00,PT002,Hud,DR001,Dr. Smith,Booked,,,,,A0022
 A0022,2024-11-09 09:00,PT002,Hud,DR001,Dr. Smith,Booked
-A0023,2024-11-09 09:00,PT002,Hud,D006,Tan,Booked
+A0000,0000-00-00,00:00,P0,null,null,null,null,null,null,null,null
+A0000,0000-00-00,00:00,P0,D016,haha,null,null,null,null,null,null
+A0023,2024-11-04 09:00,P1001,haha,D016,haha,PendingToPatient,,,,,
+A0000,0000-00-00,00:00,P0,D017,my father,null,null,null,null,null,null
+A0024,2024-11-04 09:00,P1001,Alice Brown,D017,my father,PendingToPatient,,,,,
+A0025,2024-11-04 09:00,P1001,Alice Brown,D019,Dr. Name,PendingToPatient,,,,,
+A0026,2024-11-04 09:00,P1001,Alice Brown,D021,null,PendingToPatient,,,,,
+A0027,2024-11-04 09:00,P1001,Alice Brown,D022,fire,PendingToPatient,,,,,
