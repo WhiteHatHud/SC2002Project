@@ -1,11 +1,11 @@
-package Pharmacists;
+package Doctors;
 import Login.DisplayFormat;
 import Utilities.CSVUpdater;
 import Utilities.UserInputHandler;
 
-public class PharmaShared {
+public class DoctorShared {
     private static final UserInputHandler userInputHandler = new UserInputHandler();
-    private static final PharmaDisplayManager displayManager = new PharmaDisplayManager();
+    private static final DoctorDisplayManager displayManager = new DoctorDisplayManager();
     private static final DisplayFormat displayFormat = new DisplayFormat();
     private static  CSVUpdater csvUpdater = new CSVUpdater("Staff_List.csv");
 
@@ -18,7 +18,7 @@ public class PharmaShared {
         return userInputHandler;
     }
 
-    public static PharmaDisplayManager getDisplayManager() {
+    public static DoctorDisplayManager getDisplayManager() {
         return displayManager;
     }
     public static DisplayFormat getDisplayFormat() {

@@ -22,8 +22,8 @@ public class AdminController implements ControllerInt {
     }
 
     @Override
-    public boolean handleChoice(int choice) {
-        System.out.println("In admin now");
+    public boolean handleChoice(int choice) { //Ignore. Admin to demonstrate SOLID principles
+        //System.out.println("In admin now");
         return true;
     }
 }

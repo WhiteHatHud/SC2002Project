@@ -43,4 +43,8 @@ public class Staff extends Users{
         String stringAge = String.valueOf(age);
         return String.join(",", stringID, name, role, gender, stringAge);
     }
+    @Override
+    public String toString() {
+        return "Staff ID: " + userID + ", Name: " + name + ", Role: " + role + ", Gender: " + gender + ", Age: " + age;
+    }
 }

@@ -11,9 +11,10 @@ public class ApptController {
     private ApptData apptData;
     private final Scanner scanner = new Scanner(System.in); // Reusable scanner
 
-    public ApptController(ApptData apptData) {
-        this.apptData = apptData;
+    public ApptController() {
+        this.apptData = new ApptData();
     }
+    
 
     // Method to view all appointments for a doctor
     public List<Appointment> viewAppointmentsByDoctor(String doctorID) {
@@ -237,6 +238,9 @@ private void printSessionDetailsForDate(LocalDate date, LocalTime sessionTime, S
 }
 
 private void printSessionDetailsAndManage(List<Appointment> appointments, LocalDate date, LocalTime sessionTime) {
+
+
+    // Display session details for the given date, time, and doctor
     printSessionDetailsForDate(date, sessionTime, appointments.get(0).getDoctorID());
     String status = getSessionStatus(appointments, date, sessionTime);
 
@@ -271,6 +275,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     }
 }
+
     // Helper method to print session details
         
     // Helper method to count booked sessions on a given date
