@@ -21,34 +21,27 @@ public class CSVUtilities {
 
             while ((line = br.readLine()) != null) {
                 if (isHeader) {
-                    isHeader = false; 
+                    isHeader = false;
                     continue;
                 }
 
-                // Split CSV line by comma and assign values
                 String[] data = line.split(",");
                 if (data.length < 3) {
                     System.out.println("Invalid line in CSV: " + line);
-                    continue; // Skip invalid lines, error checking
+                    continue;
                 }
 
                 String role = data[2].trim();
-
-                // Count each role
                 roleCountMap.put(role, roleCountMap.getOrDefault(role, 0) + 1);
             }
         } catch (IOException e) {
             System.out.println("Error reading CSV file: " + e.getMessage());
         }
 
-        // Print out the counts (for debugging)
-        //System.out.println("Role counts: " + roleCountMap);
         return roleCountMap;
     }
 
-    // Method to generate a new StaffID for a specified role
     public String generateNewStaffID(String role, Map<String, Integer> roleCountMap) {
-
         String prefix;
         switch (role.toLowerCase()) {
             case "doctor":
@@ -61,102 +54,117 @@ public class CSVUtilities {
                 prefix = "A";
                 break;
             default:
-                prefix = "U"; 
+                prefix = "U";
         }
 
+        int highestID = 0;
 
-        int currentCount = roleCountMap.getOrDefault(role, 0) + 1;
-        
-        // Update the role count in the map to reflect the new addition
-        roleCountMap.put(role, currentCount);
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields[0].startsWith(prefix)) {
+                    int idNumber = Integer.parseInt(fields[0].substring(1));
+                    if (idNumber > highestID) {
+                        highestID = idNumber;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
 
-        // Format Staff ID
-        return prefix + String.format("%03d", currentCount);
+        int newIDNumber = highestID + 1;
+        roleCountMap.put(role, newIDNumber);
+        return prefix + String.format("%03d", newIDNumber);
     }
 
     public boolean checkIfUserExists(String userID) {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
             boolean isHeader = true;
-    
+
             while ((line = br.readLine()) != null) {
                 if (isHeader) {
-                    isHeader = false; // Skip header
+                    isHeader = false;
                     continue;
                 }
-    
+
                 String[] data = line.split(",");
                 if (data.length > 0 && data[0].trim().equals(userID)) {
-                    return true; // User found
+                    return true;
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading CSV file: " + e.getMessage());
         }
-        return false; // User not found
+        return false;
     }
 
     public List<Staff> readStaffList() {
-    List<Staff> staffList = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-        String line;
-        br.readLine(); // Skip header line 
-        while ((line = br.readLine()) != null) {
-            String[] data = line.split(",");
-            Staff staff = new Staff(data[0], data[1], data[2], data[3], Integer.parseInt(data[4]), data[5]);
-            staffList.add(staff);
+        List<Staff> staffList = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            br.readLine();
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                int age;
+                try {
+                    age = Integer.parseInt(data[4]);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid age format for staff ID " + data[0] + ". Skipping this record.");
+                    continue;
+                }
+                Staff staff = new Staff(data[0], data[1], data[2], data[3], age, data[5]);
+                staffList.add(staff);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
         }
-    } catch (IOException e) {
-        System.out.println("Error reading CSV file: " + e.getMessage());
-    }
-    return staffList;
-    
+        return staffList;
     }
 
     public String getPatientNameByID(String patientID) {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
             boolean isHeader = true;
-    
+
             while ((line = br.readLine()) != null) {
                 if (isHeader) {
-                    isHeader = false; // Skip header row
+                    isHeader = false;
                     continue;
                 }
-    
+
                 String[] data = line.split(",");
                 if (data.length > 1 && data[0].trim().equals(patientID)) {
-                    return data[1].trim(); // Assuming name is the second column
+                    return data[1].trim();
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading CSV file: " + e.getMessage());
+            System.out.println("Error reading CSV file for patient ID: " + e.getMessage());
         }
-        return null; // Return null if no match is found
+        return null;
     }
 
     public String getDoctorNameByID(String doctorID) {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
             boolean isHeader = true;
-    
+
             while ((line = br.readLine()) != null) {
                 if (isHeader) {
-                    isHeader = false; // Skip header row
+                    isHeader = false;
                     continue;
                 }
-    
+
                 String[] data = line.split(",");
                 if (data.length > 1 && data[0].trim().equals(doctorID)) {
-                    return data[1].trim(); 
+                    return data[1].trim();
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading CSV file: " + e.getMessage());
+            System.out.println("Error reading CSV file for doctor ID: " + e.getMessage());
         }
-        return null; // Return null if no match is found
+        return null;
     }
-    
-
-    
 }

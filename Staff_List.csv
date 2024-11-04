@@ -24,4 +24,5 @@ D021,Water2,Doctor,Male,3,3,password
 D022,fire,Doctor,Male,3,3,passwordD023
 D023,Gandi,Doctor,Male,2,22,password
 D024,bap,Doctor,Male,22,2,password
-D025,po,Doctor,Male,22,2,password
+D025,lo,Doctor,Male,22,2,password
+P003,POPOP,Pharmacist,Male,23,23,password
