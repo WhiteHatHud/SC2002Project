@@ -1,8 +1,4 @@
 AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes
-A0001,2024-11-04 09:00,P101,Peter,DR001,Dr. Smith,PendingToPatient
-A0002,2024-11-04 11:00,P102,Rauf,DR001,Dr. Smith,PendingToPatient
-A0003,2024-10-31 14:00,PT001,John Doe,DR001,Dr. Smith,PendingToPatient
-A0004,2024-11-02 09:00,PT001,John Doe,DR001,Dr. Smith,PendingToPatient
 A0006,2024-10-30 09:00,PT001,John Doe,DR001,Dr. Smith,Completed,Successful,,Weed,Not Given,This is a test lol
 A0007,2024-10-30 14:00,PT001,John Doe,DR001,Dr. Smith,Completed
 A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
