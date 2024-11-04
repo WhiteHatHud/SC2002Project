@@ -1048,5 +1048,97 @@ public void printCancelledAppointments(String userType, String userID) {
         default -> System.out.println("Invalid choice. Returning to the main menu...");
     }
 }
+
+//==================Admin============================
+public void printDoctorScheduleOnDateAdmin(String doctorID) {
+    LocalDate selectedDate = selectDateFromSchedule(doctorID);
+
+    if (selectedDate == null) {
+        // User canceled the selection
+        return;
+    }
+
+    System.out.printf("\nAdmin View - Sessions for Dr. %s on %s:\n", doctorID, selectedDate);
+    System.out.println("====================");
+
+    // Use the admin version of viewing session details with edit capabilities
+    viewSessionDetailsForDateAdmin(selectedDate, doctorID);
+}
+private void viewSessionDetailsForDateAdmin(LocalDate date, String doctorID) {
+    List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
+    LocalTime[] sessions = {
+        LocalTime.of(9, 0),
+        LocalTime.of(11, 0),
+        LocalTime.of(14, 0)
+    };
+
+    // Display sessions with admin-level editing capabilities
+    for (int i = 0; i < sessions.length; i++) {
+        String status = getSessionStatus(appointments, date, sessions[i]);
+        System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
+    }
+
+    System.out.println("--------------------");
+    System.out.print("Select a session to manage (1-3) or '~' to return: ");
+    String input = scanner.nextLine().trim();
+
+    if (input.equals("~")) {
+        System.out.println("Returning to the previous menu...");
+        return;
+    }
+
+    try {
+        int sessionChoice = Integer.parseInt(input);
+
+        if (sessionChoice < 1 || sessionChoice > 3) {
+            System.out.println("Invalid selection. Please try again.");
+            return;
+        }
+
+        LocalTime selectedSession = sessions[sessionChoice - 1];
+        printSessionDetailsAndManageAdmin(appointments, date, selectedSession, doctorID);
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
+    }
+}
+
+private void printSessionDetailsAndManageAdmin(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
+    printSessionDetailsForDate(date, sessionTime, doctorID);
+
+    String status = getSessionStatus(appointments, date, sessionTime);
+
+    // Handle options based on the session status with admin privileges
+    switch (status) {
+        case "Available" -> {
+            System.out.println("This session is available.");
+            System.out.print("Do you want to block this session or create a new appointment? (block/create): ");
+            String input = scanner.nextLine().trim();
+
+            if (input.equalsIgnoreCase("block")) {
+                blockSession(date, sessionTime, doctorID, "Dr. Admin");
+            } else if (input.equalsIgnoreCase("create")) {
+                newAppointment(date, sessionTime, doctorID, "Dr. Admin");
+            } else {
+                System.out.println("Returning to previous menu...");
+            }
+        }
+        case "Blocked" -> {
+            System.out.println("This session is currently blocked.");
+            System.out.print("Do you want to unblock this session? (yes/no): ");
+            String input = scanner.nextLine().trim();
+
+            if (input.equalsIgnoreCase("yes")) {
+                unblockSessionByDateAndTime(date, sessionTime, appointments);
+            } else {
+                System.out.println("Returning to previous menu...");
+            }
+        }
+        case "Booked" -> {
+            System.out.println("This session is booked and cannot be modified.");
+        }
+    }
+}
+
+
            
 }

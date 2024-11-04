@@ -127,7 +127,7 @@ public abstract class Appointment {
             patientID, 
             patientName, 
             doctorID, 
-            doctorName, 
+            doctorName,
             appointmentStatus, 
             outcome == null ? "" : outcome, 
             service == null ? "" : service, 
