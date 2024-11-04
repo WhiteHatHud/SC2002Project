@@ -21,7 +21,8 @@ public class PatientDisplayManager extends DisplayManager {
             System.out.println("1. Email");
             System.out.println("2. Contact Number");
             System.out.println("3. Emergency Contact");
-            System.out.println("4. Done (Exit Update)");
+            System.out.println("4. Change Password");
+            System.out.println("5. Done (Exit Update)");
             System.out.print("Enter your choice: ");
     }
 
