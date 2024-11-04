@@ -227,7 +227,8 @@ private void printSessionDetailsForDate(LocalDate date, LocalTime sessionTime, S
             System.out.printf("Patient Name: %s\n", appointment.getPatientName());
             System.out.printf("Doctor Name: %s\n", appointment.getDoctorName());
             System.out.printf("Appointment Status: %s\n", appointment.getAppointmentStatus());
-            System.out.printf("Service: %s\n", appointment.getService());
+            System.out.printf("Diagnosis: %s\n", appointment.getDiagnosis());
+            System.out.printf("Treatment Plan: %s\n", appointment.getTreatmentPlan());
             System.out.printf("Medicine: %s\n", appointment.getMedicine());
             System.out.printf("Medicine Status: %s\n", appointment.getMedicineStatus());
             System.out.printf("Notes: %s\n", appointment.getNotes());
@@ -250,10 +251,15 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     System.out.printf("\nDetails for session at %s on %s:\n", sessionTime, date);
     System.out.println("====================");
 
+
     String doctorID = doctorID2;
     String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
 
     // Check session status and proceed accordingly
+=======
+    // Display session details for the given date, time, and doctor
+    printSessionDetailsForDate(date, sessionTime, appointments.get(0).getDoctorID());
+
     String status = getSessionStatus(appointments, date, sessionTime);
 
     // Offer options based on the session status
@@ -502,7 +508,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             }
     
             // Set the outcome to "Cancelled"
-            appointment.setOutcome("Cancelled");
+            appointment.setDiagnosis("Cancelled");
     
             // Set the appointment time to a placeholder value instead of null
             Calendar placeholderTime = Calendar.getInstance();
@@ -900,13 +906,13 @@ public void fillCompletedSessions(String doctorID) {
     System.out.print("Do you want to update the outcome of the appointment? (y/n): ");
     if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
         System.out.print("Enter the outcome: ");
-        selectedAppointment.setOutcome(scanner.nextLine().trim());
+        selectedAppointment.setDiagnosis(scanner.nextLine().trim());
     }
 
     System.out.print("Do you want to update the service provided? (y/n): ");
     if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the service: ");
-        selectedAppointment.setService(scanner.nextLine().trim());
+        System.out.print("Enter the Treatment Plan: ");
+        selectedAppointment.setTreatmentPlan(scanner.nextLine().trim());
     }
 
     System.out.print("Do you want to update the prescribed medicine? (y/n): ");
@@ -935,8 +941,8 @@ public void fillCompletedSessions(String doctorID) {
     System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
     System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
     System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
-    System.out.printf("Outcome: %s\n", selectedAppointment.getOutcome());
-    System.out.printf("Service: %s\n", selectedAppointment.getService());
+    System.out.printf("Diagnosis: %s\n", selectedAppointment.getDiagnosis());
+    System.out.printf("Treatment Plan: %s\n", selectedAppointment.getTreatmentPlan());
     System.out.printf("Prescribed Medicine: %s\n", selectedAppointment.getMedicine());
     System.out.printf("Medicine Status: %s\n", selectedAppointment.getMedicineStatus());
     System.out.printf("Additional Notes: %s\n", selectedAppointment.getNotes());
@@ -977,8 +983,8 @@ public void printCompletedSessionsPatient(String patientID) {
                 app.getDoctorName(), app.getDoctorID());
         
         // Detailed information
-        System.out.println("   Outcome: " + app.getOutcome());
-        System.out.println("   Service Provided: " + app.getService());
+        System.out.println("   Diagnosis: " + app.getDiagnosis());
+        System.out.println("   Treatment Plan Provided: " + app.getTreatmentPlan());
         System.out.println("   Prescribed Medicine: " + app.getMedicine());
         System.out.println("   Medicine Status: " + app.getMedicineStatus());
         System.out.println("   Additional Notes: " + app.getNotes());
