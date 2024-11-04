@@ -1,20 +1,23 @@
 package appt;
 
+import Doctors.DoctorShared;
 import java.util.Scanner;
 
 public class DoctorUI {
-    private ApptController apptController;
+    
     private Scanner scanner;
     private String doctorID;
     private String doctorName;
-
-    public DoctorUI(ApptController apptController, String doctorID, String doctorName) {
-        this.apptController = apptController;
-        this.scanner = new Scanner(System.in);
+    ApptController apptController = new ApptController();
+    
+    public DoctorUI(String doctorID, String doctorName) {
         this.doctorID = doctorID;
         this.doctorName = doctorName;
+        start();
     }
 
+
+    
     public void start() {
         boolean running = true;
         while (running) {
@@ -27,8 +30,7 @@ public class DoctorUI {
             System.out.println("6. Logout");
             System.out.print("Please select an option: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            int choice = DoctorShared.getUserInputHandler().getUserChoice();
 
             switch (choice) {
                 case 1 -> apptController.printDoctorScheduleOnDate(doctorID);

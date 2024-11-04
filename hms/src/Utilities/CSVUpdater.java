@@ -10,7 +10,6 @@ public class CSVUpdater {
         this.csvFile = csvFile;
     }
 
-
     public void updateField(String userID, String fieldName, String newValue) {
         List<String[]> csvData = new ArrayList<>();
         String[] headers = null;
@@ -18,7 +17,6 @@ public class CSVUpdater {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String line;
             boolean isHeader = true;
-
 
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
@@ -53,6 +51,16 @@ public class CSVUpdater {
                 pw.println(String.join(",", row));
             }
            // System.out.println("Patient information successfully updated in CSV.");
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+
+
+    public void addNewLine(String[] newData) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(csvFile, true))) { 
+            pw.println(String.join(",", newData)); 
+            //System.out.println("New entry added successfully.");
         } catch (IOException e) {
             System.out.println("Error writing to CSV file: " + e.getMessage());
         }

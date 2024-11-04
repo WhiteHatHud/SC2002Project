@@ -1,6 +1,8 @@
 Staff ID,Name,Role,Gender,Age, Office Number, Password
 D001,John Smith,Doctor,Male,45,-,password
-D002,Emily Clarke,Doctor,Female,38,-,password
-P001,Mark Lee,Pharmacist,Male,29,-,password
+D002,Kop kun kap,Doctor,Female,38,-,password
 A001,Sarah Lee,Administrator,Female,40,-,password
-P002,Christian Tan,Pharmacist,Male,999,-,password
+P002,Christian NEW,Pharmacist,Male,99,-,password
+D003,Bob joe,Doctor,M,98,-,password
+D005,New comer,Doctor,Female,99,-,password
+D007,Hud pi po,Doctor,Male,23,92929292,password

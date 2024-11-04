@@ -13,10 +13,8 @@ public class AdminMenu {
         // Register all menu actions
         actions.put(1, new ViewAndManageStaff());
         //actions.put(2, new ViewAppointmentDetailsAction());
-        //actions.put(3, new ManageMedicationInventoryAction());
-        //actions.put(4, new ApproveReplenishmentRequestsAction());
-        //actions.put(5, new SystemInitializationAction());
-        actions.put(6, new LogoutAction());
+        actions.put(3, new ManageMedicationInventoryAction());
+        actions.put(4, new LogoutAction());
         //Add new functions in future (one line)
     }
 

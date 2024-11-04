@@ -1,5 +1,6 @@
 package Login;
 import Admins.Admin;
+import Doctors.Doctor;
 import Pharmacists.Pharmacist;
 import Users.Staff;
 import java.io.BufferedReader;
@@ -34,7 +35,7 @@ public class AuthStaff {
                         case "pharmacist":
                             return new Pharmacist(id, name, role, gender, age,officeNumber);
                         case "doctor":
-                            //return new Doctor(id, name, role, gender, age, officeNumber);
+                            return new Doctor(id, name, role, gender, age, officeNumber);
                         case "administrator":
                             return new Admin(id, name, role, gender, age, officeNumber);
                         default:
