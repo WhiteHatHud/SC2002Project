@@ -12,7 +12,6 @@ D008,Ethan Tan,Doctor,Male,66,223,password
 D009,Ethan LOP,Doctor,Male,2,,password
 D010,POPOPOPOPO,Doctor,Male,5,55,password
 D011,Hud father,Doctor,Female,91,92,password
-D012,Hud father ,Doctor,Male,99,23,password
 D013,ethan father,Doctor,Female,99,23,password
 D014,Ethan mum,Doctor,Male,1992,2,password
 D015,gaga,Doctor,Male,231,221,password
@@ -25,3 +24,4 @@ D021,Water2,Doctor,Male,3,3,password
 D022,fire,Doctor,Male,3,3,passwordD023
 D023,Gandi,Doctor,Male,2,22,password
 D024,bap,Doctor,Male,22,2,password
+D025,po,Doctor,Male,22,2,password

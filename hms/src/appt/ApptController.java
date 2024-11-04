@@ -226,31 +226,25 @@ private void printSessionDetailsForDate(LocalDate date, LocalTime sessionTime, S
 
     boolean hasAppointments = false;
 
-    // Display details if the session is booked
     for (Appointment appointment : appointments) {
         Calendar appointmentTime = appointment.getAppointmentTime();
-        LocalDate appointmentDate = LocalDate.of(
-                appointmentTime.get(Calendar.YEAR),
-                appointmentTime.get(Calendar.MONTH) + 1,
-                appointmentTime.get(Calendar.DAY_OF_MONTH)
-        );
-        LocalTime appointmentLocalTime = LocalTime.of(
-                appointmentTime.get(Calendar.HOUR_OF_DAY),
-                appointmentTime.get(Calendar.MINUTE)
-        );
+        if (appointmentTime == null) continue;
+
+        LocalDate appointmentDate = toLocalDate(appointmentTime);
+        LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
 
         if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
             hasAppointments = true;
             System.out.printf("Appointment ID: %s\n", appointment.getAppointmentID());
             System.out.printf("Patient ID: %s\n", appointment.getPatientID());
-            System.out.printf("Patient Name: %s\n", appointment.getPatientName());
-            System.out.printf("Doctor Name: %s\n", appointment.getDoctorName());
+            System.out.printf("Patient Name: %s\n", appointment.getPatientName() != null ? appointment.getPatientName() : "N/A");
+            System.out.printf("Doctor Name: %s\n", appointment.getDoctorName() != null ? appointment.getDoctorName() : "N/A");
             System.out.printf("Appointment Status: %s\n", appointment.getAppointmentStatus());
-            System.out.printf("Diagnosis: %s\n", appointment.getDiagnosis());
-            System.out.printf("Treatment Plan: %s\n", appointment.getTreatmentPlan());
-            System.out.printf("Medicine: %s\n", appointment.getMedicine());
-            System.out.printf("Medicine Status: %s\n", appointment.getMedicineStatus());
-            System.out.printf("Notes: %s\n", appointment.getNotes());
+            System.out.printf("Diagnosis: %s\n", appointment.getDiagnosis() != null ? appointment.getDiagnosis() : "N/A");
+            System.out.printf("Treatment Plan: %s\n", appointment.getTreatmentPlan() != null ? appointment.getTreatmentPlan() : "N/A");
+            System.out.printf("Medicine: %s\n", appointment.getMedicine() != null ? appointment.getMedicine() : "N/A");
+            System.out.printf("Medicine Status: %s\n", appointment.getMedicineStatus() != null ? appointment.getMedicineStatus() : "N/A");
+            System.out.printf("Notes: %s\n", appointment.getNotes() != null ? appointment.getNotes() : "N/A");
             System.out.println("--------------------");
         }
     }
@@ -260,25 +254,16 @@ private void printSessionDetailsForDate(LocalDate date, LocalTime sessionTime, S
     }
 }
 
-private void printSessionDetailsAndManage(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID2) {
-    // Display session details for the given date, time, and doctor
-    if (appointments.isEmpty()) {
-        System.out.println("No appointments available for this session.");
-    }
 
-    // Display the session details for the date and time, regardless of the appointment list
+
+private void printSessionDetailsAndManage(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
+    // Display the session details for the date and time
     System.out.printf("\nDetails for session at %s on %s:\n", sessionTime, date);
     System.out.println("====================");
 
-
-    String doctorID = doctorID2;
     String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
 
-    // Check session status and proceed accordingly
-
-    // Display session details for the given date, time, and doctor
-    printSessionDetailsForDate(date, sessionTime, appointments.get(0).getDoctorID());
-
+    // Check session status to decide if we should allow creation or blocking
     String status = getSessionStatus(appointments, date, sessionTime);
 
     // Offer options based on the session status
@@ -313,6 +298,8 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         default -> System.out.println("Unknown status for the session.");
     }
 }
+
+
 
 
     // Helper method to print session details
