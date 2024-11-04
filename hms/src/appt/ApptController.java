@@ -377,19 +377,23 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
         System.out.println("No blocked session found for the given date and time.");
     }
-    
     private void newAppointment(LocalDate date, LocalTime time, String doctorID, String doctorName) {
-        // Generate a new appointment ID by incrementing the largest existing one
-        String newAppointmentID = generateNewAppointmentID();
-    
         // Prompt the doctor to enter patient details
         System.out.print("Enter Patient ID: ");
         String patientID = scanner.nextLine().trim();
     
+        // Validate if the patient exists
         String patientName = DoctorShared.getcsvUtilities().getPatientNameByID(patientID);
+        if (patientName == null || patientName.isEmpty()) {
+            System.out.println("Error: Patient ID not found. Please check the ID and try again.");
+            return; // Exit if the patient does not exist
+        }
+    
         System.out.println("The patient name is: " + patientName);
-
-
+    
+        // Generate a new appointment ID
+        String newAppointmentID = generateNewAppointmentID();
+    
         // Create a new appointment object with the status "PendingToPatient"
         Calendar appointmentTime = Calendar.getInstance();
         appointmentTime.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(),
@@ -403,6 +407,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         apptData.addAppointment(newAppointment);
         System.out.println("New appointment created successfully with ID: " + newAppointmentID);
     }
+    
     //==============================================================================================
     public void printUpcomingSessions(String doctorID, String userType) { //here
         List<Appointment> doctorAppointments = viewAppointmentsByDoctor(doctorID);
@@ -612,9 +617,17 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     }
     
-    // hardcoded change back
     public void bookNewAppointment(String patientID, String patientName, String doctorID, String doctorName) {
         System.out.println("\nBooking a New Appointment:");
+    
+        // Validate if the patient exists
+        patientName = DoctorShared.getcsvUtilities().getPatientNameByID(patientID);
+        if (patientName == null || patientName.isEmpty()) {
+            System.out.println("Error: Patient ID not found. Booking cannot proceed.");
+            return; // Exit if the patient does not exist
+        }
+        
+        System.out.println("The patient name is: " + patientName);
     
         // Select a date for the new appointment
         LocalDate appointmentDate = selectDateFromSchedule(doctorID);
@@ -632,7 +645,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         // Check the status of the selected session
         String sessionStatus = getSessionStatus(apptData.getAllAppointments(), appointmentDate, appointmentTime);
-    
         if (!sessionStatus.equalsIgnoreCase("Available")) {
             System.out.println("Error: The selected session is already " + sessionStatus + ". Please choose another session.");
             return;
@@ -648,14 +660,14 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         Appointment newAppointment = new DoctorAppointment(
                 newAppointmentID, newAppointmentTime, patientID, patientName,
-            doctorID, doctorName, "PendingToDoctor"
-        );
+                doctorID, doctorName, "PendingToDoctor");
     
         // Save the new appointment to the CSV
         apptData.addAppointment(newAppointment);
     
         System.out.println("Appointment successfully booked with ID: " + newAppointmentID);
     }
+    
     
     
     
