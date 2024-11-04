@@ -3,7 +3,6 @@ package appt;
 import java.util.Calendar; // Ensures the format of the date and time when users do appointments
 import java.text.SimpleDateFormat;
 
-
 public abstract class Appointment {
     protected String appointmentID;
     protected Calendar appointmentTime; // Use Calendar to represent both date and time
@@ -12,8 +11,8 @@ public abstract class Appointment {
     protected String doctorID;
     protected String doctorName;
     protected String appointmentStatus;
-    protected String outcome;
-    protected String service;
+    protected String diagnosis; // Changed from outcome to diagnosis
+    protected String treatmentPlan; // Changed from service to treatmentPlan
     protected String medicine;
     protected String medicineStatus;
     protected String notes;
@@ -75,21 +74,21 @@ public abstract class Appointment {
         return doctorName;
     }
 
-    public String getOutcome() {
-        return outcome;
+    public String getDiagnosis() { // Changed from getOutcome to getDiagnosis
+        return diagnosis;
     }
 
-    public void setOutcome(String outcome) {
-        this.outcome = outcome;
+    public void setDiagnosis(String diagnosis) { // Changed from setOutcome to setDiagnosis
+        this.diagnosis = diagnosis;
     }
 
     // New getters and setters for the additional attributes
-    public String getService() {
-        return service;
+    public String getTreatmentPlan() { // Changed from getService to getTreatmentPlan
+        return treatmentPlan;
     }
 
-    public void setService(String service) {
-        this.service = service;
+    public void setTreatmentPlan(String treatmentPlan) { // Changed from setService to setTreatmentPlan
+        this.treatmentPlan = treatmentPlan;
     }
 
     public String getMedicine() {
@@ -129,15 +128,14 @@ public abstract class Appointment {
             doctorID, 
             doctorName,
             appointmentStatus, 
-            outcome == null ? "" : outcome, 
-            service == null ? "" : service, 
+            diagnosis == null ? "" : diagnosis,  // Changed from outcome to diagnosis
+            treatmentPlan == null ? "" : treatmentPlan, // Changed from service to treatmentPlan
             medicine == null ? "" : medicine, 
             medicineStatus == null ? "" : medicineStatus, 
             notes == null ? "" : notes
         );
     }
     
-
     // Abstract method for managing the appointment - to be implemented by subclasses
     public abstract void manageAppointment();
 }

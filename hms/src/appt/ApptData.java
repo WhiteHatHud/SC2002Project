@@ -59,8 +59,8 @@ public class ApptData {
                     data[0], appointmentTime, data[2], data[3], data[4], data[5], data[6]
                 );
 
-                if (data.length > 7) appointment.setOutcome(data[7]);
-                if (data.length > 8) appointment.setService(data[8]);
+                if (data.length > 7) appointment.setDiagnosis(data[7]);
+                if (data.length > 8) appointment.setTreatmentPlan(data[8]);
                 if (data.length > 9) appointment.setMedicine(data[9]);
                 if (data.length > 10) appointment.setMedicineStatus(data[10]);
                 if (data.length > 11) appointment.setNotes(data[11]);
