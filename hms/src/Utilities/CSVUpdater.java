@@ -65,4 +65,15 @@ public class CSVUpdater {
             System.out.println("Error writing to CSV file: " + e.getMessage());
         }
     }
+
+    public void addNewLineToAppt(String[] newData, String csvFile1) {
+        String csvFile = csvFile1;
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter(csvFile, true))) { 
+            pw.println(String.join(",", newData)); 
+            //System.out.println("New entry added successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
 }
