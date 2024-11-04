@@ -1,14 +1,17 @@
 package Doctors;
+
 import Login.ControllerInt;
 import Login.DisplayFormat;
+import Login.DisplayManager;
+import Utilities.LogoutTimer;
 import appt.DoctorUI;
 
-public class DoctorController implements ControllerInt{
+public class DoctorController implements ControllerInt {
 
     private Doctor doctor;
 
-    public DoctorController(Doctor doctor){
-        this.doctor=doctor;
+    public DoctorController(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public boolean start() {
@@ -19,34 +22,39 @@ public class DoctorController implements ControllerInt{
         while (isActive) {
             DoctorShared.getDisplayManager().getDisplayMenu();
             int choice = DoctorShared.getUserInputHandler().getUserChoice();
-            isActive = handleChoice(choice);
+            isActive = handleChoice(choice); // Keeps looping until the user chooses to logout
         }
 
-        return false;
+        return false; // Ends session if logged out
     }
 
-    
     @Override
     public boolean handleChoice(int choice) {
         DisplayFormat.clearScreen();
         switch (choice) {
-            case 1: 
-            break;
+            case 1: // View patient record
+                
+                break;
 
-            case 2: //create
+            case 2: // Create patient medical record
                 CreateRecord record = new CreateRecord(doctor.getUserID());
                 record.createRecord();
                 break;
 
-
-            case 3:
-
-                break;
+            case 3: // Update record
                 
-            case 4: 
-                DoctorUI ui = new DoctorUI(doctor.getUserID(),doctor.getName());
-                ui.start();
                 break;
+
+            case 4: 
+                DoctorUI ui = new DoctorUI(doctor.getUserID(), doctor.getName());
+                ui.start(); 
+                DisplayManager.clearScreen();
+                break;
+
+            case 5: // Logout
+                LogoutTimer.confirmLogout(); // Confirms logout
+                return false; // Ends the session by returning false
+
             default:
                 System.out.println("Invalid choice. Please try again.");
                 break;

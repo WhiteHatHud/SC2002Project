@@ -1,3 +1,2 @@
 PrescriptionID,PatientID,PatientName,DoctorID,DoctorName,DatePrescribed,Medications(mg),Status,Notes
-PR001,P1001,Alice Brown,D1001,Dr. Smith,2023-11-01,Paracetamol:500; Ibuprofen:200,Pending,Take with food
-PR002,P1002,Bob Stone,D1002,Dr. Jones,2023-11-02,Aspirin:100; Amoxicillin:100,Dispensed,Avoid alcohol
+PR001,P1001,Alice Brown,D002,Kop kun kap,2024-11-05,Paracetamol:400; Amoxicillin:200,Dispensed,With beer

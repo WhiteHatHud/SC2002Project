@@ -62,12 +62,85 @@ public class ApptController {
                     return "Blocked";
                 }
                 // Otherwise, it is booked
+                //System.out.println("booked");
                 return "Booked";
-            }
+            } 
         }
         // If no matching appointment is found, the session is available
         return "Available"; 
     }
+    
+    public void rescheduleAppointmentByPatient(String patientID) {
+        System.out.println("\n--- Reschedule an Appointment ---");
+    
+        // Retrieve all appointments for the patient
+        List<Appointment> patientAppointments = apptData.getAllAppointments().stream()
+                .filter(app -> app.getPatientID().equals(patientID) && app.getAppointmentStatus().equalsIgnoreCase("Booked"))
+                .toList();
+    
+        if (patientAppointments.isEmpty()) {
+            System.out.println("No appointments available for rescheduling.");
+            return;
+        }
+    
+        // Display patient's booked appointments
+        System.out.println("Select an appointment to reschedule:");
+        for (int i = 0; i < patientAppointments.size(); i++) {
+            Appointment appointment = patientAppointments.get(i);
+            LocalDate appointmentDate = toLocalDate(appointment.getAppointmentTime());
+            LocalTime appointmentTime = toLocalTime(appointment.getAppointmentTime());
+            System.out.printf("%d. Appointment ID: %s | Date: %s | Time: %s | Doctor: %s\n",
+                    i + 1, appointment.getAppointmentID(), appointmentDate, appointmentTime, appointment.getDoctorName());
+        }
+    
+        // Get the user's choice
+        System.out.print("Enter the number of the appointment to reschedule: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+    
+        if (choice < 1 || choice > patientAppointments.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+    
+        // Select the chosen appointment
+        Appointment appointmentToReschedule = patientAppointments.get(choice - 1);
+        String doctorID = appointmentToReschedule.getDoctorID();
+    
+        // Select a new date
+        LocalDate newDate = selectDateFromSchedule(doctorID);
+        if (newDate == null) {
+            System.out.println("Rescheduling canceled. Returning to main menu...");
+            return;
+        }
+    
+        // Select a new session time for the chosen date
+        LocalTime newTime = selectSessionFromDate(newDate, doctorID);
+        if (newTime == null) {
+            System.out.println("Rescheduling canceled. Returning to main menu...");
+            return;
+        }
+    
+        // Check if the selected session is available
+        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+        if (!sessionStatus.equalsIgnoreCase("Available")) {
+            System.out.println("Selected session is not available. Please choose another session.");
+            return;
+        }
+    
+        // Confirm and update appointment details
+        Calendar newAppointmentTime = Calendar.getInstance();
+        newAppointmentTime.set(newDate.getYear(), newDate.getMonthValue() - 1, newDate.getDayOfMonth(),
+                               newTime.getHour(), newTime.getMinute());
+        appointmentToReschedule.setAppointmentTime(newAppointmentTime);
+        appointmentToReschedule.setAppointmentStatus("PendingToDoctor"); // Update status for doctor approval
+    
+        // Save the updated appointment to the CSV
+        apptData.updateAppointmentInCSV(appointmentToReschedule);
+    
+        System.out.println("Appointment successfully rescheduled and pending doctor approval.");
+    }
+    
     
 
 
@@ -75,6 +148,7 @@ public class ApptController {
         LocalDate today = LocalDate.now();
         List<LocalDate> next7Days = new ArrayList<>();
     
+
         System.out.println("\n====================");
         System.out.println(" Select a Date ");
         System.out.println("====================");

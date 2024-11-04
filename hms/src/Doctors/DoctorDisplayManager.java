@@ -9,6 +9,7 @@ public class DoctorDisplayManager extends DisplayManager {
     System.out.println("2. Create Patient Medical Record");
     System.out.println("3. Update Patient Medical Records");
     System.out.println("4. Manage Appointment Matters");
+    System.out.println("5. Logout");
 
     }
 

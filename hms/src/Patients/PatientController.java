@@ -37,9 +37,12 @@ public class PatientController implements ControllerInt {
                 UpdateInfo updateInfo = new UpdateInfo(patient);
                 updateInfo.updatePersonalInformation();
                 break;
-                
-
-            case 9: 
+            case 3: //Manage appointment matters
+                ManageMedMatters manage = new ManageMedMatters(patient);
+                PatientShared.getDisplayManager().apptMenu();
+                manage.start();
+                break;
+            case 4: 
                 LogoutTimer.confirmLogout();
                 return false; 
             default:

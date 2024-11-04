@@ -41,7 +41,7 @@ public class PharmaController implements ControllerInt {
                 break;
                 
             case 3: // Update prescription status
-                UpdatePrescriptionStatus updateStatus = new UpdatePrescriptionStatus();
+                UpdatePrescriptionStatus updateStatus = new UpdatePrescriptionStatus(pharma);
                 updateStatus.promptUpdateStatus();
                 break;
                 
