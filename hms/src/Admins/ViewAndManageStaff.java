@@ -124,7 +124,7 @@ public class ViewAndManageStaff implements MenuAction {
             updateDoctor.start(); 
                 break;
             case 3:
-            RemoveDoctor removeDoctor = new RemoveDoctor("Staff_List.csv");
+            RemoveDoctor removeDoctor = new RemoveDoctor("Staff_List.csv","appointments.csv");
             removeDoctor.start();
             break;
             default:

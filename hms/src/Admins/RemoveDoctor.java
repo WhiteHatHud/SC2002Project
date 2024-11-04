@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RemoveDoctor {
-    private String csvFilePath;
+    private String doctorCsvFilePath;
+    private String appointmentCsvFilePath;
 
-    public RemoveDoctor(String csvFilePath) {
-        this.csvFilePath = csvFilePath;
+    public RemoveDoctor(String doctorCsvFilePath, String appointmentCsvFilePath) {
+        this.doctorCsvFilePath = doctorCsvFilePath;
+        this.appointmentCsvFilePath = appointmentCsvFilePath;
     }
 
     public void start() {
@@ -18,7 +20,7 @@ public class RemoveDoctor {
         System.out.print("Enter Doctor ID to remove: ");
         String doctorID = AdminShared.getUserInputHandler().getNextLine();
 
-        // Check if the Doctor ID exists in the CSV file and display their information
+        // Check if the Doctor ID exists in the doctor CSV file and display their information
         String[] doctorInfo = getDoctorInfoByID(doctorID);
         if (doctorInfo == null) {
             System.out.println("Doctor ID not found.");
@@ -43,14 +45,16 @@ public class RemoveDoctor {
             return;
         }
 
-        // Proceed to remove the doctor
+        // Proceed to remove the doctor from both files
         removeDoctorByID(doctorID);
+        removeDoctorAppointments(doctorID);
+
         DisplayManager.clearScreen();
-        System.out.println("Doctor with ID " + doctorID + " has been successfully removed.");
+        System.out.println("Doctor with ID " + doctorID + " has been successfully removed from all records.");
     }
 
     private String[] getDoctorInfoByID(String doctorID) {
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(doctorCsvFilePath))) {
             String line;
             boolean isHeader = true;
 
@@ -68,7 +72,7 @@ public class RemoveDoctor {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading CSV file: " + e.getMessage());
+            System.out.println("Error reading doctor CSV file: " + e.getMessage());
         }
         return null; // Doctor not found
     }
@@ -78,7 +82,7 @@ public class RemoveDoctor {
         String[] headers = null;
 
         // Read all data except the specified row
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(doctorCsvFilePath))) {
             String line;
             boolean isHeader = true;
 
@@ -97,20 +101,61 @@ public class RemoveDoctor {
                     continue;
                 }
 
-                csvData.add(data); 
+                csvData.add(data);
             }
         } catch (IOException e) {
-            System.out.println("Error reading CSV file: " + e.getMessage());
+            System.out.println("Error reading doctor CSV file: " + e.getMessage());
             return;
         }
 
-        // Write the updated data back to the CSV file
-        try (PrintWriter pw = new PrintWriter(new FileWriter(csvFilePath))) {
+        // Write the updated data back to the doctor CSV file
+        try (PrintWriter pw = new PrintWriter(new FileWriter(doctorCsvFilePath))) {
             for (String[] row : csvData) {
                 pw.println(String.join(",", row));
             }
         } catch (IOException e) {
-            System.out.println("Error writing to CSV file: " + e.getMessage());
+            System.out.println("Error writing to doctor CSV file: " + e.getMessage());
+        }
+    }
+
+    private void removeDoctorAppointments(String doctorID) {
+        List<String[]> csvData = new ArrayList<>();
+        String[] headers = null;
+
+        // Read all data except the rows with the specified doctor ID
+        try (BufferedReader br = new BufferedReader(new FileReader(appointmentCsvFilePath))) {
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+
+                if (isHeader) {
+                    headers = data;
+                    isHeader = false;
+                    csvData.add(headers); // Keep the headers
+                    continue;
+                }
+
+                // Skip entire row if it matches the doctor ID in the specified column
+                if (data[2].trim().equals(doctorID)) { // Assuming doctor ID is in the third column
+                    continue;
+                }
+
+                csvData.add(data);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading appointment CSV file: " + e.getMessage());
+            return;
+        }
+
+        // Write the updated data back to the appointment CSV file
+        try (PrintWriter pw = new PrintWriter(new FileWriter(appointmentCsvFilePath))) {
+            for (String[] row : csvData) {
+                pw.println(String.join(",", row));
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to appointment CSV file: " + e.getMessage());
         }
     }
 }
