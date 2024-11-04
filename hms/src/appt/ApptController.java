@@ -344,8 +344,15 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
 
     //Task 1 Block or Unblock Available Dates
     public void blockSession(LocalDate date, LocalTime time, String doctorID, String doctorName) {
-        String status = getSessionStatus(apptData.getAllAppointments(), date, time);
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
     
+        if (date.isBefore(currentDate) || (date.isEqual(currentDate) && time.isBefore(currentTime))) {
+            System.out.println("Sorry, the session you selected has elapsed. Please book another session. Thank you.");
+            return;
+        }
+        String status = getSessionStatus(apptData.getAllAppointments(), date, time);
+
         if (status.equals("Available")) {
             Calendar appointmentTime = Calendar.getInstance();
             appointmentTime.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(),

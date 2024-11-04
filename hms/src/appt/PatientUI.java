@@ -77,8 +77,6 @@ public class PatientUI {
 
     public static void main(String[] args) {
         ApptData apptData = new ApptData();
-        ApptController apptController = new ApptController(apptData);
-
         // Sample patient details for testing
         String patientID = "PT002";
         String patientName = "Hud";
