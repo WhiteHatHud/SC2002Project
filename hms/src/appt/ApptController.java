@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class ApptController {
     private ApptData apptData;
@@ -16,7 +18,24 @@ public class ApptController {
         this.apptData = new ApptData();
     }
     
+    public List<String> getPatientsUnderCare(String doctorID) {
+        // List to store unique patient names under the specified doctor’s care
+        Set<String> patientNames = new HashSet<>();
 
+        // Get all appointments from the apptData
+        List<Appointment> appointments = apptData.getAllAppointments();
+
+        // Iterate through appointments to check if each appointment has the specified doctorID
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctorID().equals(doctorID)) {
+                // Add the patient's name to the set if under this doctor's care
+                patientNames.add(appointment.getPatientID());
+            }
+        }
+
+        // Convert the set to a list to return unique patient names
+        return new ArrayList<>(patientNames);
+    }
     // Method to view all appointments for a doctor
     public List<Appointment> viewAppointmentsByDoctor(String doctorID) {
 
@@ -256,7 +275,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
 
     // Check session status and proceed accordingly
-=======
+
     // Display session details for the given date, time, and doctor
     printSessionDetailsForDate(date, sessionTime, appointments.get(0).getDoctorID());
 

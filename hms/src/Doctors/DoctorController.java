@@ -33,11 +33,17 @@ public class DoctorController implements ControllerInt{
             case 1: 
             break;
 
-            case 2:
+            case 2: //create
+                CreateRecord record = new CreateRecord(doctor.getUserID());
+                record.createRecord();
+                break;
+
+
+            case 3:
 
                 break;
                 
-            case 3: 
+            case 4: 
                 DoctorUI ui = new DoctorUI(doctor.getUserID(),doctor.getName());
                 ui.start();
                 break;

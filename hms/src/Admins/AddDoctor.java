@@ -2,7 +2,6 @@ package Admins;
 
 import Login.DisplayManager;
 import Utilities.CSVUtilities;
-import java.io.*;
 import java.util.Map;
 
 public class AddDoctor {
@@ -60,35 +59,7 @@ public class AddDoctor {
         AdminShared.getCSVUpdater().addNewLine(newDoctorData);
         System.out.println("New Doctor added successfully!");
 
-        // Check and add to appointment CSV if necessary here
-        //addDoctorToAppointmentsIfMissing(staffID, name);
+
     }
 
-    private void addDoctorToAppointmentsIfMissing(String doctorID, String doctorName) {
-        boolean doctorExistsInAppointments = false;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(appointmentCsvFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                
-
-                if (data[5].trim().equals(doctorID)) {
-                    doctorExistsInAppointments = true;
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading appointment CSV file: " + e.getMessage());
-        }
-
-        // If the doctor does not exist in the appointments, add the new entry
-        if (!doctorExistsInAppointments) {
-            String[] newAppointmentEntry = {"A0000", "0000-00-00", "00:00", "P0",null ,doctorID, doctorName, null, null, null, null, null};
-            AdminShared.getCSVUpdater().addNewLineToAppt(newAppointmentEntry,"appointments.csv");
-            System.out.println("Doctor added to appointment schedule with default entry.");
-        } else {
-            System.out.println("Doctor already exists in appointment schedule. No new entry added.");
-        }
-    }
 }
