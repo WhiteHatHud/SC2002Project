@@ -20,7 +20,7 @@ public class UpdateInfo {
         while (updating) {
             PatientShared.getDisplayManager().getUpdateMenu();
             
-            int choice = Integer.parseInt(PatientShared.getUserInputHandler().getInput());
+            int choice = Integer.parseInt(PatientShared.getUserInputHandler().getInputString());
             
             switch (choice) {
                 case 1:
@@ -56,7 +56,7 @@ public class UpdateInfo {
 
     private void updateEmail() {
         System.out.print("New Email (leave blank to keep current): ");
-        String newEmail = PatientShared.getUserInputHandler().getInput();
+        String newEmail = PatientShared.getUserInputHandler().getInputString();
         if (!newEmail.isBlank()) {
             patient.setEmail(newEmail);
             Login.DisplayFormat.clearScreen();
@@ -69,7 +69,7 @@ public class UpdateInfo {
 
     private void updateContactNumber() {
         System.out.print("New Contact Number (leave blank to keep current): ");
-        String newContactNumber = PatientShared.getUserInputHandler().getInput();
+        String newContactNumber = PatientShared.getUserInputHandler().getInputString();
         if (!newContactNumber.isBlank()) {
             patient.setNumber(newContactNumber);
             Login.DisplayFormat.clearScreen();
@@ -82,7 +82,7 @@ public class UpdateInfo {
 
     private void updateEmergencyContact() {
         System.out.print("New Emergency Contact (leave blank to keep current): ");
-        String newEmergencyContact = PatientShared.getUserInputHandler().getInput();
+        String newEmergencyContact = PatientShared.getUserInputHandler().getInputString();
         if (!newEmergencyContact.isBlank()) {
             patient.setenumber(newEmergencyContact);
             Login.DisplayFormat.clearScreen();
@@ -95,7 +95,7 @@ public class UpdateInfo {
 
     private void changePassword() {
         System.out.print("Enter Current Password: ");
-        String currentPassword = PatientShared.getUserInputHandler().getInput();
+        String currentPassword = PatientShared.getUserInputHandler().getInputString();
 
         // Verify current password
         if (!patient.getPassword().equals(currentPassword)) {
@@ -105,10 +105,10 @@ public class UpdateInfo {
 
         // Prompt for new password
         System.out.print("Enter New Password: ");
-        String newPassword = PatientShared.getUserInputHandler().getInput();
+        String newPassword = PatientShared.getUserInputHandler().getInputString();
 
         System.out.print("Confirm New Password: ");
-        String confirmPassword = PatientShared.getUserInputHandler().getInput();
+        String confirmPassword = PatientShared.getUserInputHandler().getInputString();
 
         // Check if the new password matches the confirmation
         if (newPassword.equals(confirmPassword)) {

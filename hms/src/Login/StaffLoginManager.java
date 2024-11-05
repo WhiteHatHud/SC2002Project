@@ -28,7 +28,7 @@ public class StaffLoginManager implements LoginInt {
 
         while (true) {
             displayManager.showStaffLoginID();
-            String userID = inputHandler.getInput();
+            String userID = inputHandler.getInputString();
 
             // Check if the user wants to go back
             if (userID.equals("~")) {

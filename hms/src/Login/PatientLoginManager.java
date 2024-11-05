@@ -24,7 +24,7 @@ public class PatientLoginManager implements LoginInt {
     
         while (authenticatedPatient == null) {
             displayManager.showPatientLoginID();
-            String userID = inputHandler.getInput();
+            String userID = inputHandler.getInputString();
     
             // Check if the user wants to go back
             if (userID.equals("~")) {

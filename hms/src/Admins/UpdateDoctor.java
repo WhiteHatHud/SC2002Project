@@ -12,7 +12,7 @@ public class UpdateDoctor {
     public void start() {
 
         System.out.print("Enter Doctor ID to update: ");
-        String doctorID = AdminShared.getUserInputHandler().getInput();
+        String doctorID = AdminShared.getUserInputHandler().getInputString();
 
         // Check if the Doctor ID is valid (should start with "D")
         if (!doctorID.startsWith("D")) {

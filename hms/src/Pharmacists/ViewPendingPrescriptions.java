@@ -45,7 +45,7 @@ public class ViewPendingPrescriptions {
 
 
         System.out.println("Enter any key to return to main menu...");
-        PharmaShared.getUserInputHandler().getInput();
+        PharmaShared.getUserInputHandler().getInputString();
         DisplayFormat.clearScreen();
     }
 }

@@ -14,7 +14,7 @@ public class UpdatePassword {
     public void setPW(){
 
         DisplayManager.passowrdUpdate();
-        String newPassword = PharmaShared.getUserInputHandler().getInput();
+        String newPassword = PharmaShared.getUserInputHandler().getInputString();
         pharma.setPassword(newPassword);
         PharmaShared.getCSVUpdater().updateField(pharma.getUserID(),"password", newPassword);
         DisplayManager.clearScreen();

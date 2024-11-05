@@ -14,8 +14,37 @@ public class UserInputHandler {
             return choice;
         }
 
-    public String getInput() {
-        return sc.next();  // Gets string inputs like ID or password
+    public String getInputString() {
+        String input = "";
+        boolean valid = false;
+    
+        while (!valid) {
+            try {
+                input = sc.nextLine().trim(); // Read the next line and trim whitespace
+                if (input.matches(".*\\d.*")) { // Check if input contains any digits
+                    throw new IllegalArgumentException("Input should contain only letters.");
+                }
+                valid = true; // Set to true if no exception is thrown
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid input. Please enter letters only.");
+            }
+        }
+        return input;
+    }
+
+    public int getInputInt() {
+        int input = 0;
+        boolean valid = false;
+    
+        while (!valid) {
+            try {
+                input = Integer.parseInt(sc.nextLine().trim()); // Parse input to integer
+                valid = true; // Set to true if no exception is thrown
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+        return input;
     }
     
     public String getNextLine() {
