@@ -23,8 +23,9 @@ public class PatientUI {
             System.out.println("2. Book a New Appointment");
             System.out.println("3. View Pending Appointments");
             System.out.println("4. View Canceled Appointments");
-            System.out.println("5. View Completed Appointment Outcomes"); // New option
-            System.out.println("6. Exit");
+            System.out.println("5. View Completed Appointment Outcomes");
+            System.out.println("6. View Upcoming Sessions"); // New option for upcoming sessions
+            System.out.println("7. Exit");
             System.out.print("Please select an option: ");
 
             int choice = scanner.nextInt();
@@ -36,7 +37,8 @@ public class PatientUI {
                 case 3 -> viewPendingAppointments(); // View pending appointments
                 case 4 -> viewCanceledAppointments(); // View canceled appointments
                 case 5 -> viewCompletedOutcomes(); // View completed appointment outcomes
-                case 6 -> {
+                case 6 -> viewUpcomingSessions(); // View upcoming sessions
+                case 7 -> {
                     running = false;
                     System.out.println("Goodbye, " + patientName + "!");
                 }
@@ -75,9 +77,15 @@ public class PatientUI {
         apptController.printCompletedSessionsPatient(patientID); // Calls method to print completed sessions
     }
 
+    // New method to view upcoming sessions and manage appointments
+    private void viewUpcomingSessions() {
+        System.out.println("\nViewing Upcoming Sessions:");
+        apptController.printUpcomingPatientSessions(patientID, "patient"); // Call to view upcoming patient sessions
+    }
+
     public static void main(String[] args) {
         ApptData apptData = new ApptData();
-        ApptController apptController = new ApptController(apptData);
+        ApptController apptController = new ApptController();
 
         // Sample patient details for testing
         String patientID = "PT002";

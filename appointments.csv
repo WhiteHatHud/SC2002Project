@@ -1,27 +1,22 @@
 AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes
 A0006,2024-10-30 09:00,PT001,John Doe,DR001,Dr. Smith,Completed,Successful,,Weed,Not Given,This is a test lol
-A0007,2024-10-30 14:00,PT001,John Doe,DR001,Dr. Smith,Completed
-A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
-A0011,2024-11-01 14:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
-A00012,2024-11-04 14:00,PT003,Hud,DR001,Dr. Smith,PendingToPatient
-A0016,2024-11-02 11:00,PT002,Hud,DR001,Dr. Smith,Completed,Success,Massage,Drugs,GIven
-A0018,0001-01-01 00:00,PT001,Fat,DR001,Dr. Smith,Cancelled by Dr. Smith, ID DR001 on Session: 2024-11-05 09:00,Cancelled
-A0019,2024-11-07 09:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
-A0022,2024-11-09 09:00,PT002,Hud,DR001,Dr. Smith,Booked
-A0000,0000-00-00,00:00,P0,null,null,null,null,null,null,null,null
-A0000,0000-00-00,00:00,P0,D017,my father,null,null,null,null,null,null
-A0024,2024-11-04 09:00,P1001,Alice Brown,D017,my father,PendingToPatient
-A0025,2024-11-04 09:00,P1001,Alice Brown,D019,Dr. Name,PendingToPatient
-A0026,2024-11-04 09:00,P1001,Alice Brown,D021,null,PendingToPatient
-A0027,2024-11-04 09:00,P1001,Alice Brown,D022,fire,PendingToPatient
-A0028,2024-11-04 09:00,P1001,Alice Brown,D023,Gandi,PendingToPatient
-A0029,2024-11-04 11:00,P1002,Bob Stone,D023,Gandi,PendingToPatient
-A0030,2024-11-08 14:00,P1003,Charlie White,D023,Gandi,PendingToPatient
-A0032,2024-11-04 09:00,P1001,Alice Brown,D024,bap,PendingToPatient
+A0007,2024-10-30 14:00,PT001,John Doe,DR001,Dr. Smith,Completed,,,,,
+A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
+A0011,2024-11-01 14:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
+A00012,2024-11-04 14:00,PT003,Hud,DR001,Dr. Smith,PendingToPatient,,,,,
+A0016,0001-01-01 00:00,PT002,Hud,DR001,Dr. Smith,Cancelled by Patient Hud, ID PT002 on Session: 2024-11-02 11:00,Cancelled,Massage,Drugs,GIven
+A0018,0001-01-01 00:00,PT001,Fat,DR001,Dr. Smith,Cancelled by Dr. Smith, ID DR001 on Session: 2024-11-05 09:00,Cancelled,,,
+A0019,2024-11-07 09:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
+A0022,2024-11-08 09:00,PT002,Hud,DR001,Dr. Smith,PendingToDoctor,,,,,
+A0000,0002-11-30 00:00,00:00,P0,null,null,null,null,null,null,null,null
+A0000,0002-11-30 00:00,00:00,P0,D017,my father,null,null,null,null,null,null
+A0024,2024-11-04 09:00,P1001,Alice Brown,D017,my father,PendingToPatient,,,,,
+A0025,2024-11-04 09:00,P1001,Alice Brown,D019,Dr. Name,PendingToPatient,,,,,
+A0026,2024-11-04 09:00,P1001,Alice Brown,D021,null,PendingToPatient,,,,,
+A0027,2024-11-04 09:00,P1001,Alice Brown,D022,fire,PendingToPatient,,,,,
+A0028,2024-11-04 09:00,P1001,Alice Brown,D023,Gandi,PendingToPatient,,,,,
+A0029,2024-11-04 11:00,P1002,Bob Stone,D023,Gandi,PendingToPatient,,,,,
+A0030,2024-11-08 14:00,P1003,Charlie White,D023,Gandi,PendingToPatient,,,,,
+A0032,2024-11-05 09:00,P1001,Alice Brown,D024,bap,PendingToPatient,,,,,
 A0033,2024-11-04 11:00,P1002,Bob Stone,D021,Water2,PendingToPatient,,,,,
-A0034,2024-11-06 11:00,P1001,Alice Brown,D021,Water2,PendingToDoctor,,,,,
-A0035,2024-11-05 09:00,BLOCKED,N/A,D021,Water2,Blocked,,,,,
-A0036,2024-11-04 09:00,P1001,Alice Brown,D011,Hud father,PendingToPatient,,,,,
-A0037,2024-11-04 11:00,P1001,Alice Brown,D024,bap,PendingToPatient,,,,,
-A0038,2024-11-04 14:00,P1002,Bob Stone,D024,bap,PendingToPatient,,,,,
-
+\
