@@ -7,7 +7,7 @@ public class Admin extends Staff{
         super();
     }
 
-    public Admin(String staffID, String name, String role, String gender, int age, String officeNumber) {
-        super(staffID, name, role, gender, age, officeNumber);
+    public Admin(String staffID, String name, String role, String gender, int age, String officeNumber, String password) {
+        super(staffID, name, role, gender, age, officeNumber, password);
     }
 }

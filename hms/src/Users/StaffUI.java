@@ -28,16 +28,20 @@ public class StaffUI extends StaffData{
         }
         System.out.println("Unable to find staff with matching ID");
     }
-    public void checkStaff(String staffID){
-        Staff staff;
-        if((staff = dataInterface.getStaffByID(staffID)) != null){
-            print(staff);
+    public void checkStaff(String staffID) {
+        Staff staff = dataInterface.getStaffByID(staffID);
+        if (staff != null) {
+            System.out.println("Staff information:");
+            System.out.println("ID: " + staff.getUserID());
+            System.out.println("Name: " + staff.getName());
+            System.out.println("Role: " + staff.getRole());
+            System.out.println("Gender: " + staff.getGender());
+            System.out.println("Age: " + staff.getAge());
+            System.out.println("Office Number: " + staff.getOfficeNumber());
             return;
         }
         System.out.println("Unable to find staff with matching ID");
     }
-    public static void main(String[] args) {
-        StaffUI ui = new StaffUI();
-        ui.checkStaff("D002");
-    }
+    
+
 }

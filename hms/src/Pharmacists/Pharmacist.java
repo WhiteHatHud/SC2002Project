@@ -7,8 +7,8 @@ public class Pharmacist extends Staff {
         super();
     }
 
-    public Pharmacist(String staffID, String name, String gender, int age, String officeNumber) {
-        super(staffID, name, "Pharmacist", gender, age, officeNumber);
+    public Pharmacist(String staffID, String name, String role, String gender, int age, String officeNumber, String password) {
+        super(staffID, name, role, gender, age, officeNumber, password);
     }
 
 }

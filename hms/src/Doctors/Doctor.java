@@ -6,8 +6,8 @@ public class Doctor extends Staff {
         super();
     }
 
-    public Doctor(String staffID, String name, String role, String gender, int age, String officeNumber) {
-        super(staffID, name, role, gender, age, officeNumber);
+    public Doctor(String staffID, String name, String role, String gender, int age, String officeNumber,String password) {
+        super(staffID, name, role, gender, age, officeNumber,password);
     }
 
     public void getProfile() {

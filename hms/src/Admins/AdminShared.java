@@ -10,6 +10,11 @@ public class AdminShared {
     private static final DisplayFormat displayFormat = new DisplayFormat();
     private static final CSVUpdater csvUpdater = new CSVUpdater("Staff_List.csv");
     private static final CSVUtilities csvUtil = new CSVUtilities("Staff_List.csv");
+    private static final AdminDisplayManager displayManager = new AdminDisplayManager();
+
+    public static AdminDisplayManager getDisplayManager() {
+        return displayManager;
+    }
 
     public static CSVUpdater getCSVUpdater() {
         return csvUpdater;
@@ -18,7 +23,6 @@ public class AdminShared {
     public static UserInputHandler getUserInputHandler() {
         return userInputHandler;
     }
-
 
     public static DisplayFormat getDisplayFormat() {
         return displayFormat;
