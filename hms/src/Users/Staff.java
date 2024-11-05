@@ -7,12 +7,13 @@ public class Staff extends Users{
     protected String officeNumber;
 
     public Staff(){}
-    public Staff(String staffID, String name, String role, String gender, int age, String officeNumber){
+    public Staff(String staffID, String name, String role, String gender, int age, String officeNumber, String password){
         super(staffID, name);
         this.role = role;
         this.gender = gender;
         this.age = age;
         this.officeNumber = officeNumber;
+        this.password = password; 
     }
     public String getRole(){
         return role;
@@ -41,7 +42,7 @@ public class Staff extends Users{
     public String toCSV(){
         String stringID = String.valueOf(userID);
         String stringAge = String.valueOf(age);
-        return String.join(",", stringID, name, role, gender, stringAge);
+        return String.join(",", stringID, name, role, gender, stringAge,officeNumber, password);
     }
     @Override
     public String toString() {

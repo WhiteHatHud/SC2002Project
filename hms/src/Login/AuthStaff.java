@@ -30,14 +30,16 @@ public class AuthStaff {
                     String gender = data[3].trim();
                     int age = Integer.parseInt(data[4].trim());
                     String officeNumber = data[5].trim();
+                    
 
                     switch (role.toLowerCase()) {
                         case "pharmacist":
-                            return new Pharmacist(id, name, gender, age,officeNumber);
+                            return new Pharmacist(id, name, role, gender, age,officeNumber,password);
+
                         case "doctor":
-                            return new Doctor(id, name, role, gender, age, officeNumber);
+                            return new Doctor(id, name, role, gender, age, officeNumber,password);
                         case "administrator":
-                            return new Admin(id, name, role, gender, age, officeNumber);
+                            return new Admin(id, name, role, gender, age, officeNumber,password);
                         default:
                             System.out.println("Role not recognized: " + role);
                             return null;

@@ -82,6 +82,12 @@ public class DisplayManager extends DisplayFormat {
                 printCentered(line, 80);
             }
         }
+        public static void invalidChoice() {
+            String[] msg = {"Invalid choice! Try again"};
+            for (String line : msg) {
+                printCentered(line, 80);
+            }
+        }
 
     }
     

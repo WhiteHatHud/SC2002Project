@@ -115,7 +115,7 @@ public class CSVUtilities {
                     System.out.println("Invalid age format for staff ID " + data[0] + ". Skipping this record.");
                     continue;
                 }
-                Staff staff = new Staff(data[0], data[1], data[2], data[3], age, data[5]);
+                Staff staff = new Staff(data[0], data[1], data[2], data[3], age, data[5],data[6]);
                 staffList.add(staff);
             }
         } catch (IOException e) {
