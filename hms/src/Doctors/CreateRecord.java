@@ -36,7 +36,9 @@ public class CreateRecord {
         }
         System.out.println("Patient Name: " + patientName);
     
-        // Automatically use today's date for DiagnosisDate
+        String diagnosisID = generateDiagnosisID();
+
+        
         LocalDate diagnosisDate = LocalDate.now();
         System.out.println("Diagnosis Date (default is today, " + diagnosisDate + ")");
         System.out.print("Do you want to use a different date? (yes/no): ");
@@ -130,6 +132,7 @@ public class CreateRecord {
         if (confirm.equals("yes")) {
             // Store the data in an array
             String[] recordData = {
+                diagnosisID,
                 patientID,
                 patientName,
                 doctorID,
@@ -158,7 +161,6 @@ public class CreateRecord {
     String status = "Pending"; // Default status
     String notes = notes2;
 
-
     String recordLine = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
             prescriptionID,
             patientID,
@@ -184,20 +186,70 @@ public class CreateRecord {
         System.out.println("Error writing to Prescription CSV file: " + e.getMessage());
     }
 }
-
-// Method to generate a unique Prescription ID (e.g., PR001, PR002, etc.)
 private String generatePrescriptionID() {
     int lastID = 0;
     try {
         List<String> lines = Files.readAllLines(Paths.get(PRESCRIPTION_CSV_FILE_PATH));
-        if (lines.size() > 1) {  // Ignore the header line
-            String lastLine = lines.get(lines.size() - 1);
-            String[] values = lastLine.split(",");
-            lastID = Integer.parseInt(values[0].replace("PR", ""));
+        
+        // Check if the file is empty or only contains a header
+        if (lines.size() <= 1) {
+            return "PR001";  // Start from PR001 if no valid IDs are found
         }
-    } catch (IOException | NumberFormatException e) {
+        
+        for (int i = lines.size() - 1; i >= 1; i--) {  // Start from the end, skipping the header row
+            String line = lines.get(i).trim();
+            if (line.isEmpty()) continue;  // Skip empty lines
+
+            String[] values = line.split(",");
+            if (values.length > 0 && values[0].startsWith("PR")) {  // Check if ID format is "PRXXX"
+                try {
+                    lastID = Integer.parseInt(values[0].replace("PR", ""));
+                    break;  // Stop once we find the latest valid ID
+                } catch (NumberFormatException e) {
+                    System.out.println("Skipping invalid ID format: " + values[0]);
+                }
+            }
+        }
+    } catch (IOException e) {
         System.out.println("Error reading Prescription CSV for last ID: " + e.getMessage());
     }
-    return String.format("PR%03d", lastID + 1);
+
+    return String.format("PR%03d", lastID + 1);  // Increment and format the new ID
 }
+private String generateDiagnosisID() {
+    int lastID = 0;
+    String DIAGNOSIS_CSV_FILE_PATH = "Diagnosis.csv"; 
+
+    try {
+        List<String> lines = Files.readAllLines(Paths.get(DIAGNOSIS_CSV_FILE_PATH));
+        
+        // Check if the file is empty or only contains a header
+        if (lines.size() <= 1) {
+            return "1";  // Start from 1 if no valid IDs are found
+        }
+        
+        // Start from the end, skipping the header row
+        for (int i = lines.size() - 1; i >= 1; i--) {
+            String line = lines.get(i).trim();
+            if (line.isEmpty()) continue; 
+
+            String[] values = line.split(",");
+            if (values.length > 0 && values[0].matches("\\d+")) { 
+                try {
+                    lastID = Integer.parseInt(values[0]);
+                    break; // Stop once we find the latest valid ID
+                } catch (NumberFormatException e) {
+                    System.out.println("Skipping invalid ID format: " + values[0]);
+                }
+            }
+        }
+    } catch (IOException e) {
+        System.out.println("Error reading Diagnosis CSV for last ID: " + e.getMessage());
+    }
+
+    return Integer.toString(lastID + 1);  
+}
+
+
+
 }
