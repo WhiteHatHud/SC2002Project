@@ -106,7 +106,7 @@ public class SubmitRequest {
     
             // Write the data to the file
             bufferedWriter.write(String.format("%d,%s,%d,%s,%s%n", nextID, medicineName, quantity, pharmaID, pharmaName));
-            System.out.println("Request submitted successfully with ID: " + nextID + ". Awaiting administrative approval.");
+            System.out.println("Request submitted successfully with Order ID: " + nextID + ". Awaiting administrative approval.");
         } catch (IOException e) {
             System.out.println("Error writing to RequestFromPharma.csv: " + e.getMessage());
         }

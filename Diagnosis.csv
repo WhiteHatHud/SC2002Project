@@ -1,3 +1,3 @@
 ID,PatientID, PatientName, DoctorID, DiagnosisDate, DiagnosisDescription, Prescription, TreatmentStartDate, TreatmentEndDate, TreatmentOutcome, FollowUpInstructions, Notes
 1,P1001,Alice Brown,D012,2024-11-04,Fat,Paracetamol, Aspirin, Ibuprofen,1111-11-11,,,,
-2,P1001,Alice Brown,D012,2024-11-04,Fat,Paracetamol; Aspirin; Ibuprofen,1111-11-11,,null,null,
+2,P1002,Bob Stone,D002,2024-11-05,no,Aspirin:200,1111-11-11,,,

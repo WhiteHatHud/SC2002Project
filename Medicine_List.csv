@@ -1,14 +1,8 @@
 Medicine Name,Initial Stock,Low Stock Level Alert
-Paracetamol,200,20
+Paracetamol,1,20
 Aspirin,999,100
-Ibuprofen,90,10
-Amoxicillin,73,15
-Penicillin,2300,100
-Hongthai,500,20
-HongThai,5050,50
-Pen,2,2
-pen,2,2
-pol,4,4
 Bop,1003,23
-nasdnajnds,44,44
-
+Hongthai,500,20
+Ibuprofen,90,10
+Amoxicillin,61,15
+Penicillin,2300,100

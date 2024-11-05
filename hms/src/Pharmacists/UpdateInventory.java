@@ -61,7 +61,17 @@ public class UpdateInventory {
         // Save the updated stock
         return saveMedicineStock(medicineStock);
     }
-    
+
+    public boolean isBelowLowStockAlert(String medicineName) {
+    Map<String, Medicine> medicineStock = loadMedicineStock();
+    Medicine medicine = medicineStock.get(medicineName);
+
+    if (medicine != null) {
+        return medicine.stock < medicine.lowStockAlert;
+    }
+    return false;
+}
+
 
     // Load the stock levels and low stock alerts from the Medicine CSV
     Map<String, Medicine> loadMedicineStock() {

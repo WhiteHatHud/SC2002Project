@@ -1,6 +1,7 @@
 package Patients;
 import Login.DisplayFormat;
 import Utilities.CSVUpdater;
+import Utilities.CSVUtilities;
 import Utilities.UserInputHandler;
 
 
@@ -9,6 +10,11 @@ public class PatientShared {
     private static final PatientDisplayManager displayManager = new PatientDisplayManager();
     private static final DisplayFormat displayFormat = new DisplayFormat();
     private static  CSVUpdater csvUpdater = new CSVUpdater("Patient List CSV.csv");
+    private static  CSVUtilities csvUtilities = new CSVUtilities("Staff_List.csv");
+
+    public static CSVUtilities getCSVUtilities() {
+        return csvUtilities;
+    }
 
 
     public static CSVUpdater getCSVUpdater() {
