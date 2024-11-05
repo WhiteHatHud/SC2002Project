@@ -24,7 +24,7 @@ public class StaffData {
                 }
                 try {
                     int age = Integer.parseInt(data[4].trim());
-                    Staff stf = new Staff(data[0].trim(), data[1].trim(), data[2].trim(), data[3].trim(), age, data[4].trim());
+                    Staff stf = new Staff(data[0].trim(), data[1].trim(), data[2].trim(), data[3].trim(), age, data[5].trim());
                     staffList.add(stf);
                 } catch (NumberFormatException e) {
                     System.out.println("Skipping line due to number format error: " + line);

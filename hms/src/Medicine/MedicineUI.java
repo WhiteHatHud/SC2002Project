@@ -72,18 +72,15 @@ public class MedicineUI extends Medicine {
     boolean updated = false;
 
     // Find the medicine and update its low stock level alert
-    for (Medicine med : medicineList) {
-        if (med.getMedicineName().equalsIgnoreCase(name)) {
-            dataInterface.setLowStockLevelAlert(name,newLowStockLevel); 
-            updated = true;
-            break;
+        for (Medicine med : medicineList) {
+            if (med.getMedicineName().equalsIgnoreCase(name)) {
+                dataInterface.setLowStockLevelAlert(name,newLowStockLevel); 
+                updated = true;
+                break;
+            }
         }
+        return false; // Medicine not found
     }
-
-
-
-    return false; // Medicine not found
-}
 
 
     public void removeMedicine(String name) {
