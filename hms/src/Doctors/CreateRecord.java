@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -109,13 +110,48 @@ public class CreateRecord {
         System.out.println("");
 
         // Treatment Start and End Dates
-        System.out.print("Enter Treatment Start Date (YYYY-MM-DD): ");
-        LocalDate treatmentStartDate = LocalDate.parse(scanner.nextLine().trim());
+        LocalDate treatmentStartDate;
+while (true) {
+    System.out.print("Enter Treatment Start Date (YYYY-MM-DD): ");
+    try {
+        treatmentStartDate = LocalDate.parse(scanner.nextLine().trim());
+
+        // Check if the start date is today or in the future
+        if (!treatmentStartDate.isBefore(LocalDate.now())) {
+            break; // Valid date, exit loop
+        } else {
+            System.out.println("Invalid date input. Start date must be today or in the future. Please try again.");
+        }
+    } catch (DateTimeParseException e) {
+        System.out.println("Invalid date format. Please enter the date in YYYY-MM-DD format.");
+    }
+}
+
+// Treatment End Date
+LocalDate treatmentEndDate;
+while (true) {
+    System.out.print("Enter Treatment End Date (YYYY-MM-DD, if applicable): ");
+    String treatmentEndDateInput = scanner.nextLine().trim();
     
-        System.out.print("Enter Treatment End Date (YYYY-MM-DD, if applicable): ");
-        String treatmentEndDateInput = scanner.nextLine().trim();
-        LocalDate treatmentEndDate = treatmentEndDateInput.isEmpty() ? null : LocalDate.parse(treatmentEndDateInput);
-    
+    if (treatmentEndDateInput.isEmpty()) {
+        treatmentEndDate = null; // No end date specified
+        break;
+    } else {
+        try {
+            treatmentEndDate = LocalDate.parse(treatmentEndDateInput);
+
+            // Check if the end date is after the start date
+            if (treatmentEndDate.isAfter(treatmentStartDate)) {
+                break; // Valid date, exit loop
+            } else {
+                System.out.println("Invalid date input. End date must be after the start date. Please try again.");
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please enter the date in YYYY-MM-DD format.");
+        }
+    }
+}
+
         String treatmentOutcome = null;
         String followUpInstructions = null;
     
