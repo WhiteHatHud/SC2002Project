@@ -46,7 +46,7 @@ public class AdminUI {
 
     public static void main(String[] args) {
         ApptData apptData = new ApptData();
-        ApptController apptController = new ApptController(apptData);
+        ApptController apptController = new ApptController();
 
         // Create the Admin UI and start the session
         AdminUI adminUI = new AdminUI(apptController);

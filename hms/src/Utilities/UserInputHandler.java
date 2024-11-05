@@ -14,23 +14,24 @@ public class UserInputHandler {
             return choice;
         }
 
-    public String getInputString() {
-        String input = "";
-        boolean valid = false;
-    
-        while (!valid) {
-            try {
-                input = sc.nextLine().trim(); // Read the next line and trim whitespace
-                if (input.matches(".*\\d.*")) { // Check if input contains any digits
-                    throw new IllegalArgumentException("Input should contain only letters.");
+        public String getInputString() {
+            String input = "";
+            boolean valid = false;
+        
+            while (!valid) {
+                try {
+                    input = sc.nextLine().trim(); // Read the next line and trim whitespace
+                    if (input.isEmpty()) { // Check if input is empty
+                        throw new IllegalArgumentException("Input cannot be empty.");
+                    }
+                    valid = true; // Set to true if no exception is thrown
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid input. Please enter a valid string.");
                 }
-                valid = true; // Set to true if no exception is thrown
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid input. Please enter letters only.");
             }
+            return input;
         }
-        return input;
-    }
+        
 
     public int getInputInt() {
         int input = 0;
