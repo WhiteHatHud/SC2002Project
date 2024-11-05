@@ -33,7 +33,7 @@ public class AuthStaff {
 
                     switch (role.toLowerCase()) {
                         case "pharmacist":
-                            return new Pharmacist(id, name, role, gender, age,officeNumber);
+                            return new Pharmacist(id, name, gender, age,officeNumber);
                         case "doctor":
                             return new Doctor(id, name, role, gender, age, officeNumber);
                         case "administrator":
