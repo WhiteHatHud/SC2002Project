@@ -4,9 +4,4 @@ PR002,P1002,Bob Stone,D002,Kop kun kap,2024-11-05,Hongthai:100,Pending,With wate
 PR003,P1002,Bob Stone,D002,Kop kun kap,2024-11-05,Aspirin:200,Pending,po
 PR004,P1002,Bob Stone,D002,Kop kun kap,2024-11-05,Aspirin:200,Pending,a
 PR005,P1002,Bob Stone,D002,Kop kun kap,2024-11-05,Aspirin:100,Pending,p
-PR006,P1002,Bob Stone,D002,Kop kun kap,2024-11-05,Paracetamol:100,Pending,1
-PR007,D001,P1002,Bob Stone,null,D002,a,Pending,huz
-PR008,D001,P1002,Bob Stone,null,D002,a,Pending,2
-PR009,2,P1002,Bob Stone,null,D002,no,Pending,No
-PR010,3,P1001,Alice Brown,null,D028,Death,Pending,Death
-PR011,4,P1001,Alice Brown,null,D028,Death,Pending,Take
+

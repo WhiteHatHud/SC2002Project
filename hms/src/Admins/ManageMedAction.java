@@ -3,66 +3,57 @@ import Login.DisplayManager;
 import Medicine.Medicine;
 import Medicine.MedicineData;
 import Medicine.MedicineUI;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 
-
-public class ManageMedicationInventoryAction implements MenuAction{
-
+public class ManageMedAction {
+    
     MedicineUI med = new MedicineUI();
     MedicineData data = new MedicineData();
+
+
     
-    public void execute() {
-        DisplayManager.clearScreen();
+
+    public void start() {
+        Scanner scanner = new Scanner(System.in);
         int choice;
 
         do {
-            System.out.println("=== Medication Inventory Management ===");
-            System.out.println("1. View Medication Inventory");
-            System.out.println("2. Add New Medication");
-            System.out.println("3. Update Medication Stock Level");
-            System.out.println("4. Remove Medication");
-            System.out.println("5. Update Low Stock Alert Level");
-            System.out.println("6. Approve Replenishment Requests");
-            System.out.println("7. Exit");
+            DisplayManager.clearScreen();
+            AdminShared.getDisplayManager().manageMedicationInvetoryMenu();
 
-            System.out.print("Please enter your choice: ");
-            choice = AdminShared.getUserInputHandler().getUserChoice();
-
+            choice = scanner.nextInt();
 
             switch (choice) {
-                case 1:
-                    viewInventory();
-                    break;
-                case 2:
-                    addMedication();
-                    break;
-                case 3:
-                    updateStockLevel();
-                    break;
-                case 4:
-                    removeMedication();
-                    break;
-                case 5:
-                    updateLowStockAlert();
-                    break;
-                case 6:
-                    approveReplenishmentRequests();
-                    break;
-                case 7:
-                    System.out.println("Exiting Medication Inventory Management.");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                case 1 -> viewInventory();
+                case 2 -> addMedication();
+                case 3 -> updateStockLevel();
+                case 4 -> removeMedication();
+                case 5 -> updateLowStockAlert();
+                case 6 -> approveReplenishmentRequests();
+                case 7 -> System.out.println("Exiting Medication Inventory Management.");
+                default -> System.out.println("Invalid choice. Please try again.");
             }
+
+            if (choice != 7) {
+                System.out.println("Press Enter to return to the menu...");
+                scanner.nextLine(); // Consume the newline
+                scanner.nextLine(); // Wait for Enter
+            }
+
         } while (choice != 7);
         
-
+        scanner.close();
     }
 
 
-private void viewInventory() {
+    private void viewInventory() {
+
     DisplayManager.clearScreen();
     System.out.println("Displaying current medication inventory...\n");
     med.displayAllMedicines();
@@ -266,7 +257,7 @@ public void approveReplenishmentRequests() {
     String medicineName = approvedRequest[1];
     int quantityToAdd = Integer.parseInt(approvedRequest[2]);
 
-
+    // Update the medicine inventory in the Medicine_List.csv
     List<String[]> inventory = new ArrayList<>();
     boolean medicineFound = false;
 
@@ -329,14 +320,5 @@ public void approveReplenishmentRequests() {
     }
 
     System.out.println("Request approved and inventory updated successfully for " + medicineName + ". \n");
-}
-
-
-@Override
-public String getDescription() {
-    return "Manage Inventory";
-}
-
-
-
+    }
 }

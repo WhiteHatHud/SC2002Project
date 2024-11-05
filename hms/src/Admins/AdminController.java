@@ -6,7 +6,8 @@ import Login.DisplayManager;
 import Pharmacists.Pharmacist;
 import Users.*;
 import Utilities.LogoutTimer;
-import java.util.Map;
+import java.util.*;
+
 
 public class AdminController implements ControllerInt {
     private final Admin admin;
@@ -41,7 +42,8 @@ public class AdminController implements ControllerInt {
                 manageApptDetails();
                 break;
             case 3: 
-                manageMedicalInventory();
+                ManageMedAction manage = new ManageMedAction();
+                manage.start();
                 break;
             case 4:
                 LogoutTimer.confirmLogout(); 
@@ -133,16 +135,65 @@ public class AdminController implements ControllerInt {
         System.out.println("Managing appointment details...");
         // Implement specific appointment management functionality here
     }
+    
+    private void displayAllStaff() { 
+        DisplayManager.clearScreen();
+        System.out.println("Choose sorting criteria:");
+        System.out.println("1. ID");
+        System.out.println("2. Name");
+        System.out.println("3. Role");
+        System.out.println("4. Gender");
+        System.out.println("5. Age");
+        System.out.print("Choose an attribute to sort by: ");
+        int attributeChoice = AdminShared.getUserInputHandler().getUserChoice();
+        
+        System.out.println("Choose sorting order:");
+        System.out.println("1. Ascending");
+        System.out.println("2. Descending");
+        System.out.print("Choose sorting order: ");
+        int orderChoice = AdminShared.getUserInputHandler().getUserChoice();
 
-    private void manageMedicalInventory() {
-        System.out.println("Managing medical inventory...");
-        // Implement specific medication inventory management functionality here
+        StaffData staffData = new StaffData();
+        List<Staff> staffList = staffData.getAllStaff();
+        
+
+        Comparator<Staff> comparator = null;
+        switch (attributeChoice) {
+            case 1: // Sort by ID
+                comparator = Comparator.comparing(Staff::getUserID);
+                break;
+            case 2: // Sort by Name
+                comparator = Comparator.comparing(Staff::getName);
+                break;
+            case 3: // Sort by Role
+                comparator = Comparator.comparing(Staff::getRole);
+                break;
+            case 4: // Sort by Gender
+                comparator = Comparator.comparing(Staff::getGender);
+                break;
+            case 5: // Sort by Age
+                comparator = Comparator.comparingInt(Staff::getAge);
+                break;
+            default:
+                System.out.println("Invalid attribute choice.");
+                return;
+        }
+
+        // Apply descending order if selected
+        if (orderChoice == 2) {
+            comparator = comparator.reversed();
+        }
+
+        // Sort the list
+        Collections.sort(staffList, comparator);
+
+        // Display sorted list
+        System.out.println("Sorted Staff List: \n");
+        for (Staff staff : staffList) {
+            System.out.println(staff);
+        }
     }
 
-    private void displayAllStaff() {
-        System.out.println("Displaying all hospital staff...");
-        // Implement logic to display all staff members
-    }
 
 
     private void addStaffMember(String role) {
