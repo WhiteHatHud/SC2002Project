@@ -1,15 +1,16 @@
 package appt;
-
 import java.util.Scanner;
 
-public class AdminUI {
-    private ApptController apptController;
-    private Scanner scanner;
 
-    public AdminUI(ApptController apptController) {
-        this.apptController = apptController;
-        this.scanner = new Scanner(System.in);
-    }
+
+
+public class AdminUI {
+    
+    Scanner scanner = new Scanner(System.in);
+    ApptController apptController = new ApptController();
+    
+        public AdminUI() {
+        }
 
     public void start() {
         boolean running = true;
@@ -42,14 +43,5 @@ public class AdminUI {
 
         // Call the method from ApptController to view and edit the doctor's schedule
         apptController.printDoctorScheduleOnDateAdmin(doctorID);
-    }
-
-    public static void main(String[] args) {
-        ApptData apptData = new ApptData();
-        ApptController apptController = new ApptController(apptData);
-
-        // Create the Admin UI and start the session
-        AdminUI adminUI = new AdminUI(apptController);
-        adminUI.start();
     }
 }

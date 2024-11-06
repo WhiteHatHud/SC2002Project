@@ -6,6 +6,8 @@ import Login.DisplayManager;
 import Pharmacists.Pharmacist;
 import Users.*;
 import Utilities.LogoutTimer;
+import appt.AdminUI;
+
 import java.util.*;
 
 
@@ -39,7 +41,9 @@ public class AdminController implements ControllerInt {
                 viewAndManageStaff();
                 break;
             case 2: 
-                manageApptDetails();
+                AdminUI ui = new AdminUI();
+                ui.start();
+                DisplayManager.clearScreen();
                 break;
             case 3: 
                 ManageMedAction manage = new ManageMedAction();
@@ -131,10 +135,6 @@ public class AdminController implements ControllerInt {
         }
     }
 
-    private void manageApptDetails() {
-        System.out.println("Managing appointment details...");
-        // Implement specific appointment management functionality here
-    }
     
     private void displayAllStaff() { 
         DisplayManager.clearScreen();

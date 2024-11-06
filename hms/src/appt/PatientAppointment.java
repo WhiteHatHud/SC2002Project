@@ -18,7 +18,7 @@ public class PatientAppointment extends Appointment {
         System.out.printf("Patient Name: %s\n", getPatientName());
         System.out.printf("Doctor Name: %s\n", getDoctorName());
         System.out.printf("Status: %s\n", getAppointmentStatus());
-        System.out.printf("Service: %s\n", getService() == null ? "N/A" : getService());
+        System.out.printf("Service: %s\n", getTreatmentPlan() == null ? "N/A" : getTreatmentPlan());
         System.out.printf("Medicine: %s\n", getMedicine() == null ? "N/A" : getMedicine());
         System.out.printf("Medicine Status: %s\n", getMedicineStatus() == null ? "N/A" : getMedicineStatus());
         System.out.printf("Notes: %s\n", getNotes() == null ? "N/A" : getNotes());

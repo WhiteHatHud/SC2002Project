@@ -4,6 +4,9 @@ import java.util.Calendar; // Ensures the format of the date and time when users
 import java.text.SimpleDateFormat;
 
 public abstract class Appointment {
+
+    protected String adminID;
+    protected String adminName;
     protected String appointmentID;
     protected Calendar appointmentTime; // Use Calendar to represent both date and time
     protected String patientID;
@@ -30,6 +33,15 @@ public abstract class Appointment {
     }
 
     // Common getters and setters
+
+    public String getAdminID() {
+        return adminID;
+    }
+
+    public void setAdminID(String adminName){
+        this.adminName = adminName;
+    }
+
     public String getAppointmentID() {
         return appointmentID;
     }
