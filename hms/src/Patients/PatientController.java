@@ -1,7 +1,10 @@
 package Patients;
 import Login.ControllerInt;
 import Login.DisplayFormat;
+import Login.DisplayManager;
 import Utilities.LogoutTimer;
+import appt.DoctorUI;
+import appt.PatientUI;
 
 public class PatientController implements ControllerInt {
     private Patient patient;
@@ -38,9 +41,9 @@ public class PatientController implements ControllerInt {
                 updateInfo.updatePersonalInformation();
                 break;
             case 3: //Manage appointment matters
-                ManageMedMatters manage = new ManageMedMatters(patient);
-                PatientShared.getDisplayManager().apptMenu();
-                manage.start();
+                PatientUI ui = new PatientUI(patient.getUserID(), patient.getName());
+                ui.start();
+                DisplayManager.clearScreen();
                 break;
             case 4: 
                 LogoutTimer.confirmLogout();

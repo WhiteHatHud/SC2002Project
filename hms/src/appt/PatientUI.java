@@ -3,14 +3,12 @@ package appt;
 import java.util.Scanner;
 
 public class PatientUI {
-    private ApptController apptController;
-    private Scanner scanner;
     private String patientID;
     private String patientName;
+    ApptController apptController = new ApptController();
+    Scanner scanner = new Scanner(System.in);
 
-    public PatientUI(ApptController apptController, String patientID, String patientName) {
-        this.apptController = apptController;
-        this.scanner = new Scanner(System.in);
+    public PatientUI( String patientID, String patientName) {
         this.patientID = patientID;
         this.patientName = patientName;
     }
@@ -83,15 +81,4 @@ public class PatientUI {
         apptController.printUpcomingPatientSessions(patientID, "patient"); // Call to view upcoming patient sessions
     }
 
-    public static void main(String[] args) {
-        ApptData apptData = new ApptData();
-        ApptController apptController = new ApptController();
-
-        // Sample patient details for testing
-        String patientID = "PT002";
-        String patientName = "Hud";
-
-        PatientUI patientUI = new PatientUI(apptController, patientID, patientName);
-        patientUI.start();
-    }
 }
