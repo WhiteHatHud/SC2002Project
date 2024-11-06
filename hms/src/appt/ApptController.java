@@ -1071,9 +1071,11 @@ public void manageCompletedSessions(String doctorID, boolean isEdit) {
             .filter(app -> app.getAppointmentStatus().equalsIgnoreCase(targetStatus))
             .toList();
 
+    // Check if there are any matching sessions
     if (targetAppointments.isEmpty()) {
-        System.out.println("No " + (isEdit ? "editable" : "newly completed") + " sessions available for updates.");
-        return;
+        System.out.println("No " + (isEdit ? "editable" : "newly completed") + " sessions available.");
+        System.out.println("Please choose another option.");
+        return; // Exit the method and return to the main menu
     }
 
     System.out.println("\nSelect a " + (isEdit ? "completed*" : "completed") + " session to " + (isEdit ? "edit" : "fill") + " details:");
@@ -1102,6 +1104,7 @@ public void manageCompletedSessions(String doctorID, boolean isEdit) {
     // Display and update details of the selected appointment
     displayAndFillAppointmentDetails(selectedAppointment, isEdit);
 }
+
 
 private void displayAndFillAppointmentDetails(Appointment selectedAppointment, boolean isEdit) {
     System.out.println("\nCurrent Appointment Details:");
