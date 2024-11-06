@@ -42,7 +42,6 @@ public class ApptData {
                 String[] data = line.split(",");
 
                 if (data.length < 7) {
-                    System.out.println("Skipping malformed row: " + line);
                     continue;
                 }
 
