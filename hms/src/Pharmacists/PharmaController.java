@@ -5,18 +5,23 @@ import Medicine.PrescriptionsUI;
 import Medicine.PrescriptionsUI.Action;
 import Utilities.UserInputHandler;
 import java.util.EnumSet;
+import Medicine.MedicineUI;
 
 public class PharmaController {
     private Pharmacist pharmacist;
     private PharmaDisplayManager displayManager;
     private PrescriptionsUI prescriptionsUI;
     private UserInputHandler inputHandler;
+    private RequestData requestData;
+    private MedicineUI medicineUI;
 
     public PharmaController(Pharmacist pharmacist) {
         this.pharmacist = pharmacist;
         this.displayManager = new PharmaDisplayManager();
         this.prescriptionsUI = new PrescriptionsUI(EnumSet.of(Action.VIEW_ALL, Action.VIEW_PATIENT, Action.UPDATE_STATUS));
         this.inputHandler = new UserInputHandler();
+        this.requestData = new RequestData();
+        this.medicineUI = new MedicineUI();
     }
 
     public void start() {
@@ -32,15 +37,18 @@ public class PharmaController {
     private boolean handleMainChoice(int choice) {
         switch (choice) {
             case 1:
-                updateAccountInformation();
+                viewAppointmentOutcomeRecord();
                 break;
             case 2:
-                handlePrescriptionsMenu();
+                prescriptionsUI.displayPrescriptionsMenu();
                 break;
             case 3:
-                handleMedicinesMenu();
+                medicineUI.displayAllMedicines();
                 break;
             case 4:
+                requestData.request(pharmacist.getUserID(), pharmacist.getName());
+                break;
+            case 5:
                 System.out.println("Logging out...");
                 return false;  // Exit the loop to log out
             default:
@@ -50,18 +58,7 @@ public class PharmaController {
         return true;
     }
 
-    private void updateAccountInformation() {
-        System.out.println("Updating account information...");
-        // Implement account update logic here
-    }
-
-    private void handlePrescriptionsMenu() {
-        // Delegate to PrescriptionsUI for prescription-related tasks
-        prescriptionsUI.displayPrescriptionsMenu();
-    }
-
-    private void handleMedicinesMenu() {
-        System.out.println("Opening Medicines Menu...");
-        // Implement medicine management logic here or delegate to a MedicinesUI class if necessary
+    private void viewAppointmentOutcomeRecord() {
+        // appointmentoutcomerecord logic
     }
 }

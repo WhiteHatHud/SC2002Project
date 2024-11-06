@@ -1,5 +1,6 @@
 package Medicine;
 
+import Login.DisplayFormat;
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,6 +8,7 @@ public class MedicineUI extends Medicine {
     MedicineData dataInterface = new MedicineData();
     
     public void displayAllMedicines() {
+        DisplayFormat.clearScreen();
         for (Medicine med : dataInterface.getAllMedicines()) {
             print(med);
         }
