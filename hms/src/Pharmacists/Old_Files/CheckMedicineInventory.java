@@ -1,6 +1,8 @@
-package Pharmacists;
+package Pharmacists.Old_Files;
 
 import java.util.Map;
+
+import Pharmacists.Old_Files.UpdateInventory.Medicine;
 
 public class CheckMedicineInventory {
     private final String medicineCsvFilePath = "Medicine_List.csv";
