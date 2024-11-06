@@ -954,13 +954,14 @@ public void printCompletedSessions(String doctorID) {
 
 //===========================Fill in Completed Sessions==============+
 
-public void fillCompletedSessions(String doctorID) {
+public void fillCompletedSessions(String doctorID, boolean isEdit) {
     List<Appointment> appointments = apptData.getAllAppointments();
 
-    // Filter for completed appointments specific to the doctor
+    // Filter for completed appointments specific to the doctor, including both "Completed" and "Completed*"
     List<Appointment> completedAppointments = appointments.stream()
             .filter(app -> app.getDoctorID().equals(doctorID))
-            .filter(app -> app.getAppointmentStatus().equalsIgnoreCase("Completed"))
+            .filter(app -> app.getAppointmentStatus().equalsIgnoreCase("Completed") 
+                        || app.getAppointmentStatus().equalsIgnoreCase("Completed*")) // Include both statuses
             .toList();
 
     if (completedAppointments.isEmpty()) {
@@ -968,7 +969,7 @@ public void fillCompletedSessions(String doctorID) {
         return;
     }
 
-    System.out.println("\nSelect a completed session to fill details:");
+    System.out.println("\nSelect a completed session to " + (isEdit ? "edit" : "fill") + " details:");
     for (int i = 0; i < completedAppointments.size(); i++) {
         Appointment app = completedAppointments.get(i);
         Calendar appointmentTime = app.getAppointmentTime();
@@ -979,7 +980,7 @@ public void fillCompletedSessions(String doctorID) {
                 i + 1, app.getAppointmentID(), appointmentDate, appointmentLocalTime, app.getPatientName());
     }
 
-    System.out.print("Enter the number of the session you want to fill details for: ");
+    System.out.print("Enter the number of the session you want to " + (isEdit ? "edit" : "fill") + " details for: ");
     int choice = scanner.nextInt();
     scanner.nextLine(); // Consume newline
 
@@ -991,7 +992,7 @@ public void fillCompletedSessions(String doctorID) {
     // Select the chosen completed appointment
     Appointment selectedAppointment = completedAppointments.get(choice - 1);
 
-    // Display a summary of the appointment details before filling
+    // Display a summary of the appointment details before filling or editing
     System.out.println("\nCurrent Appointment Details:");
     Calendar appointmentTime = selectedAppointment.getAppointmentTime();
     LocalDate appointmentDate = toLocalDate(appointmentTime);
@@ -1004,7 +1005,7 @@ public void fillCompletedSessions(String doctorID) {
     System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
     System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
 
-    // Prompt the doctor to fill in details for the completed appointment
+    // Prompt the doctor to fill or edit details for the completed appointment
     System.out.print("Do you want to update the outcome of the appointment? (y/n): ");
     if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
         System.out.print("Enter the outcome: ");
@@ -1035,7 +1036,12 @@ public void fillCompletedSessions(String doctorID) {
         selectedAppointment.setNotes(scanner.nextLine().trim());
     }
 
-    // Display summary of the filled details
+    // Update the appointment status if this is an edit
+    if (isEdit) {
+        selectedAppointment.setAppointmentStatus("Completed*");
+    }
+
+    // Display summary of the filled or edited details
     System.out.println("\nUpdated Appointment Summary:");
     System.out.printf("Appointment ID: %s\n", selectedAppointment.getAppointmentID());
     System.out.printf("Date: %s\n", appointmentDate);
@@ -1051,8 +1057,122 @@ public void fillCompletedSessions(String doctorID) {
 
     // Save the updated appointment to the CSV file
     apptData.updateAppointmentInCSV(selectedAppointment);
-    System.out.println("Appointment details filled and saved successfully.");
+    System.out.println("Appointment details " + (isEdit ? "edited" : "filled") + " and saved successfully.");
 }
+
+
+public void manageCompletedSessions(String doctorID, boolean isEdit) {
+    List<Appointment> appointments = apptData.getAllAppointments();
+    String targetStatus = isEdit ? "Completed*" : "Completed"; // Set target status based on edit mode
+
+    // Filter for appointments specific to the doctor and with the target status
+    List<Appointment> targetAppointments = appointments.stream()
+            .filter(app -> app.getDoctorID().equals(doctorID))
+            .filter(app -> app.getAppointmentStatus().equalsIgnoreCase(targetStatus))
+            .toList();
+
+    if (targetAppointments.isEmpty()) {
+        System.out.println("No " + (isEdit ? "editable" : "newly completed") + " sessions available for updates.");
+        return;
+    }
+
+    System.out.println("\nSelect a " + (isEdit ? "completed*" : "completed") + " session to " + (isEdit ? "edit" : "fill") + " details:");
+    for (int i = 0; i < targetAppointments.size(); i++) {
+        Appointment app = targetAppointments.get(i);
+        Calendar appointmentTime = app.getAppointmentTime();
+        LocalDate appointmentDate = toLocalDate(appointmentTime);
+        LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
+        
+        System.out.printf("%d. Appointment ID: %s | Date: %s | Time: %s | Patient: %s\n",
+                i + 1, app.getAppointmentID(), appointmentDate, appointmentLocalTime, app.getPatientName());
+    }
+
+    System.out.print("Enter the number of the session you want to " + (isEdit ? "edit" : "fill") + " details for: ");
+    int choice = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
+
+    if (choice < 1 || choice > targetAppointments.size()) {
+        System.out.println("Invalid selection. Returning to main menu...");
+        return;
+    }
+
+    // Select the chosen appointment
+    Appointment selectedAppointment = targetAppointments.get(choice - 1);
+
+    // Display and update details of the selected appointment
+    displayAndFillAppointmentDetails(selectedAppointment, isEdit);
+}
+
+private void displayAndFillAppointmentDetails(Appointment selectedAppointment, boolean isEdit) {
+    System.out.println("\nCurrent Appointment Details:");
+    Calendar appointmentTime = selectedAppointment.getAppointmentTime();
+    LocalDate appointmentDate = toLocalDate(appointmentTime);
+    LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
+    
+    System.out.printf("Appointment ID: %s\n", selectedAppointment.getAppointmentID());
+    System.out.printf("Date: %s\n", appointmentDate);
+    System.out.printf("Time: %s\n", appointmentLocalTime);
+    System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
+    System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
+    System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
+
+    // Prompt the doctor to fill or edit details for the appointment
+    System.out.print("Do you want to update the outcome of the appointment? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the outcome: ");
+        selectedAppointment.setDiagnosis(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to update the service provided? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the Treatment Plan: ");
+        selectedAppointment.setTreatmentPlan(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to update the prescribed medicine? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the medicine: ");
+        selectedAppointment.setMedicine(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to update the medicine status? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter the medicine status (Given/Not Given): ");
+        selectedAppointment.setMedicineStatus(scanner.nextLine().trim());
+    }
+
+    System.out.print("Do you want to add additional notes? (y/n): ");
+    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
+        System.out.print("Enter notes: ");
+        selectedAppointment.setNotes(scanner.nextLine().trim());
+    }
+
+    // Update the appointment status if this is an edit
+    if (isEdit) {
+        selectedAppointment.setAppointmentStatus("Completed*");
+    }
+
+    // Display summary of the filled or edited details
+    System.out.println("\nUpdated Appointment Summary:");
+    System.out.printf("Appointment ID: %s\n", selectedAppointment.getAppointmentID());
+    System.out.printf("Date: %s\n", appointmentDate);
+    System.out.printf("Time: %s\n", appointmentLocalTime);
+    System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
+    System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
+    System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
+    System.out.printf("Diagnosis: %s\n", selectedAppointment.getDiagnosis());
+    System.out.printf("Treatment Plan: %s\n", selectedAppointment.getTreatmentPlan());
+    System.out.printf("Prescribed Medicine: %s\n", selectedAppointment.getMedicine());
+    System.out.printf("Medicine Status: %s\n", selectedAppointment.getMedicineStatus());
+    System.out.printf("Additional Notes: %s\n", selectedAppointment.getNotes());
+
+    // Save the updated appointment to the CSV file
+    apptData.updateAppointmentInCSV(selectedAppointment);
+    System.out.println("Appointment details " + (isEdit ? "edited" : "filled") + " and saved successfully.");
+}
+
+
+
 
 //========================print for Patients===========================
 

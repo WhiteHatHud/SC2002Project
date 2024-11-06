@@ -1,11 +1,12 @@
 package appt;
 
 import Doctors.DoctorShared;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class DoctorUI {
     
-    private Scanner scanner;
     private String doctorID;
     private String doctorName;
     ApptController apptController = new ApptController();
@@ -18,12 +19,13 @@ public class DoctorUI {
     public void start() {
         boolean running = true;
         while (running) {
+            apptController.updateCompletedSessions();
             System.out.println("\nWelcome, Dr. " + doctorName);
             System.out.println("1. View/Edit Personal Schedule");
             System.out.println("2. Accept/Decline Appointment Requests");
             System.out.println("3. View Upcoming Appointments");
             System.out.println("4. View Cancelled Appointments by Patients");
-            System.out.println("5. Record Appointment Outcome");
+            System.out.println("5. Manage Appointment Outcome");
             System.out.println("6. Back to Menu"); // Option to go back to DoctorController
             System.out.print("Please select an option: ");
 
@@ -43,7 +45,6 @@ public class DoctorUI {
         }
     }
 
-
     private void viewPendingAppointments() {
         System.out.println("\nViewing Pending Appointments:");
         apptController.viewRequests("doctor", doctorID);
@@ -58,7 +59,38 @@ public class DoctorUI {
     // method to record the outcome of completed appointments
     private void recordAppointmentOutcome() {
         System.out.println("\nRecording Outcome for Completed Sessions:");
-        apptController.updateCompletedSessions();
-        apptController.fillCompletedSessions(doctorID);
+        System.out.println("1. Update New Completed Sessions");
+        System.out.println("2. Edit Existing Completed Sessions");
+        System.out.print("Please select an option: ");
+        
+        int choice;
+    
+        try {
+            choice = DoctorShared.getUserInputHandler().getUserChoice(); // Get user input for the choice
+    
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("Updating New Completed Sessions...");
+                    apptController.manageCompletedSessions(doctorID, false); // Pass false to update new sessions
+                }
+                case 2 -> {
+                    System.out.println("Editing Existing Completed Sessions...");
+                    apptController.manageCompletedSessions(doctorID, true); // Pass true to edit existing sessions
+                }
+                default -> System.out.println("Invalid choice. Returning to the main menu...");
+            }
+        } catch (InputMismatchException | NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number. Returning to the main menu...");
+        }
     }
+    
+    
+    // Helper method to clear the scanner buffer
+    private void clearScanner() {
+        try (Scanner scanner = new Scanner(System.in)) {
+            scanner.nextLine(); // Consume the newline or any remaining input in the buffer
+        }
+    }
+    
+    
 }
