@@ -1,68 +1,67 @@
 package Pharmacists;
 
-import Login.ControllerInt;
-import Login.DisplayFormat;
-import Utilities.LogoutTimer;
+import Login.DisplayManager;
+import Medicine.PrescriptionsUI;
+import Medicine.PrescriptionsUI.Action;
+import Utilities.UserInputHandler;
+import java.util.EnumSet;
 
-public class PharmaController implements ControllerInt {
-    private Pharmacist pharma;
+public class PharmaController {
+    private Pharmacist pharmacist;
+    private PharmaDisplayManager displayManager;
+    private PrescriptionsUI prescriptionsUI;
+    private UserInputHandler inputHandler;
 
-    public PharmaController(Pharmacist pharma) {
-        this.pharma = pharma;
+    public PharmaController(Pharmacist pharmacist) {
+        this.pharmacist = pharmacist;
+        this.displayManager = new PharmaDisplayManager();
+        this.prescriptionsUI = new PrescriptionsUI(EnumSet.of(Action.VIEW_ALL, Action.VIEW_PATIENT, Action.UPDATE_STATUS));
+        this.inputHandler = new UserInputHandler();
     }
 
-    public boolean start() {
-        DisplayFormat.clearScreen();
-        System.out.println("Welcome, " + pharma.getName());
-
+    public void start() {
         boolean isActive = true;
         while (isActive) {
-            PharmaShared.getDisplayManager().getDisplayMenu();
-            int choice = PharmaShared.getUserInputHandler().getUserChoice();
-            isActive = handleChoice(choice);
+            displayManager.displayMainMenu();  // Call display manager to show the main menu
+            int choice = inputHandler.getUserChoice();
+            isActive = handleMainChoice(choice);
         }
-
-        return false;
     }
 
-    @Override
-    public boolean handleChoice(int choice) {
-        DisplayFormat.clearScreen();
+    // Handle main menu choices from PharmaDisplayManager
+    private boolean handleMainChoice(int choice) {
         switch (choice) {
-            case 1: // update password ONLY
-            UpdatePassword update = new UpdatePassword();
-            update.start(pharma);
-            
-            break;
-
-            case 2: // View pending prescriptions
-                ViewPendingPrescriptions viewPrescriptions = new ViewPendingPrescriptions();
-                viewPrescriptions.displayPrescriptions();
+            case 1:
+                updateAccountInformation();
                 break;
-                
-            case 3: // Update prescription status
-                UpdatePrescriptionStatus updateStatus = new UpdatePrescriptionStatus(pharma);
-                updateStatus.promptUpdateStatus();
+            case 2:
+                handlePrescriptionsMenu();
                 break;
-                
-            case 4: // Check inventory
-                CheckMedicineInventory inventoryChecker = new CheckMedicineInventory();
-                inventoryChecker.displayInventory();
+            case 3:
+                handleMedicinesMenu();
                 break;
-                
-            case 5: // request for stock
-                SubmitRequest request = new SubmitRequest();
-                request.request(pharma.getUserID(),pharma.getName());
-                break;
-                
-            case 6: //logout
-                LogoutTimer.confirmLogout();
-                return false; 
+            case 4:
+                System.out.println("Logging out...");
+                return false;  // Exit the loop to log out
             default:
                 System.out.println("Invalid choice. Please try again.");
                 break;
         }
+        return true;
+    }
 
-        return true; // Continue session if choice is not logout
+    private void updateAccountInformation() {
+        System.out.println("Updating account information...");
+        // Implement account update logic here
+    }
+
+    private void handlePrescriptionsMenu() {
+        // Delegate to PrescriptionsUI for prescription-related tasks
+        prescriptionsUI.displayPrescriptionsMenu();
+    }
+
+    private void handleMedicinesMenu() {
+        System.out.println("Opening Medicines Menu...");
+        // Implement medicine management logic here or delegate to a MedicinesUI class if necessary
     }
 }
