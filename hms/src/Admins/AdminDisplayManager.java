@@ -7,7 +7,7 @@ public class AdminDisplayManager extends DisplayManager {
         //DisplayManager.clearScreen(); 
         System.out.println("1. View and Manage Staffs"); //done 
         System.out.println("2. Manage Appointment Details");// done 
-        System.out.println("3. Manage Medication Inventory");
+        System.out.println("3. Manage Medication Inventory"); // done
         System.out.println("4. Logout");
         System.out.print("Choose an option: ");
 

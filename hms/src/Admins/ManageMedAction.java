@@ -22,13 +22,14 @@ public class ManageMedAction {
     public void start() {
         Scanner scanner = new Scanner(System.in);
         int choice;
-
+    
         do {
             DisplayManager.clearScreen();
             AdminShared.getDisplayManager().manageMedicationInvetoryMenu();
-
+    
+            System.out.print("Please enter your choice: ");
             choice = scanner.nextInt();
-
+    
             switch (choice) {
                 case 1 -> viewInventory();
                 case 2 -> addMedication();
@@ -36,20 +37,22 @@ public class ManageMedAction {
                 case 4 -> removeMedication();
                 case 5 -> updateLowStockAlert();
                 case 6 -> approveReplenishmentRequests();
-                case 7 -> System.out.println("Exiting Medication Inventory Management.");
+                case 7 -> {
+                    System.out.println("Returning to the main menu...");
+                    return;  // Exit the start method to return to the main menu
+                }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
-
+    
             if (choice != 7) {
-                System.out.println("Press Enter to return to the menu...");
-                scanner.nextLine(); // Consume the newline
-                scanner.nextLine(); // Wait for Enter
+                System.out.println("Press Enter to return to the Manage Medication Inventory menu...");
+                scanner.nextLine();  // Consume the newline
+                scanner.nextLine();  // Wait for Enter
             }
-
-        } while (choice != 7);
-        
-        scanner.close();
+    
+        } while (true);
     }
+    
 
 
     private void viewInventory() {
@@ -244,7 +247,7 @@ public void approveReplenishmentRequests() {
 
     // Prompt the admin to select a request to approve
     Scanner scanner = new Scanner(System.in);
-    System.out.print("Enter the number of the request you want to approve: ");
+    System.out.print("Enter the ID of the request you want to approve: ");
     int choice = scanner.nextInt() - 1;
 
     if (choice < 0 || choice >= requests.size()) {
@@ -256,6 +259,14 @@ public void approveReplenishmentRequests() {
     String[] approvedRequest = requests.get(choice);
     String medicineName = approvedRequest[1];
     int quantityToAdd = Integer.parseInt(approvedRequest[2]);
+
+    // Confirm approval
+    System.out.printf("Are you sure you want to approve the request to add %d units of %s? (yes/no): ", quantityToAdd, medicineName);
+    String confirmation = scanner.next().trim().toLowerCase();
+    if (!confirmation.equals("yes")) {
+        System.out.println("Approval canceled.");
+        return;
+    }
 
     // Update the medicine inventory in the Medicine_List.csv
     List<String[]> inventory = new ArrayList<>();
@@ -305,7 +316,7 @@ public void approveReplenishmentRequests() {
         requests.get(i)[0] = String.valueOf(i + 1); 
     }
 
-    //Write the updated requests back to the request CSV
+    // Write the updated requests back to the request CSV
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(requestFilePath))) {
         writer.write("ID,Medicine Name,Quantity,PharmaID,PharmaName");
         writer.newLine();
@@ -319,6 +330,7 @@ public void approveReplenishmentRequests() {
         return;
     }
 
-    System.out.println("Request approved and inventory updated successfully for " + medicineName + ". \n");
-    }
+    System.out.println("Request approved and inventory updated successfully for " + medicineName + ".\n");
+}
+
 }

@@ -1,3 +1,2 @@
-ID,Medicine Name,Quantity,Requested by PharmaID,PharmaName
-1,Amoxicillin,109,P002,Christian Tan
-2,Paracetamol,100,P002,Christian NEW
+ID,Medicine Name,Quantity,PharmaID,PharmaName
+1,Paracetamol,100,P004,PPSDA

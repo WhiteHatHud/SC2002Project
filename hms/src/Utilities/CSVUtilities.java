@@ -167,4 +167,67 @@ public class CSVUtilities {
         }
         return null;
     }
+
+    public List<String> getPatientIDsUnderDoctorCare(String doctorID) {
+        List<String> patientIDs = new ArrayList<>();
+        String filepath = "Diagnosis.csv";
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            boolean isHeader = true;
+    
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip the header row
+                    continue;
+                }
+    
+                String[] data = line.split(",");
+                if (data.length > 3 && data[3].trim().equals(doctorID)) {
+                    String patientID = data[1].trim(); // Get PatientID from the second column
+                    if (!patientIDs.contains(patientID)) { // Avoid duplicates
+                        patientIDs.add(patientID);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file for doctor care: " + e.getMessage());
+        }
+    
+        return patientIDs;
+    }
+
+    public void getPatientInformation(String patientID) {
+        String patientFilePath = "Patient List CSV.csv"; // Path to the patient data CSV file
+    
+        try (BufferedReader br = new BufferedReader(new FileReader(patientFilePath))) {
+            String line;
+            boolean isHeader = true;
+    
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip the header row
+                    continue;
+                }
+    
+                String[] data = line.split(",");
+                if (data.length >= 8 && data[0].trim().equals(patientID)) {
+                    // Print patient information excluding the password (assuming password is the last field)
+                    System.out.println("Patient ID        : " + data[0].trim());
+                    System.out.println("Name              : " + data[1].trim());
+                    System.out.println("Date of Birth     : " + data[2].trim());
+                    System.out.println("Gender            : " + data[3].trim());
+                    System.out.println("Blood Type        : " + data[4].trim());
+                    System.out.println("Contact Info      : " + data[5].trim());
+                    System.out.println("Phone Number      : " + data[6].trim());
+                    System.out.println("Emergency Number  : " + data[7].trim());
+                    return;
+                }
+            }
+            System.out.println("No information found for Patient ID: " + patientID);
+        } catch (IOException e) {
+            System.out.println("Error reading patient CSV file: " + e.getMessage());
+        }
+    }
+    
+    
 }
