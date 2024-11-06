@@ -2,6 +2,7 @@ package Doctors;
 
 import Medicine.Medicine;
 import Medicine.MedicineData;
+import Medicine.MedicineUI;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,8 +37,9 @@ public class CreateRecord {
         System.out.println("Patient Name: " + patientName);
     
         String diagnosisID = generateDiagnosisID();
-        LocalDate diagnosisDate = LocalDate.now();
+
         
+        LocalDate diagnosisDate = LocalDate.now();
         System.out.println("Diagnosis Date (default is today, " + diagnosisDate + ")");
         System.out.print("Do you want to use a different date? (yes/no): ");
         String changeDate = scanner.nextLine().trim().toLowerCase();
@@ -51,13 +53,9 @@ public class CreateRecord {
         String diagnosisDescription = scanner.nextLine().trim();
     
         // Prescription selection from available medicines
+        MedicineUI medicineUI = new MedicineUI();
         MedicineData medicineData = new MedicineData();
         List<Medicine> availableMedicines = medicineData.getAllMedicines();
-    
-        if (availableMedicines.isEmpty()) {
-            System.out.println("No available medicines. Prescription cannot be created.");
-            return;
-        }
     
         System.out.println("Available Medicines:");
         for (int i = 0; i < availableMedicines.size(); i++) {
@@ -75,16 +73,16 @@ public class CreateRecord {
                     System.out.println("Invalid selection: " + choice.trim() + ". Record creation aborted.");
                     return;
                 }
-    
+        
                 // Get medicine name
                 String medicineName = availableMedicines.get(medicineIndex).getMedicineName();
-    
+        
                 // Prompt for dosage and validate
                 int dosage;
                 while (true) {
                     System.out.print("Enter dosage for " + medicineName + " (increments of 100): ");
                     dosage = Integer.parseInt(scanner.nextLine().trim());
-    
+        
                     // Check if dosage is in increments of 100
                     if (dosage % 100 == 0) {
                         break; // Exit loop if dosage is valid
@@ -92,7 +90,7 @@ public class CreateRecord {
                         System.out.println("Dosage must be in increments of 100. Please try again.");
                     }
                 }
-    
+        
                 // Add medicine and dosage to prescription list
                 prescriptions.add(medicineName + ":" + dosage);
             }
@@ -100,17 +98,16 @@ public class CreateRecord {
             System.out.println("Invalid input. Record creation aborted.");
             return;
         }
+        
     
-        // Convert selected medicines to a string for display and CSV storage
-        String prescription = prescriptions.isEmpty() ? "" : String.join("; ", prescriptions);
-        if (prescription.isEmpty()) {
-            System.out.println("No medicines selected for prescription. Record creation aborted.");
-            return;
-        }
-    
+        // Join selected medicines for display, separated by ";"
+        String prescription = String.join("; ", prescriptions);
+
         System.out.print("Notes for medication: ");
+
         String notes = scanner.nextLine().trim();
-    
+        System.out.println("");
+
         // Treatment Start and End Dates
         System.out.print("Enter Treatment Start Date (YYYY-MM-DD): ");
         LocalDate treatmentStartDate = LocalDate.parse(scanner.nextLine().trim());
@@ -119,44 +116,53 @@ public class CreateRecord {
         String treatmentEndDateInput = scanner.nextLine().trim();
         LocalDate treatmentEndDate = treatmentEndDateInput.isEmpty() ? null : LocalDate.parse(treatmentEndDateInput);
     
+        String treatmentOutcome = null;
+        String followUpInstructions = null;
+    
         // Display summary and confirm record creation
         System.out.println("\n--- Confirm Record ---");
         System.out.printf("Patient ID: %s\nPatient Name: %s\nDoctor ID: %s\nDiagnosis Date: %s\n" +
                         "Diagnosis Description: %s\nPrescription: %s\nTreatment Start Date: %s\n" +
-                        "Treatment End Date: %s\n",
+                        "Treatment End Date: %s\nTreatment Outcome: %s\nFollow-Up Instructions: %s\n",
                 patientID, patientName, doctorID, diagnosisDate, diagnosisDescription, prescription,
-                treatmentStartDate, treatmentEndDate);
+                treatmentStartDate, treatmentEndDate, treatmentOutcome, followUpInstructions);
     
         System.out.print("Save this record? (yes/no): ");
         String confirm = scanner.nextLine().trim().toLowerCase();
+
+        notes = "" ;
+
         if (confirm.equals("yes")) {
             // Store the data in an array
             String[] recordData = {
                 diagnosisID,
-                patientID,
-                patientName,
-                doctorID,
-                diagnosisDate.toString(),
+                patientID,//1
+                patientName, //2
+                doctorID,//3 
+                diagnosisDate.toString(),//4
                 diagnosisDescription,
-                prescription,
+                prescription,//6
                 treatmentStartDate.toString(),
-                (treatmentEndDate != null) ? treatmentEndDate.toString() : ""
+                (treatmentEndDate != null) ? treatmentEndDate.toString() : "",
+                treatmentOutcome != null ? treatmentOutcome : "",
+                followUpInstructions != null ? followUpInstructions : "",
+                notes
             };
     
-            // Pass the array to the CSV updater
-            DoctorShared.getCSVUpdater().addNewLineToAppt(recordData, "Diagnosis.csv");
-            createPrescriptionRecord(patientID, patientName, doctorID, DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID),
-                    diagnosisDate.toString(), prescription, notes);
-    
+            // Pass the array to the CSV updater HERE
+            DoctorShared.getCSVUpdater().addNewLineToAppt(recordData,"Diagnosis.csv");
+            String pID = generatePrescriptionID();
+            createPrescriptionRecord(pID, recordData[1],recordData[2], recordData[3] ,DoctorShared.getcsvUtilities2().getDoctorNameByID(recordData[3]),
+            recordData[4], recordData[6],notes);
+         
         } else {
             System.out.println("Record creation canceled.");
         }
     }
-    
 
  // Method to generate and save a prescription record i
- private void createPrescriptionRecord(String patientID, String patientName, String doctorID, String doctorName, String datePrescribed, String medications,String notes2) {
-    String prescriptionID = generatePrescriptionID(); // Generate a unique ID for the prescription
+ private void createPrescriptionRecord(String pID,String patientID, String patientName, String doctorID, String doctorName, String datePrescribed, String medications,String notes2) {
+    String prescriptionID = pID;
     String status = "Pending"; // Default status
     String notes = notes2;
 

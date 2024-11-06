@@ -1,6 +1,9 @@
-ID,PatientID, PatientName, DoctorID, DiagnosisDate, DiagnosisDescription, Prescription, TreatmentStartDate, TreatmentEndDate, TreatmentOutcome, FollowUpInstructions, Notes
-1,P1001,Alice Brown,D012,2024-11-04,Fat,Paracetamol, Aspirin, Ibuprofen,1111-11-11,,,,
-2,P1002,Bob Stone,D002,2024-11-05,no,Aspirin:200,1111-11-11,,,
-3,P1001,Alice Brown,D021,2024-11-06,Da,Paracetamol:200,1111-11-11,,,
-4,P1002,Bob Stone,D011,2024-11-06,Po,Paracetamol:100,1111-11-11,,,
-5,P1001,Alice Brown,D001,2024-11-06,DDDADAD,Aspirin:100; Bop:200,1111-11-11,
+DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Prescription,TreatmentStartDate,TreatmentEndDate,TreatmentOutcome,FollowUpInstructions,Notes
+1,P1002,Bob Stone,D002,2024-11-05,no,Aspirin:200,1111-11-11
+2,P1001,Alice Brown,D021,2024-11-06,adsadsadasd,POPO:200,1111-11-11
+3,P1002,Bob Stone,D011,2024-11-06,Po,Paracetamol:100,1111-11-11
+4,P1001,Alice Brown,D001,2024-11-06,DDDADAD,Aspirin:100; Bop:200,1111-11-11
+5,P1002,Bob Stone,D001,2024-11-06,DDDADAD,Aspirin:100; Bop:200,1111-11-11
+6,P1002,Bob Stone,D001,2024-11-06,hahahaha,Aspirin:100,1111-11-11
+7,P1001,Alice Brown,D001,2024-11-06,HAHAHHAHAHA,Aspirin:100,1111-11-11
+8,P1001,Alice Brown,D001,2024-11-06,POPOPOPOPO,Paracetamol:100; Aspirin:200; Bop:300,1111-11-11

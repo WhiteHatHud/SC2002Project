@@ -5,6 +5,7 @@ import Login.DisplayFormat;
 import Login.DisplayManager;
 import Utilities.LogoutTimer;
 import appt.DoctorUI;
+import java.util.List;
 
 public class DoctorController implements ControllerInt {
 
@@ -32,8 +33,9 @@ public class DoctorController implements ControllerInt {
     public boolean handleChoice(int choice) {
         DisplayFormat.clearScreen();
         switch (choice) {
-            case 1: // View patient record
-                
+            case 1:
+                //View patient under my care
+                viewPatientUnderMyCare();
                 break;
 
             case 2: // Create patient medical record
@@ -42,7 +44,8 @@ public class DoctorController implements ControllerInt {
                 break;
 
             case 3: // Update record
-                
+                UpdateRecord update = new UpdateRecord(doctor.getUserID());
+                update.updateRecord();
                 break;
 
             case 4: 
@@ -62,4 +65,27 @@ public class DoctorController implements ControllerInt {
 
         return true; // Continue session if choice is not logout
     }
+
+    public void viewPatientUnderMyCare() {
+        // Retrieve the list of patient IDs under the doctor’s care
+        List<String> patientIDs = DoctorShared.getcsvUtilities().getPatientIDsUnderDoctorCare(doctor.getUserID());
+    
+        // Check if there are any patients under the doctor’s care
+        if (patientIDs.isEmpty()) {
+            System.out.println("No patients found under your care.");
+            return;
+        }
+    
+        // Print the number of patients under the doctor's care
+        System.out.println("There are " + patientIDs.size() + " patients under your care.");
+        System.out.println("=== Patients Under Your Care ===");
+    
+        // Loop through each patient ID and print the patient's information
+        for (String patientID : patientIDs) {
+            System.out.println("\n--- Patient Information ---");
+            DoctorShared.getcsvUtilities().getPatientInformation(patientID);
+        }
+    }
+    
+    
 }
