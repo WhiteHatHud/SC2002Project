@@ -228,6 +228,184 @@ public class CSVUtilities {
             System.out.println("Error reading patient CSV file: " + e.getMessage());
         }
     }
+
+        public void updateDiagnosisRecord(String patientID, String diagnosisDescription, String prescription,
+                                          String treatmentEndDate, String treatmentOutcome,
+                                          String followUpInstructions, String notes) {
+            String filepath = "Diagnosis.csv";
+            List<String[]> records = new ArrayList<>();
+    
+            try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+                String line;
+                boolean isHeader = true;
+    
+                while ((line = br.readLine()) != null) {
+                    if (isHeader) {
+                        isHeader = false; // Skip the header row for processing
+                        if (!line.startsWith("DiagnosisID")) {
+                            records.add(line.split(",")); // Add any existing first line if it's not a header
+                        }
+                        continue;
+                    }
+    
+                    String[] record = line.split(",");
+    
+                    // If this record matches the given PatientID, update the specified fields
+                    if (record[1].trim().equals(patientID)) {
+                        if (diagnosisDescription != null && !diagnosisDescription.isEmpty()) {
+                            record[5] = diagnosisDescription;
+                        }
+                        if (prescription != null && !prescription.isEmpty()) {
+                            record[6] = prescription;
+                        }
+                        if (treatmentEndDate != null && !treatmentEndDate.isEmpty()) {
+                            record[8] = treatmentEndDate;
+                        }
+                        if (treatmentOutcome != null && !treatmentOutcome.isEmpty()) {
+                            record[9] = treatmentOutcome;
+                        }
+                        if (followUpInstructions != null && !followUpInstructions.isEmpty()) {
+                            record[10] = followUpInstructions;
+                        }
+                        if (notes != null && !notes.isEmpty()) {
+                            if (record.length > 11) {
+                                record[11] = notes;
+                            } else {
+                                record = Arrays.copyOf(record, 12); // Extend array to include Notes field
+                                record[11] = notes;
+                            }
+                        }
+                    }
+                    records.add(record);
+                }
+            } catch (IOException e) {
+                System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+                return;
+            }
+    
+            // Write updated records back to the Diagnosis.csv file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {
+                // Always write the header once
+                writer.write("DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription," +
+                             "Prescription,TreatmentStartDate,TreatmentEndDate,TreatmentOutcome,FollowUpInstructions,Notes");
+                writer.newLine();
+    
+                for (String[] record : records) {
+                    writer.write(String.join(",", record));
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Error saving updated diagnosis records: " + e.getMessage());
+            }
+        
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {
+                // Write header row only once
+                writer.write("DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription," +
+                             "Prescription,TreatmentStartDate,TreatmentEndDate,TreatmentOutcome,FollowUpInstructions,Notes");
+                writer.newLine();
+    
+                // Write all records
+                for (String[] record : records) {
+                    writer.write(String.join(",", record));
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Error saving updated diagnosis records: " + e.getMessage());
+            }
+        
+    }
+    
+    public boolean isPatientUnderDoctorCare(String patientID, String doctorID) {
+        String filepath = "Diagnosis.csv"; // Ensure this path is accurate
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip the header row
+                    continue;
+                }
+
+                String[] data = line.split(",");
+                
+                // Check if patientID and doctorID match the respective columns (assuming 2nd and 4th positions)
+                if (data.length > 3 && data[1].trim().equals(patientID) && data[3].trim().equals(doctorID)) {
+                    return true; // Patient is under this doctor’s care
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+        }
+
+        return false; // No matching record found
+    }
+
+    public List<String[]> getRecordsForPatientUnderDoctor(String patientID, String doctorID) {
+        List<String[]> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Diagnosis.csv"))) {
+            String line;
+            boolean isHeader = true;
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header
+                }
+                String[] record = line.split(",");
+                if (record[1].equals(patientID) && record[3].equals(doctorID)) {
+                    records.add(record);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+        }
+        return records;
+    }
+    
+    public void updateDiagnosisRecordByID(String diagnosisID, String diagnosisDescription, String prescription,
+                                          String treatmentEndDate, String treatmentOutcome,
+                                          String followUpInstructions, String notes) {
+        List<String[]> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Diagnosis.csv"))) {
+            String line;
+            boolean isHeader = true;
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    records.add(line.split(",")); // Add header
+                    continue;
+                }
+                String[] record = line.split(",");
+                if (record[0].equals(diagnosisID)) {
+                    // Update fields as needed
+                    if (diagnosisDescription != null) record[5] = diagnosisDescription;
+                    if (prescription != null) record[6] = prescription;
+                    if (treatmentEndDate != null) record[8] = treatmentEndDate;
+                    if (treatmentOutcome != null) record[9] = treatmentOutcome;
+                    if (followUpInstructions != null) record[10] = followUpInstructions;
+                    if (notes != null) record[11] = notes;
+                }
+                records.add(record);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+        }
+    
+        // Write updates back to CSV
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Diagnosis.csv"))) {
+            for (String[] record : records) {
+                writer.write(String.join(",", record));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving Diagnosis CSV file: " + e.getMessage());
+        }
+    }
+    
+
+    
     
     
 }

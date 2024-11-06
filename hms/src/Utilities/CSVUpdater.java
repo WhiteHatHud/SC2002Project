@@ -76,4 +76,26 @@ public class CSVUpdater {
             System.out.println("Error writing to CSV file: " + e.getMessage());
         }
     }
+    public void addNewLineToCSV(String[] data, String csvFilePath, int expectedFields) {
+        // Build a line with comma placeholders for empty fields
+        StringBuilder lineBuilder = new StringBuilder();
+        for (int i = 0; i < expectedFields; i++) {
+            if (i < data.length && data[i] != null && !data[i].isEmpty()) {
+                lineBuilder.append(data[i]);
+            }
+            lineBuilder.append(",");
+        }
+        // Remove the trailing comma
+        if (lineBuilder.length() > 0) {
+            lineBuilder.setLength(lineBuilder.length() - 1);
+        }
+        
+        // Write the line to the specified CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath, true))) {
+            writer.write(lineBuilder.toString());
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
 }
