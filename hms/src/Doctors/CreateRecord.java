@@ -157,9 +157,6 @@ while (true) {
         String treatmentOutcome = null;
         String followUpInstructions = null;
     
-        String treatmentOutcome = null;
-        String followUpInstructions = null;
-    
         // Display summary and confirm record creation
         System.out.println("\n--- Confirm Record ---");
         System.out.printf("Patient ID: %s\nPatient Name: %s\nDoctor ID: %s\nDiagnosis Date: %s\n" +
