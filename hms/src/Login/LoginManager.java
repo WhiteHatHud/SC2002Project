@@ -15,10 +15,14 @@ public class LoginManager {
 
     public void startLoginProcess() {
         LoginController loginController = new LoginController(displayManager, inputHandler, registries);
-        displayManager.showWelcomeScreen();
-        int userChoice = inputHandler.getUserChoice();
-        DisplayManager.clearScreen();
-        loginController.handleChoice(userChoice); 
-        
+        boolean showMainMenu = true;
+    
+        while (showMainMenu) {
+            DisplayManager.clearScreen();
+            displayManager.showWelcomeScreen();
+            int userChoice = inputHandler.getUserChoice();
+            DisplayManager.clearScreen();
+            showMainMenu = loginController.handleChoice(userChoice);
+        }
     }
 }
