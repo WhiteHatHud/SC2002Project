@@ -77,8 +77,8 @@ public class DoctorController implements ControllerInt {
         }
     
         // Print the number of patients under the doctor's care
-        System.out.println("There are " + patientIDs.size() + " patients under your care.");
-        System.out.println("=== Patients Under Your Care ===");
+        System.out.println("There are " + patientIDs.size() + " patient(s) under your care.");
+        System.out.println("=== Patient(s) Under Your Care ===");
     
         // Loop through each patient ID and print the patient's information
         for (String patientID : patientIDs) {

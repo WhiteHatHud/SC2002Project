@@ -23,19 +23,19 @@ public class UpdateRecord {
 
     public void updateRecord() {
         Scanner scanner = new Scanner(System.in);
-    
+        
         // Ask for the Patient ID
         System.out.print("Enter Patient ID to update record: ");
         String patientID = scanner.nextLine().trim();
-    
+        
         // Retrieve all records for this patient under the doctor's care
         List<String[]> matchingRecords = AdminShared.getCSVUtilities().getRecordsForPatientUnderDoctor(patientID, doctorID);
-    
+        
         if (matchingRecords.isEmpty()) {
             System.out.println("No record found for Patient ID " + patientID + " under your care.");
             return;
         }
-    
+        
         // Display options for multiple records and select one
         System.out.println("Found multiple records for Patient ID: " + patientID);
         for (int i = 0; i < matchingRecords.size(); i++) {
@@ -43,16 +43,24 @@ public class UpdateRecord {
             System.out.printf("%d. Diagnosis ID: %s, Diagnosis Date: %s, Description: %s%n", 
                               i + 1, record[0], record[4], record[5]);
         }
-    
+        
         int selectedRecordIndex = -1;
         while (selectedRecordIndex < 0 || selectedRecordIndex >= matchingRecords.size()) {
-            System.out.print("Select the record number you want to update: ");
+            System.out.print("Select the record number you want to update (or press ~ to return to the menu): ");
+            String input = scanner.nextLine().trim();
+            
+            if (input.equals("~")) {
+                System.out.println("Returning to the main menu...");
+                return; // Exit the method to return to the menu
+            }
+            
             try {
-                selectedRecordIndex = Integer.parseInt(scanner.nextLine().trim()) - 1;
+                selectedRecordIndex = Integer.parseInt(input) - 1;
             } catch (NumberFormatException e) {
                 System.out.println("Invalid selection. Please enter a valid record number.");
             }
         }
+        
     
         // Get the selected record
         String[] selectedRecord = matchingRecords.get(selectedRecordIndex);

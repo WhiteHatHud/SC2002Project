@@ -3,11 +3,12 @@ import Doctors.Doctor;
 import Login.ControllerInt;
 import Login.DisplayFormat;
 import Login.DisplayManager;
+import Patients.Patient;
+import Patients.PatientRegistry;
 import Pharmacists.Pharmacist;
 import Users.*;
 import Utilities.LogoutTimer;
 import appt.AdminUI;
-
 import java.util.*;
 
 
@@ -50,6 +51,9 @@ public class AdminController implements ControllerInt {
                 manage.start();
                 break;
             case 4:
+                registerNewPatient();
+                break;
+            case 5:
                 LogoutTimer.confirmLogout(); 
                 return false; 
             default:
@@ -343,6 +347,57 @@ public class AdminController implements ControllerInt {
         } else {
             System.out.println("Error: Staff removal failed.");
         }
+    }
+
+    public void registerNewPatient() {
+        System.out.println("=== Gather Patient Information ===");
+
+        // Array to store patient information
+        String[] patientData = new String[9];
+
+        // Collect patient information and store in the array
+        patientData[0] = AdminShared.getCSVUtilitiesPatient().generateLatestPatientID();
+        System.out.print("Patient is assinged ID: " + patientData[0]);
+
+        System.out.print("Enter Name: ");
+        patientData[1] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+        System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
+        patientData[2] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+        System.out.print("Enter Gender (M/F): ");
+        patientData[3] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+        System.out.print("Enter Blood Type (e.g., A+, O-, etc.): ");
+        patientData[4] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+        System.out.print("Enter Email: ");
+        patientData[5] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+        System.out.print("Enter Contact Number: ");
+        patientData[6] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+        System.out.print("Enter Emergency Contact Number: ");
+        patientData[7] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+        System.out.print("Password Will Be Set to The Default Password");
+        patientData[8] = "password";
+
+        AdminShared.getCSVUpdater().addNewPatient(patientData);
+        Patient newPatient = new Patient(
+            patientData[0], // Patient ID
+            patientData[1], // Name
+            patientData[2], // Date of Birth
+            patientData[3], // Gender
+            patientData[4], // Blood Type
+            patientData[5], // Email
+            patientData[6], // Contact Number
+            patientData[7], // Emergency Contact Number
+            patientData[8]  // Password
+        );
+        PatientRegistry pR = new PatientRegistry();
+        pR.addUser(newPatient);
+        
     }
     
 

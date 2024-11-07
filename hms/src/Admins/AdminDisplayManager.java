@@ -8,7 +8,8 @@ public class AdminDisplayManager extends DisplayManager {
         System.out.println("1. View and Manage Staffs"); //done 
         System.out.println("2. Manage Appointment Details");// done 
         System.out.println("3. Manage Medication Inventory"); // done
-        System.out.println("4. Logout");
+        System.out.println("4. Register a New Patient"); // done
+        System.out.println("5. Logout");
         System.out.print("Choose an option: ");
 
     }
