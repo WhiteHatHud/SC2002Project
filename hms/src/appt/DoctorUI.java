@@ -1,10 +1,7 @@
 package appt;
 
 import Doctors.DoctorShared;
-
 import java.util.InputMismatchException;
-import java.util.Scanner;
-
 public class DoctorUI {
     
     private String doctorID;
@@ -80,14 +77,4 @@ public class DoctorUI {
             System.out.println("Invalid input. Please enter a valid number. Returning to the main menu...");
         }
     }
-    
-    
-    // Helper method to clear the scanner buffer
-    private void clearScanner() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            scanner.nextLine(); // Consume the newline or any remaining input in the buffer
-        }
-    }
-    
-    
 }
