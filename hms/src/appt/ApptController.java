@@ -1,6 +1,8 @@
 package appt;
 
+import Doctors.CreateRecord;
 import Doctors.DoctorShared;
+import Login.DisplayManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -985,7 +987,7 @@ public void fillCompletedSessions(String doctorID, boolean isEdit) {
     scanner.nextLine(); // Consume newline
 
     if (choice < 1 || choice > completedAppointments.size()) {
-        System.out.println("Invalid selection. Returning to main menu...");
+        System.out.println("Invalid selection. Return2ing to main menu...");
         return;
     }
 
@@ -1005,59 +1007,10 @@ public void fillCompletedSessions(String doctorID, boolean isEdit) {
     System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
     System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
 
-    // Prompt the doctor to fill or edit details for the completed appointment
-    System.out.print("Do you want to update the outcome of the appointment? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the outcome: ");
-        selectedAppointment.setDiagnosis(scanner.nextLine().trim());
-    }
+    CreateRecord create = new CreateRecord(doctorID);
+    create.createRecord();
 
-    System.out.print("Do you want to update the service provided? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the Treatment Plan: ");
-        selectedAppointment.setTreatmentPlan(scanner.nextLine().trim());
-    }
-
-    System.out.print("Do you want to update the prescribed medicine? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the medicine: ");
-        selectedAppointment.setMedicine(scanner.nextLine().trim());
-    }
-
-    System.out.print("Do you want to update the medicine status? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the medicine status (Given/Not Given): ");
-        selectedAppointment.setMedicineStatus(scanner.nextLine().trim());
-    }
-
-    System.out.print("Do you want to add additional notes? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter notes: ");
-        selectedAppointment.setNotes(scanner.nextLine().trim());
-    }
-
-    // Update the appointment status if this is an edit
-    if (isEdit) {
-        selectedAppointment.setAppointmentStatus("Completed*");
-    }
-
-    // Display summary of the filled or edited details
-    System.out.println("\nUpdated Appointment Summary:");
-    System.out.printf("Appointment ID: %s\n", selectedAppointment.getAppointmentID());
-    System.out.printf("Date: %s\n", appointmentDate);
-    System.out.printf("Time: %s\n", appointmentLocalTime);
-    System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
-    System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
-    System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
-    System.out.printf("Diagnosis: %s\n", selectedAppointment.getDiagnosis());
-    System.out.printf("Treatment Plan: %s\n", selectedAppointment.getTreatmentPlan());
-    System.out.printf("Prescribed Medicine: %s\n", selectedAppointment.getMedicine());
-    System.out.printf("Medicine Status: %s\n", selectedAppointment.getMedicineStatus());
-    System.out.printf("Additional Notes: %s\n", selectedAppointment.getNotes());
-
-    // Save the updated appointment to the CSV file
-    apptData.updateAppointmentInCSV(selectedAppointment);
-    System.out.println("Appointment details " + (isEdit ? "edited" : "filled") + " and saved successfully.");
+    
 }
 
 
@@ -1102,11 +1055,11 @@ public void manageCompletedSessions(String doctorID, boolean isEdit) {
     Appointment selectedAppointment = targetAppointments.get(choice - 1);
 
     // Display and update details of the selected appointment
-    displayAndFillAppointmentDetails(selectedAppointment, isEdit);
+    displayAndFillAppointmentDetails(selectedAppointment, isEdit, doctorID);
 }
 
 
-private void displayAndFillAppointmentDetails(Appointment selectedAppointment, boolean isEdit) {
+private void displayAndFillAppointmentDetails(Appointment selectedAppointment, boolean isEdit, String doctorID) {
     System.out.println("\nCurrent Appointment Details:");
     Calendar appointmentTime = selectedAppointment.getAppointmentTime();
     LocalDate appointmentDate = toLocalDate(appointmentTime);
@@ -1117,61 +1070,15 @@ private void displayAndFillAppointmentDetails(Appointment selectedAppointment, b
     System.out.printf("Time: %s\n", appointmentLocalTime);
     System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
     System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
-    System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
 
-    // Prompt the doctor to fill or edit details for the appointment
-    System.out.print("Do you want to update the outcome of the appointment? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the outcome: ");
-        selectedAppointment.setDiagnosis(scanner.nextLine().trim());
-    }
-
-    System.out.print("Do you want to update the service provided? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the Treatment Plan: ");
-        selectedAppointment.setTreatmentPlan(scanner.nextLine().trim());
-    }
-
-    System.out.print("Do you want to update the prescribed medicine? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the medicine: ");
-        selectedAppointment.setMedicine(scanner.nextLine().trim());
-    }
-
-    System.out.print("Do you want to update the medicine status? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter the medicine status (Given/Not Given): ");
-        selectedAppointment.setMedicineStatus(scanner.nextLine().trim());
-    }
-
-    System.out.print("Do you want to add additional notes? (y/n): ");
-    if (scanner.nextLine().trim().equalsIgnoreCase("y")) {
-        System.out.print("Enter notes: ");
-        selectedAppointment.setNotes(scanner.nextLine().trim());
-    }
-
-    // Update the appointment status if this is an edit
-    if (isEdit) {
-        selectedAppointment.setAppointmentStatus("Completed*");
-    }
-
-    // Display summary of the filled or edited details
-    System.out.println("\nUpdated Appointment Summary:");
-    System.out.printf("Appointment ID: %s\n", selectedAppointment.getAppointmentID());
-    System.out.printf("Date: %s\n", appointmentDate);
-    System.out.printf("Time: %s\n", appointmentLocalTime);
-    System.out.printf("Patient ID: %s\n", selectedAppointment.getPatientID());
-    System.out.printf("Patient Name: %s\n", selectedAppointment.getPatientName());
-    System.out.printf("Status: %s\n", selectedAppointment.getAppointmentStatus());
-    System.out.printf("Diagnosis: %s\n", selectedAppointment.getDiagnosis());
-    System.out.printf("Treatment Plan: %s\n", selectedAppointment.getTreatmentPlan());
-    System.out.printf("Prescribed Medicine: %s\n", selectedAppointment.getMedicine());
-    System.out.printf("Medicine Status: %s\n", selectedAppointment.getMedicineStatus());
-    System.out.printf("Additional Notes: %s\n", selectedAppointment.getNotes());
 
     // Save the updated appointment to the CSV file
     apptData.updateAppointmentInCSV(selectedAppointment);
+    CreateRecord create = new CreateRecord(doctorID);
+    create.createRecord(selectedAppointment.getPatientID(),selectedAppointment.getPatientName());
+
     System.out.println("Appointment details " + (isEdit ? "edited" : "filled") + " and saved successfully.");
+    DisplayManager.clearScreen();
 }
 
 

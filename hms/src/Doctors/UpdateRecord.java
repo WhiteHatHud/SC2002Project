@@ -43,7 +43,7 @@ public class UpdateRecord {
             System.out.printf("%d. Diagnosis ID: %s, Diagnosis Date: %s, Description: %s%n", 
                               i + 1, record[0], record[4], record[5]);
         }
-        
+        System.out.println("");
         int selectedRecordIndex = -1;
         while (selectedRecordIndex < 0 || selectedRecordIndex >= matchingRecords.size()) {
             System.out.print("Select the record number you want to update (or press ~ to return to the menu): ");
