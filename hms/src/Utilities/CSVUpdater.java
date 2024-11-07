@@ -98,4 +98,39 @@ public class CSVUpdater {
             System.out.println("Error writing to CSV file: " + e.getMessage());
         }
     }
+    public void addNewPatient(String[] patientData) {
+        // Headers for patient CSV
+        String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information", "Number", "Emergency Number", "Password"};
+        
+        // Ensure the input data matches the number of expected fields
+        int expectedFields = headers.length;
+
+        if (patientData.length != expectedFields) {
+            System.out.println("Error: Patient data does not match the expected number of fields.");
+            return;
+        }
+
+        // Build a line with patient data
+        StringBuilder lineBuilder = new StringBuilder();
+        for (int i = 0; i < expectedFields; i++) {
+            if (i < patientData.length && patientData[i] != null && !patientData[i].isEmpty()) {
+                lineBuilder.append(patientData[i]);
+            }
+            lineBuilder.append(",");
+        }
+
+        // Remove the trailing comma
+        if (lineBuilder.length() > 0) {
+            lineBuilder.setLength(lineBuilder.length() - 1);
+        }
+
+        // Write the new line to the patient CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile, true))) {
+            writer.write(lineBuilder.toString());
+            writer.newLine();
+            System.out.println("New patient entry added successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
 }

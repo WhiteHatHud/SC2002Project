@@ -40,6 +40,38 @@ public class CSVUtilities {
 
         return roleCountMap;
     }
+    public String generateLatestPatientID() {
+        int highestID = 1000; 
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            // Skip the header line
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue; // Skip empty lines
+                }
+
+                String[] data = line.split(",");
+                if (data.length > 0 && data[0].startsWith("P")) {
+                    try {
+                        int currentID = Integer.parseInt(data[0].substring(1));
+                        if (currentID > highestID) {
+                            highestID = currentID; 
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping invalid ID format: " + data[0]);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+
+
+        return "P" + (highestID + 1);
+    }
 
     public String generateNewStaffID(String role, Map<String, Integer> roleCountMap) {
         String prefix;
@@ -403,6 +435,35 @@ public class CSVUtilities {
             System.out.println("Error saving Diagnosis CSV file: " + e.getMessage());
         }
     }
+
+    public List<String[]> getDiagnosisAndPrescriptionByPatientID(String patientID) {
+        List<String[]> result = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            // Read the header line and ignore it
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // Check if the line matches the given PatientID
+                if (data.length > 3 && data[1].equals(patientID)) {
+                    String[] diagnosisDetails = new String[3];
+                    diagnosisDetails[0] = data[5]; // DiagnosisDescription
+                    diagnosisDetails[1] = data[6]; // Prescription
+                    diagnosisDetails[2] = data[4] ; // date of diagnosis
+
+                    result.add(diagnosisDetails);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+
+        return result;
+    }
+
     
 
     

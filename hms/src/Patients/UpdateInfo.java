@@ -11,7 +11,6 @@ public class UpdateInfo {
 
     private void displayCurrentProfile() {
         patient.getProfile();
-
     }
 
     public void updatePersonalInformation() {
@@ -60,9 +59,11 @@ public class UpdateInfo {
         if (!newEmail.isBlank()) {
             patient.setEmail(newEmail);
             Login.DisplayFormat.clearScreen();
-            PatientShared.getCSVUpdater().updateField(patient.getUserID(),"Contact Information",newEmail);
+            PatientShared.getCSVUpdater().updateField(patient.getUserID(), "Contact Information", newEmail);
+            Login.DisplayFormat.clearScreen(); 
             System.out.println("Email updated successfully.");
         } else {
+            Login.DisplayFormat.clearScreen(); 
             System.out.println("Email remains unchanged.");
         }
     }
@@ -70,12 +71,19 @@ public class UpdateInfo {
     private void updateContactNumber() {
         System.out.print("New Contact Number (leave blank to keep current): ");
         String newContactNumber = PatientShared.getUserInputHandler().getInput();
-        if (!newContactNumber.isBlank()) {
+        
+        // Validate if the number is exactly 8 digits
+        if (!newContactNumber.isBlank() && newContactNumber.matches("\\d{8}")) {
             patient.setNumber(newContactNumber);
             Login.DisplayFormat.clearScreen();
-            PatientShared.getCSVUpdater().updateField(patient.getUserID(),"Number",newContactNumber);
+            PatientShared.getCSVUpdater().updateField(patient.getUserID(), "Number", newContactNumber);
+            Login.DisplayFormat.clearScreen(); 
             System.out.println("Contact number updated successfully.");
+        } else if (!newContactNumber.isBlank()) {
+            Login.DisplayFormat.clearScreen(); 
+            System.out.println("Invalid phone number!");
         } else {
+            Login.DisplayFormat.clearScreen(); 
             System.out.println("Contact number remains unchanged.");
         }
     }
@@ -83,12 +91,18 @@ public class UpdateInfo {
     private void updateEmergencyContact() {
         System.out.print("New Emergency Contact (leave blank to keep current): ");
         String newEmergencyContact = PatientShared.getUserInputHandler().getInput();
-        if (!newEmergencyContact.isBlank()) {
+        
+        // Validate if the emergency contact number is exactly 8 digits
+        if (!newEmergencyContact.isBlank() && newEmergencyContact.matches("\\d{8}")) {
             patient.setenumber(newEmergencyContact);
             Login.DisplayFormat.clearScreen();
-            PatientShared.getCSVUpdater().updateField(patient.getUserID(),"Emergency Number",newEmergencyContact);
+            PatientShared.getCSVUpdater().updateField(patient.getUserID(), "Emergency Number", newEmergencyContact);
             System.out.println("Emergency contact updated successfully.");
+        } else if (!newEmergencyContact.isBlank()) {
+            Login.DisplayFormat.clearScreen(); 
+            System.out.println("Invalid phone number! ");
         } else {
+            Login.DisplayFormat.clearScreen(); 
             System.out.println("Emergency contact remains unchanged.");
         }
     }
@@ -96,27 +110,43 @@ public class UpdateInfo {
     private void changePassword() {
         System.out.print("Enter Current Password: ");
         String currentPassword = PatientShared.getUserInputHandler().getInput();
-
+    
         // Verify current password
         if (!patient.getPassword().equals(currentPassword)) {
+            Login.DisplayFormat.clearScreen();
             System.out.println("Incorrect current password. Password change aborted.");
             return;
         }
-
+    
         // Prompt for new password
-        System.out.print("Enter New Password: ");
+        System.out.print("Enter New Password (Password must be more than 8 characters, include at least one symbol (!@#$), and contain at least one number.): " );
+        
         String newPassword = PatientShared.getUserInputHandler().getInput();
-
+    
+        // Check if the new password meets the requirements
+        if (newPassword.length() <= 8 || 
+            !newPassword.matches(".*[!@#$].*") || 
+            !newPassword.matches(".*\\d.*")) {
+            
+            Login.DisplayFormat.clearScreen();
+            System.out.println("Password must be more than 8 characters, include at least one symbol (!@#$), and contain at least one number. Password change aborted.");
+            return;
+        }
+    
         System.out.print("Confirm New Password: ");
         String confirmPassword = PatientShared.getUserInputHandler().getInput();
-
+    
         // Check if the new password matches the confirmation
         if (newPassword.equals(confirmPassword)) {
             patient.setPassword(newPassword);  // Update password in the patient object
             PatientShared.getCSVUpdater().updateField(patient.getUserID(), "Password", newPassword);
+            Login.DisplayFormat.clearScreen();
             System.out.println("Password updated successfully.");
         } else {
-            System.out.println("Passwords do not match. Password change aborted.");
+            Login.DisplayFormat.clearScreen();
+            System.out.println("Passwords do not match. Password change aborted!");
         }
     }
+    
+    
 }
