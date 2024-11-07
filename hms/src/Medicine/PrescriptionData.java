@@ -15,7 +15,7 @@ public class PrescriptionData {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
     private CSVUpdater csvUpdate = new CSVUpdater(FILE_PATH);
-    private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
+    //private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
     private List<Prescription> prescriptionList;
 
     public List<Prescription> getAllPrescriptions() {

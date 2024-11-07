@@ -1,5 +1,6 @@
 package Login;
 
+import ResetInfo.ResetPasswordController;
 import Utilities.UserInputHandler;
 import java.util.Map;
 
@@ -45,20 +46,22 @@ public class LoginController implements ControllerInt {
                         }
                     }
                 }
-                break;
+                return true;  // Signal to keep showing the main menu
 
             case 2:
                 System.out.println("Resetting password functionality...");
-                return true; // Continue to show main menu
+                ResetPasswordController resetPasswordController = new ResetPasswordController();
+                resetPasswordController.start();
+                return true;  // Return to the main menu after resetting password
 
             case 3:
                 System.out.println("System shutting down...");
                 System.exit(0);
-                break;
+                return false;  // Ends the program, won't return to menu
 
             default:
                 System.out.println("Invalid choice");
+                return true;  // Re-show the menu for invalid input
         }
-        return true;
     }
 }

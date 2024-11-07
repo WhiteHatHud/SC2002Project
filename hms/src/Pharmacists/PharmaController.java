@@ -1,6 +1,5 @@
 package Pharmacists;
 
-import Login.DisplayManager;
 import Medicine.PrescriptionsUI;
 import Medicine.PrescriptionsUI.Action;
 import Utilities.UserInputHandler;

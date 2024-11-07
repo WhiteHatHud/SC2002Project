@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StaffData {
-    private static final String FILE_PATH = "././Staff_List.csv";
+    private static final String FILE_PATH = "Staff_List.csv";
     Staff temp;
     public StaffData(){}
 
