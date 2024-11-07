@@ -11,6 +11,7 @@ public class PatientRegistry implements UserRegistry<Patient> {
     @Override
     public void addUser(Patient patient) {
         patients.add(patient);
+        
     }
 
     @Override

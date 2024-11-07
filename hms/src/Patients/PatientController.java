@@ -3,7 +3,6 @@ import Login.ControllerInt;
 import Login.DisplayFormat;
 import Login.DisplayManager;
 import Utilities.LogoutTimer;
-import appt.DoctorUI;
 import appt.PatientUI;
 
 public class PatientController implements ControllerInt {
@@ -57,4 +56,5 @@ public class PatientController implements ControllerInt {
         
         return true; // Continue session if choice is not logout
     }
+    
 }
