@@ -252,6 +252,7 @@ public class CSVUtilities {
                     System.out.println("Contact Info      : " + data[5].trim());
                     System.out.println("Phone Number      : " + data[6].trim());
                     System.out.println("Emergency Number  : " + data[7].trim());
+                    System.out.println("");
                     return;
                 }
             }
@@ -462,6 +463,64 @@ public class CSVUtilities {
         }
 
         return result;
+    }
+
+    public void updateDoctorNameInCSV(String doctorID, String newDoctorName, String csvFilePath, int idIndex, int nameIndex) {
+        List<String[]> records = new ArrayList<>();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+            String line;
+            boolean isHeader = true;
+            
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                
+                // Add header directly if it's the first line
+                if (isHeader) {
+                    isHeader = false;
+                    records.add(data);
+                    continue;
+                }
+                
+                // Check if the doctor ID matches the given ID
+                if (data.length > idIndex && data[idIndex].trim().equals(doctorID)) {
+                    // Update the doctor's name
+                    data[nameIndex] = newDoctorName;
+                }
+                
+                // Add the (potentially modified) record to the list
+                records.add(data);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+            return;
+        }
+
+        // Write the updated data back to the CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath))) {
+            for (String[] record : records) {
+                writer.write(String.join(",", record));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+        }
+        
+        System.out.println("Doctor's name is updated!");
+    }
+
+    public void updateDoctorNameInAllCSVs(String doctorID, String newDoctorName) {
+        // Update in appointments.csv (index 4 is doctor ID, 5 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "Appointment.csv", 4, 5);
+
+        // Update in Diagnosis.csv (index 2 is doctor ID, 3 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "Diagnosis.csv", 2, 3);
+
+        // Update in Staff_List.csv (index 1 is doctor ID, 2 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "Staff_List.csv", 1, 2);
+
+        // Update in To be To be prescribed.csv (index 3 is doctor ID, 4 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "To be prescribed.csv", 3, 4);
     }
 
     

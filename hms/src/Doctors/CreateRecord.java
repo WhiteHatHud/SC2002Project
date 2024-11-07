@@ -22,6 +22,161 @@ public class CreateRecord {
         this.doctorID = doctorID;
     }
 
+    public void createRecord(String patientID, String patientName) {
+        String diagnosisID = generateDiagnosisID();
+        LocalDate diagnosisDate = LocalDate.now();
+        System.out.println("Creating a record for patient ID: " + patientID );
+        System.out.println("Patient Name: " + patientName);
+
+        System.out.println("Diagnosis Date (default is today, " + diagnosisDate + ")");
+        System.out.print("Do you want to use a different date? (yes/no): ");
+        String changeDate = scanner.nextLine().trim().toLowerCase();
+        if (changeDate.equals("yes")) {
+            System.out.print("Enter Diagnosis Date (YYYY-MM-DD): ");
+            try {
+                diagnosisDate = LocalDate.parse(scanner.nextLine().trim());
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Using default date.");
+            }
+        }
+    
+         // Diagnosis Description
+         System.out.print("Enter Diagnosis Description: ");
+         String diagnosisDescription = scanner.nextLine().trim();
+ 
+         // Prescription selection from available medicines
+         MedicineData medicineData = new MedicineData();
+         List<Medicine> availableMedicines = medicineData.getAllMedicines();
+ 
+         System.out.println("Available Medicines:");
+         for (int i = 0; i < availableMedicines.size(); i++) {
+             System.out.printf("%d. %s\n", i + 1, availableMedicines.get(i).getMedicineName());
+         }
+ 
+         System.out.print("Select medicines for Prescription by entering their numbers (comma-separated): ");
+         String[] medicineChoices = scanner.nextLine().trim().split(",");
+         List<String> prescriptions = new ArrayList<>();
+ 
+         try {
+             for (String choice : medicineChoices) {
+                 int medicineIndex = Integer.parseInt(choice.trim()) - 1;
+                 if (medicineIndex < 0 || medicineIndex >= availableMedicines.size()) {
+                     System.out.println("Invalid selection: " + choice.trim() + ". Record creation aborted.");
+                     return;
+                 }
+ 
+                 String medicineName = availableMedicines.get(medicineIndex).getMedicineName();
+ 
+                 // Prompt for dosage and validate
+                 int dosage;
+                 while (true) {
+                     System.out.print("Enter dosage for " + medicineName + " (increments of 100): ");
+                     dosage = Integer.parseInt(scanner.nextLine().trim());
+ 
+                     if (dosage % 100 == 0) {
+                         break;
+                     } else {
+                         System.out.println("Dosage must be in increments of 100. Please try again.");
+                     }
+                 }
+ 
+                 // Add medicine and dosage to prescription list
+                 prescriptions.add(medicineName + ":" + dosage);
+             }
+         } catch (NumberFormatException e) {
+             System.out.println("Invalid input. Record creation aborted.");
+             return;
+         }
+ 
+         // Join selected medicines, separated by ";"
+         String prescription = String.join("; ", prescriptions);
+ 
+         System.out.print("Notes for medication: ");
+         String notes = scanner.nextLine().trim();
+ 
+         // Treatment Start and End Dates
+         LocalDate treatmentStartDate;
+         while (true) {
+             System.out.print("Enter Treatment Start Date (YYYY-MM-DD): ");
+             try {
+                 treatmentStartDate = LocalDate.parse(scanner.nextLine().trim());
+                 if (!treatmentStartDate.isBefore(LocalDate.now())) {
+                     break;
+                 } else {
+                     System.out.println("Start date must be today or in the future. Please try again.");
+                 }
+             } catch (DateTimeParseException e) {
+                 System.out.println("Invalid date format. Please enter the date in YYYY-MM-DD format.");
+             }
+         }
+ 
+         LocalDate treatmentEndDate;
+         while (true) {
+             System.out.print("Enter Treatment End Date (YYYY-MM-DD, if applicable): ");
+             String treatmentEndDateInput = scanner.nextLine().trim();
+ 
+             if (treatmentEndDateInput.isEmpty()) {
+                 treatmentEndDate = null;
+                 break;
+             } else {
+                 try {
+                     treatmentEndDate = LocalDate.parse(treatmentEndDateInput);
+                     if (treatmentEndDate.isAfter(treatmentStartDate)) {
+                         break;
+                     } else {
+                         System.out.println("End date must be after the start date. Please try again.");
+                     }
+                 } catch (DateTimeParseException e) {
+                     System.out.println("Invalid date format. Please enter the date in YYYY-MM-DD format.");
+                 }
+             }
+         }
+ 
+         String treatmentOutcome = null;
+         String followUpInstructions = null;
+ 
+         // Display summary and confirm record creation
+         System.out.println("\n--- Confirm Record ---");
+         System.out.printf("Patient ID: %s\nPatient Name: %s\nDoctor ID: %s\nDiagnosis Date: %s\n" +
+                         "Diagnosis Description: %s\nPrescription: %s\nTreatment Start Date: %s\n" +
+                         "Treatment End Date: %s\nTreatment Outcome: %s\nFollow-Up Instructions: %s\n",
+                 patientID, patientName, doctorID, diagnosisDate, diagnosisDescription, prescription,
+                 treatmentStartDate, treatmentEndDate, treatmentOutcome, followUpInstructions);
+ 
+         System.out.print("Save this record? (yes/no): ");
+         String confirm = scanner.nextLine().trim().toLowerCase();
+ 
+         notes = notes.isEmpty() ? "" : notes;  // Ensure empty fields are set to empty strings
+ 
+         if (confirm.equals("yes")) {
+             // Ensure each field is non-null or empty
+             String[] recordData = {
+                     diagnosisID,
+                     patientID != null ? patientID : "",
+                     patientName != null ? patientName : "",
+                     doctorID != null ? doctorID : "",
+                     diagnosisDate != null ? diagnosisDate.toString() : "",
+                     diagnosisDescription != null ? diagnosisDescription : "",
+                     prescription != null ? prescription : "",
+                     treatmentStartDate != null ? treatmentStartDate.toString() : "",
+                     (treatmentEndDate != null) ? treatmentEndDate.toString() : "",
+                     treatmentOutcome,
+                     followUpInstructions,
+                     notes
+             };
+ 
+             String pID = generatePrescriptionID();
+ 
+             DoctorShared.getCSVUpdater().addNewLineToCSV(recordData, "Diagnosis.csv", 12);
+ 
+             createPrescriptionRecord(pID, patientID, patientName, doctorID, DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID),
+                     diagnosisDate.toString(), prescription, notes);
+             //ystem.out.println("Record saved successfully.");
+         } else {
+             System.out.println("Record creation canceled.");
+         }
+     }
+
     public void createRecord() {
         System.out.println("=== Create Patient Diagnosis and Treatment Record ===");
 
@@ -50,6 +205,7 @@ public class CreateRecord {
                 System.out.println("Invalid date format. Using default date.");
             }
         }
+        
 
         // Diagnosis Description
         System.out.print("Enter Diagnosis Description: ");
@@ -182,7 +338,7 @@ public class CreateRecord {
 
             createPrescriptionRecord(pID, patientID, patientName, doctorID, DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID),
                     diagnosisDate.toString(), prescription, notes);
-            System.out.println("Record saved successfully.");
+            //System.out.println("Record saved successfully.");
         } else {
             System.out.println("Record creation canceled.");
         }
@@ -212,7 +368,7 @@ public class CreateRecord {
             }
             writer.write(recordLine);
             writer.newLine();
-            System.out.println("Prescription record saved successfully!");
+            System.out.println("Prescription sent to pharmacist!");
         } catch (IOException e) {
             System.out.println("Error writing to Prescription CSV file: " + e.getMessage());
         }

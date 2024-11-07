@@ -36,7 +36,7 @@ public class AdminController implements ControllerInt {
 
     @Override
     public boolean handleChoice(int choice) {
-        DisplayFormat.clearScreen();
+
         switch (choice) {
             case 1: 
                 viewAndManageStaff();
@@ -53,9 +53,14 @@ public class AdminController implements ControllerInt {
             case 4:
                 registerNewPatient();
                 break;
-            case 5:
-                LogoutTimer.confirmLogout(); 
-                return false; 
+            case 5: // Logout
+                if (LogoutTimer.confirmLogout()) {
+                    return false; // Ends the session only if logout is confirmed
+                } else {
+                    DisplayManager.clearScreen();
+                    
+                    return true; // Continue the session without printing additional messages
+                }
             default:
                 //Login.DisplayManager.invalidChoice();
                 break;
@@ -69,6 +74,7 @@ public class AdminController implements ControllerInt {
             AdminShared.getDisplayManager().getViewAndManageStaffMenu();
             int staffChoice = AdminShared.getUserInputHandler().getUserChoice();
             switch (staffChoice) {
+                
                 case 1:
                     manageDoctors();
                     break;
@@ -119,7 +125,9 @@ public class AdminController implements ControllerInt {
             AdminShared.getDisplayManager().getManagePharma();
             int pharmacistChoice = AdminShared.getUserInputHandler().getUserChoice();
             String role = "Pharmacist";
+            DisplayManager.clearScreen();
             switch (pharmacistChoice) {
+                
                 case 1:
                     addStaffMember(role);
                     break;
@@ -249,14 +257,11 @@ public class AdminController implements ControllerInt {
             System.out.println(role + " added successfully with ID: " + staffID);
         }
     }
-
-    
     private void updateStaffInfo(String role) {
         System.out.println("Updating " + role.toLowerCase() + " information...");
         System.out.print("Enter " + role + " ID to update: ");
         String staffID = AdminShared.getUserInputHandler().getInput();
     
-
         String idPrefix = role.equalsIgnoreCase("Doctor") ? "D" : "P";
         if (!staffID.startsWith(idPrefix)) {
             System.out.println("Error: Invalid " + role + " ID. " + role + " IDs must start with '" + idPrefix + "'.");
@@ -287,31 +292,26 @@ public class AdminController implements ControllerInt {
                 case 1:
                     fieldName = "Name";
                     break;
-
                 case 2:
                     fieldName = "Gender";
                     break;
-
                 case 3:
                     fieldName = "Age";
                     break;
-
                 case 4:
                     fieldName = "Office Number";
                     break;
-
                 case 5:
                     fieldName = "Password";
                     break;
-
                 case 6:
                     continueUpdating = false; // Exit the loop
+                    DisplayManager.clearScreen();
                     System.out.println("Finished updating.");
-                    continue; 
-
+                    continue;
                 default:
                     System.out.println("Invalid choice. Please enter a number between 1 and 6.");
-                    continue; 
+                    continue;
             }
     
             if (fieldName != null) {
@@ -321,9 +321,15 @@ public class AdminController implements ControllerInt {
                 // Update the specified field for the given Staff ID
                 AdminShared.getCSVUpdater().updateField(staffID, fieldName, newValue);
                 System.out.println(fieldName + " updated successfully for " + role + " ID " + staffID + ".");
+    
+                // If the name was updated, propagate the change to all relevant CSVs
+                if (fieldName.equals("Name")) {
+                    AdminShared.getCSVUtilities().updateDoctorNameInAllCSVs(staffID, newValue);
+                }
             }
         }
     }
+    
 
     public void removeStaff() {
         System.out.print("Enter Staff ID to remove: ");
@@ -347,6 +353,7 @@ public class AdminController implements ControllerInt {
         } else {
             System.out.println("Error: Staff removal failed.");
         }
+
     }
 
     public void registerNewPatient() {
@@ -397,6 +404,7 @@ public class AdminController implements ControllerInt {
         );
         PatientRegistry pR = new PatientRegistry();
         pR.addUser(newPatient);
+
         
     }
     

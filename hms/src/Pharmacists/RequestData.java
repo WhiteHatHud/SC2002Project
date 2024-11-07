@@ -51,7 +51,7 @@ public class RequestData {
         
         String selectedMedicine = medicinesArray[choice - 1];
 
-        System.out.print("Enter the quantity of " + selectedMedicine + " to request: ");
+        System.out.print("Enter the quantity of " + selectedMedicine + " to request (1=100mg): ");
         int quantity = scanner.nextInt();
         
         if (quantity <= 0) {

@@ -2,6 +2,7 @@ package Pharmacists;
 
 import Medicine.PrescriptionsUI;
 import Medicine.PrescriptionsUI.Action;
+import Utilities.LogoutTimer;
 import Utilities.UserInputHandler;
 import java.util.EnumSet;
 import Medicine.MedicineUI;
@@ -32,8 +33,9 @@ public class PharmaController {
         }
     }
 
-    // Handle main menu choices from PharmaDisplayManager
     private boolean handleMainChoice(int choice) {
+        DisplayManager.clearScreen();
+
         switch (choice) {
             case 1:
                 viewAppointmentOutcomeRecord();
@@ -47,9 +49,16 @@ public class PharmaController {
             case 4:
                 requestData.request(pharmacist.getUserID(), pharmacist.getName());
                 break;
-            case 5:
-                System.out.println("Logging out...");
-                return false;  // Exit the loop to log out
+
+            case 5: // Logout
+            
+                if (LogoutTimer.confirmLogout()) {
+                    return false; // Ends the session only if logout is confirmed
+                } else {
+                    DisplayManager.clearScreen();
+                    return true; // Continue the session without printing additional messages
+                }
+
             default:
                 System.out.println("Invalid choice. Please try again.");
                 break;
