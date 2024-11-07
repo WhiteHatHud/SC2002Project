@@ -2,6 +2,9 @@ package appt;
 
 import java.util.Scanner;
 
+import Doctors.DoctorShared;
+import Patients.PatientShared;
+
 public class PatientUI {
     private String patientID;
     private String patientName;
@@ -16,10 +19,10 @@ public class PatientUI {
     public void start() {
         boolean running = true;
         while (running) {
-            System.out.println("\nWelcome, " + patientName);
+            System.out.println("Welcome, " + patientName);
             System.out.println("1. View My Appointments");
             System.out.println("2. Book a New Appointment");
-            System.out.println("3. View Pending Appointments");
+            System.out.println("3. Accept/Decline Appointments");
             System.out.println("4. View Canceled Appointments");
             System.out.println("5. View Completed Appointment Outcomes");
             System.out.println("6. View Upcoming Sessions"); // New option for upcoming sessions
@@ -50,16 +53,20 @@ public class PatientUI {
         System.out.print("Enter Doctor ID: ");
         String doctorID = scanner.nextLine().trim();
 
-        System.out.print("Enter Doctor Name: ");
-        String doctorName = scanner.nextLine().trim();
+        String doctorName = PatientShared.getCSVUtilities().getDoctorNameByID(doctorID);
+        if (doctorName == null || doctorName.isEmpty()) {
+            System.out.println("Error: Doctor ID not found. Please check the ID and try again.");
+            return; // Exit if the patient does not exist
+        }
+        System.out.println("The Doctor name is: " + doctorName);
 
         // Call ApptController's bookNewAppointment with patient and doctor details
-        apptController.bookNewAppointment(patientID, patientName, doctorID, doctorName);
+        apptController.bookNewAppointment(patientID, patientName, doctorID, doctorName, "Patient");
     }
 
     // Method to view pending appointments with status 'PendingToPatient'
     private void viewPendingAppointments() {
-        System.out.println("\nViewing Pending Appointments:");
+        System.out.println("\nShowing Pending Appointments:");
         apptController.viewRequests("patient", patientID); // Pass "patient" as the userType
     }
 
