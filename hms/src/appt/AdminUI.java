@@ -1,9 +1,5 @@
 package appt;
 import java.util.Scanner;
-
-
-
-
 public class AdminUI {
     
     Scanner scanner = new Scanner(System.in);
