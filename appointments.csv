@@ -28,7 +28,7 @@ A0040,2024-11-05 14:00,BLOCKED,N/A,D024,bap,Blocked,,,,,
 A0041,2024-11-04 23:30,BLOCKED,N/A,D024,bap,Blocked,,,,,
 A0042,2024-11-06 09:00,BLOCKED,N/A,D024,bap,Blocked,,,,,
 A0043,2024-11-06 09:00,P1001,Alice Brown,D028,asd,Completed,Hay,fein,fein,fein,fein
-A0044,2024-11-06 14:00,P1001,Alice Brown,D028,asd,PendingToDoctor,,,,,
+A0044,2024-11-07 11:00,P1001,Alice Brown,D028,asd,Completed,,,,,
 A0045,2024-11-03 09:00,P1001,Alice Brown,D028,asd,Completed,Gay,Gay,fin,fin,
 A0047,0001-01-01 00:00,P1001,Alice Brown,D027,pa,Cancelled by Patient Alice Brown, ID P1001 on Session: 2024-11-11 14:00,Cancelled,,,
 A0048,0001-01-01 00:00,P1001,Alice Brown,D011,pol,Cancelled by Patient Alice Brown, ID P1001 on Session: 2024-11-07 11:00,Cancelled,,,
