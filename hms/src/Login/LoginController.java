@@ -50,8 +50,8 @@ public class LoginController implements ControllerInt {
 
             case 2:
                 System.out.println("Resetting password functionality...");
-                ResetPasswordController resetPasswordController = new ResetPasswordController();
-                resetPasswordController.start();
+                //ResetPasswordController resetPasswordController = new ResetPasswordController();
+                //resetPasswordController.start();
                 return true;  // Return to the main menu after resetting password
 
             case 3:
