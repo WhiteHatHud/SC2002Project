@@ -1,6 +1,6 @@
 DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Prescription,TreatmentStartDate,TreatmentEndDate,TreatmentOutcome,FollowUpInstructions,Notes
 1,P1001,Alice Brown,D001,2024-11-06,new new,Malaypill:100,2024-12-12,2020-11-01,recovered,daily,none
-2,P1002,Bob Stone,D001,2024-11-06,NEW FAT,Paracetamol:100; Aspirin:200,2024-12-12,,,,NEW FAT
-3,P1003,Bob Stone,D002,2024-11-06,PIPI,Paracetamol:200; Aspirin:400; Bop:600,2024-12-12,2025-12-12,THIS NEW,THIS NEW,THIS NEW
-4,P1002,Bob Stone,D002,2024-11-06,HUD,MED:100,2024-12-12,HUD,HUD,HUD,HUD
+2,P1002,Bob Stone,D002,2024-11-06,NEW FAT,Paracetamol:100; Aspirin:200,2024-12-12,,,,NEW FAT
+3,P1003,Charlie White,D002,2024-11-06,PIPI,Paracetamol:200; Aspirin:400; Bop:600,2024-12-12,2025-12-12,THIS NEW,THIS NEW,THIS NEW
+4,P1002,Bob Stone,D002,2024-11-06,He died,Paracetamol:100; Aspirin:200; Bop:300,2024-12-12,2024-12-12,He died,He died,Burn him
 5,P1001,Alice Brown,D024,2024-11-08,He is fat,Aspirin:100; Bop:200; Malaypill:300,2024-12-12,,,,Take with water

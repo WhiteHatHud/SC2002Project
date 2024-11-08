@@ -464,6 +464,34 @@ public class CSVUtilities {
 
         return result;
     }
+    public List<String[]> getDiagnosisAndPrescriptionByPatientID(String patientID, String doctorID) {
+        List<String[]> result = new ArrayList<>();
+    
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            // Read the header line and ignore it
+            br.readLine();
+    
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+    
+                // Check if the line matches the given PatientID and DoctorID
+                if (data.length > 4 && data[1].equals(patientID) && data[3].equals(doctorID)) {
+                    String[] diagnosisDetails = new String[3];
+                    diagnosisDetails[0] = data[5]; // DiagnosisDescription
+                    diagnosisDetails[1] = data[6]; // Prescription
+                    diagnosisDetails[2] = data[4]; // Date of diagnosis
+    
+                    result.add(diagnosisDetails);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+    
+        return result;
+    }
+    
 
     public void updateDoctorNameInCSV(String doctorID, String newDoctorName, String csvFilePath, int idIndex, int nameIndex) {
         List<String[]> records = new ArrayList<>();
