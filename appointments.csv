@@ -38,3 +38,4 @@ A0048,0001-01-01 00:00,P1001,Alice Brown,D028,asd,Cancelled by Dr. asd, ID D028 
 A0049,2024-11-08 09:00,BLOCKED,N/A,D028,asd,Blocked,,,,,
 A0050,2024-11-08 11:00,BLOCKED,N/A,D028,asd,Blocked,,,,,
 A0051,2024-11-08 14:00,BLOCKED,N/A,D028,asd,Blocked,,,,,
+A0052,2024-11-08 09:00,P1001,Alice Brown,D027,bad guy,PendingToDoctor,,,,,

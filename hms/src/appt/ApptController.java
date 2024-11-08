@@ -53,28 +53,28 @@ public class ApptController {
     }
 
     // Helper method to get session status
-private String getSessionStatus(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
-    for (Appointment appointment : appointments) {
-        LocalDate appointmentDate = toLocalDate(appointment.getAppointmentTime());
-        LocalTime appointmentLocalTime = toLocalTime(appointment.getAppointmentTime());
-
-        // Check if the appointment matches the date, time, and doctorID
-        if (appointmentDate.equals(date) && 
-            appointmentLocalTime.equals(sessionTime) && 
-            appointment.getDoctorID().equals(doctorID)) {
-            
-            // Check if the session is blocked
-            if (appointment.getAppointmentStatus().equalsIgnoreCase("Blocked")) {
-                return "Blocked";
+    private String getSessionStatus(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
+        for (Appointment appointment : appointments) {
+            LocalDate appointmentDate = toLocalDate(appointment.getAppointmentTime());
+            LocalTime appointmentLocalTime = toLocalTime(appointment.getAppointmentTime());
+    
+            // Check if the appointment matches the date, time, and doctorID
+            if (appointmentDate.equals(date) && 
+                appointmentLocalTime.equals(sessionTime) && 
+                appointment.getDoctorID().equals(doctorID)) {
+                
+                // Check if the session is blocked
+                if (appointment.getAppointmentStatus().equalsIgnoreCase("Blocked")) {
+                    return "Blocked";
+                }
+                // Otherwise, it is booked
+                return "Booked";
             }
-            // Otherwise, it is booked
-            return "Booked";
         }
+        // If no matching appointment is found for the given doctor, the session is available
+        return "Available"; 
     }
-    // If no matching appointment is found for the given doctor, the session is available
-    return "Available"; 
-}
-
+    
     
     public void rescheduleAppointmentByPatient(String patientID) {
         System.out.println("\n--- Reschedule an Appointment ---");
@@ -128,7 +128,7 @@ private String getSessionStatus(List<Appointment> appointments, LocalDate date, 
         }
     
         // Check if the selected session is available
-        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, doctorID);
         if (!sessionStatus.equalsIgnoreCase("Available")) {
             System.out.println("Selected session is not available. Please choose another session.");
             return;
@@ -218,44 +218,45 @@ public void printDoctorScheduleOnDate(String doctorID) {
 }
 
 
-    private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
-        List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
+private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
+    List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
 
-        LocalTime[] sessions = {
-            LocalTime.of(9, 0),
-            LocalTime.of(11, 0),
-            LocalTime.of(14, 0)
-        };
-    
-        // Display available sessions with their statuses
-        for (int i = 0; i < sessions.length; i++) {
-            String status = getSessionStatus(appointments, date, sessions[i]);
-            System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
-        }
-    
-        System.out.println("--------------------");
-        System.out.print("Select a session to view details (1-3) or '~' to return: ");
-        String input = scanner.nextLine().trim();
-    
-        if (input.equals("~")) {
-            System.out.println("Returning to the previous menu...");
+    LocalTime[] sessions = {
+        LocalTime.of(9, 0),
+        LocalTime.of(11, 0),
+        LocalTime.of(14, 0)
+    };
+
+    // Display available sessions with their statuses, passing doctorID to getSessionStatus
+    for (int i = 0; i < sessions.length; i++) {
+        String status = getSessionStatus(appointments, date, sessions[i], doctorID); // Updated call to include doctorID
+        System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
+    }
+
+    System.out.println("--------------------");
+    System.out.print("Select a session to view details (1-3) or '~' to return: ");
+    String input = scanner.nextLine().trim();
+
+    if (input.equals("~")) {
+        System.out.println("Returning to the previous menu...");
+        return;
+    }
+
+    try {
+        int sessionChoice = Integer.parseInt(input);
+
+        if (sessionChoice < 1 || sessionChoice > 3) {
+            System.out.println("Invalid selection. Please try again.");
             return;
         }
-    
-        try {
-            int sessionChoice = Integer.parseInt(input);
-    
-            if (sessionChoice < 1 || sessionChoice > 3) {
-                System.out.println("Invalid selection. Please try again.");
-                return;
-            }
-    
-            LocalTime selectedSession = sessions[sessionChoice - 1];
-            printSessionDetailsAndManage(appointments, date, selectedSession,doctorID);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
-        }
+
+        LocalTime selectedSession = sessions[sessionChoice - 1];
+        printSessionDetailsAndManage(appointments, date, selectedSession, doctorID); // Pass doctorID here as well
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
     }
+}
+
     
     private LocalTime selectSessionFromDate(LocalDate date, String doctorID) {
     List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
@@ -269,7 +270,7 @@ public void printDoctorScheduleOnDate(String doctorID) {
     System.out.println("====================");
 
     for (int i = 0; i < sessions.length; i++) {
-        String status = getSessionStatus(appointments, date, sessions[i]);
+        String status = getSessionStatus(appointments, date, sessions[i], doctorID);
         System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
     }
 
@@ -344,7 +345,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
 
     // Check session status to decide if we should allow creation or blocking
-    String status = getSessionStatus(appointments, date, sessionTime);
+    String status = getSessionStatus(appointments, date, sessionTime, doctorID);
 
     // Offer options based on the session status
     switch (status) {
@@ -432,11 +433,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     
         // Check if the session is available specifically for the given doctor ID
-        String status = getSessionStatus(
-                apptData.getAllAppointments().stream()
-                        .filter(app -> app.getDoctorID().equals(doctorID))
-                        .toList(),
-                date, time);
+        String status = getSessionStatus(apptData.getAllAppointments(), date, time, doctorID);
     
         if (status.equals("Available")) {
             Calendar appointmentTime = Calendar.getInstance();
@@ -663,7 +660,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     
         // Check if the new session is available
-        String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+        String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, appointment.getDoctorID());
     
         if (!status.equalsIgnoreCase("Available")) {
             System.out.println("Selected session is not available. Please choose another session.");
@@ -782,7 +779,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     
         // Check the status of the selected session
-        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), appointmentDate, appointmentTime);
+        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), appointmentDate, appointmentTime, doctorID);
         if (!sessionStatus.equalsIgnoreCase("Available")) {
             System.out.println("Error: The selected session is already " + sessionStatus + ". Please choose another session.");
             return;
@@ -1380,7 +1377,7 @@ private void viewSessionDetailsForDateAdmin(LocalDate date, String doctorID) {
 
     // Display sessions with admin-level editing capabilities
     for (int i = 0; i < sessions.length; i++) {
-        String status = getSessionStatus(appointments, date, sessions[i]);
+        String status = getSessionStatus(appointments, date, sessions[i], doctorID);
         System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
     }
 
@@ -1411,7 +1408,7 @@ private void viewSessionDetailsForDateAdmin(LocalDate date, String doctorID) {
 private void printSessionDetailsAndManageAdmin(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
     printSessionDetailsForDate(date, sessionTime, doctorID);
 
-    String status = getSessionStatus(appointments, date, sessionTime);
+    String status = getSessionStatus(appointments, date, sessionTime, doctorID);
 
     // Handle options based on the session status with admin privileges
     switch (status) {
@@ -1557,7 +1554,7 @@ private void rescheduleAppointmentByPatient(Appointment appointment, String user
     }
 
     // Check if the new session is available
-    String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+    String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, appointment.getDoctorID());
     System.out.println("Debug: Selected session status is: " + status);  // Debugging output
 
     if (!status.equalsIgnoreCase("Available")) {
