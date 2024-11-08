@@ -17,8 +17,6 @@ public class PatientShared {
         return csvUtilities2;
     }
     
-    
-    
     public static CSVUtilities getCSVUtilities() {
         return csvUtilities;
     }

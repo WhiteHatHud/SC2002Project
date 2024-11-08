@@ -211,7 +211,7 @@ private void updateLowStockAlert() {
 
     // Update the low stock level alert
     med.updateLowStockLevelAlert(name, newLowStockLevel);
-    System.out.println("Low stock alert level for " + name + " has been updated to " + newLowStockLevel + ".");
+    //System.out.println("Low stock alert level for " + name + " has been updated to " + newLowStockLevel + ".");
 }
 public void approveReplenishmentRequests() {
     String requestFilePath = "././RequestFromPharma.csv";
