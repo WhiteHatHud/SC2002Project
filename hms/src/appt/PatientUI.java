@@ -25,21 +25,23 @@ public class PatientUI {
             System.out.println("3. Accept/Decline Appointments");
             System.out.println("4. View Canceled Appointments");
             System.out.println("5. View Completed Appointment Outcomes");
-            System.out.println("6. View Upcoming Sessions"); // New option for upcoming sessions
-            System.out.println("7. Exit");
+            System.out.println("6. View Upcoming Sessions");
+            System.out.println("7. Reschedule/Cancel Appointments"); // New option for rescheduling/canceling
+            System.out.println("8. Exit");
             System.out.print("Please select an option: ");
-
+    
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
-
+    
             switch (choice) {
-                case 1 -> apptController.printPatientAppointments(patientID); // View all appointments
-                case 2 -> bookNewAppointment(); // Book a new appointment using patient and doctor info
-                case 3 -> viewPendingAppointments(); // View pending appointments
-                case 4 -> viewCanceledAppointments(); // View canceled appointments
-                case 5 -> viewCompletedOutcomes(); // View completed appointment outcomes
-                case 6 -> viewUpcomingSessions(); // View upcoming sessions
-                case 7 -> {
+                case 1 -> apptController.printPatientAppointments(patientID);
+                case 2 -> bookNewAppointment();
+                case 3 -> viewPendingAppointments();
+                case 4 -> viewCanceledAppointments();
+                case 5 -> viewCompletedOutcomes();
+                case 6 -> viewUpcomingSessions();
+                case 7 -> rescheduleOrCancelAppointment(); // New case for rescheduling or canceling appointments
+                case 8 -> {
                     running = false;
                     System.out.println("Goodbye, " + patientName + "!");
                 }
@@ -47,6 +49,7 @@ public class PatientUI {
             }
         }
     }
+    
 
     // Method to book a new appointment, prompting for doctor details
     private void bookNewAppointment() {
@@ -87,5 +90,12 @@ public class PatientUI {
         System.out.println("\nViewing Upcoming Sessions:");
         apptController.printUpcomingPatientSessions(patientID, "patient"); // Call to view upcoming patient sessions
     }
+
+    // Method to reschedule or cancel an appointment
+private void rescheduleOrCancelAppointment() {
+    System.out.println("\nReschedule or Cancel Appointments:");
+    apptController.cancelOrRescheduleAppointment(patientID);
+}
+
 
 }
