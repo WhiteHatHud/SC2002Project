@@ -48,11 +48,11 @@ public class LoginController implements ControllerInt {
                 }
                 return true;  // Signal to keep showing the main menu
 
-            case 2:
-                System.out.println("Resetting password functionality...");
-                ResetPasswordController resetPasswordController = new ResetPasswordController();
-                resetPasswordController.start();
-                return true;  // Return to the main menu after resetting password
+            // case 2:
+            //     System.out.println("Resetting password functionality...");
+            //     ResetPasswordController resetPasswordController = new ResetPasswordController();
+            //     resetPasswordController.start();
+            //     return true;  // Return to the main menu after resetting password
 
             case 3:
                 System.out.println("System shutting down...");
