@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-public class SubmitRequest {
+public class RequestData {
 
     public void request(String pharmaID, String pharmaName) {
         Set<String> medicineList = new HashSet<>();
@@ -45,16 +45,18 @@ public class SubmitRequest {
         
         if (choice < 1 || choice > medicinesArray.length) {
             System.out.println("Invalid choice. Exiting request.");
+            scanner.close();
             return;
         }
         
         String selectedMedicine = medicinesArray[choice - 1];
 
-        System.out.print("Enter the quantity of " + selectedMedicine + " to request: ");
+        System.out.print("Enter the quantity of " + selectedMedicine + " to request (1=100mg): ");
         int quantity = scanner.nextInt();
         
         if (quantity <= 0) {
             System.out.println("Invalid quantity. Exiting request.");
+            scanner.close();
             return;
         }
 
@@ -65,6 +67,7 @@ public class SubmitRequest {
 
         // Call the method to write to Req CSV
         writeToRequestFile(selectedMedicine, quantity, pharmaID, pharmaName);
+        scanner.close();
     }
 
     private void writeToRequestFile(String medicineName, int quantity, String pharmaID, String pharmaName) {
@@ -111,6 +114,5 @@ public class SubmitRequest {
             System.out.println("Error writing to RequestFromPharma.csv: " + e.getMessage());
         }
     }
-    
     
 }

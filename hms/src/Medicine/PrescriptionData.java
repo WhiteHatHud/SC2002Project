@@ -1,109 +1,153 @@
 package Medicine;
 
+import Utilities.CSVUpdater;
+import Utilities.CSVUtilities;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PrescriptionData {
-    private static final String FILE_PATH = "././Prescriptions_List.csv";
-    List<Prescription> prescriptionList;
-    public List<Prescription> getAllPrescriptions(){
+    private static final String FILE_PATH = "To be prescribed.csv";
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    private CSVUpdater csvUpdate = new CSVUpdater(FILE_PATH);
+    //private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
+    private List<Prescription> prescriptionList;
+
+    public List<Prescription> getAllPrescriptions() {
         prescriptionList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
-            reader.readLine();
-            // Skip header row
+            reader.readLine(); // Skip header row
             while ((line = reader.readLine()) != null) {
-                // System.out.println("Reading line: " + line); // Debugging print statement
                 String[] data = line.split(",");
-                if (data.length < 3) {
-                    //System.out.println("Skipping incomplete line: " + line); // Debugging print for skipped lines
-                    continue;
-                }
+                if (data.length < 9) continue;
+
                 try {
-                    int prescriptionAmount = Integer.parseInt(data[4].trim());
-                    boolean status = Boolean.parseBoolean(data[4]);
-                    Prescription pres = new Prescription(data[0], data[1], data[2], data[3], prescriptionAmount, status);
+                    // Parsing each field based on the CSV structure
+                    String prescriptionID = data[0].trim();
+                    String patientID = data[1].trim();
+                    String patientName = data[2].trim();
+                    String doctorID = data[3].trim();
+                    String doctorName = data[4].trim();
+                    LocalDate datePrescribed = LocalDate.parse(data[5].trim(), DATE_FORMAT);
+                    Map<String, Integer> medications = parseMedications(data[6].trim());
+                    String status = data[7].trim();
+                    String notes = data[8].trim();
+
+                    // Creating a new Prescription object with parsed data
+                    Prescription pres = new Prescription(prescriptionID, patientID, patientName, doctorID, 
+                                                         doctorName, datePrescribed, medications, status, notes);
                     prescriptionList.add(pres);
-                } catch (NumberFormatException e) {
-                    System.out.println("Skipping line due to number format error: " + line);
+                } catch (Exception e) {
+                    System.out.println("Skipping line due to parsing error: " + line);
                     e.printStackTrace();
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading CSV file: " + e.getMessage());
         }
         return prescriptionList;
-    }  
-    public List<Prescription> getPatientPrescriptionList(String patientID){
+    }
+
+    private Map<String, Integer> parseMedications(String medicationsStr) {
+        Map<String, Integer> medicationsMap = new HashMap<>();
+        String[] medicationsArray = medicationsStr.split(";");
+        
+        for (String medication : medicationsArray) {
+            String[] parts = medication.trim().split(":");
+            if (parts.length == 2) {
+                String medName = parts[0].trim();
+                int dosage = Integer.parseInt(parts[1].trim());
+                medicationsMap.put(medName, dosage);
+            }
+        }
+        
+        return medicationsMap;
+    }
+
+    // The rest of the methods remain unchanged
+
+    public List<Prescription> getPatientPrescriptionList(String patientID) {
         prescriptionList = getAllPrescriptions();
-        prescriptionList.removeIf(n -> (!n.getPatientID().equals(patientID)));
+        prescriptionList.removeIf(n -> !n.getPatientID().equals(patientID));
         return prescriptionList;
     }
-    public Prescription getPatientPrescription(String patientID, String medicineID){
+
+    public Prescription getPatientPrescription(String patientID, String medicineID) {
         prescriptionList = getPatientPrescriptionList(patientID);
-        for (Prescription pres : prescriptionList){
-            if(pres.getMedicineName().equals(medicineID)) return pres;
+        for (Prescription pres : prescriptionList) {
+            if (pres.getMedicineName().equals(medicineID)) return pres;
         }
         return null;
     }
 
-    // if patient has matching prescription already, just add amount
-    public boolean addPrescription(Prescription prescription){
-        if (exists(prescription.getPatientID(), prescription.getMedicineName())){
+    public boolean addPrescription(Prescription prescription) {
+        if (exists(prescription.getPatientID(), prescription.getMedicineName())) {
             return false;
         }
-        //add to database
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(prescription.toCSV());
-            writer.newLine();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //if adding fails
-        return false;
+        String[] newData = prescription.toCSV().split(",");
+        csvUpdate.addNewLine(newData);
+        return true;
     }
-    // returns true if patient has matching medicine already prescribed
-    public boolean exists(String patientID, String medicineName){
+
+    public boolean exists(String patientID, String medicineName) {
         prescriptionList = getPatientPrescriptionList(patientID);
-        for (Prescription pres : prescriptionList){
-            pres.medicineName.equals(medicineName);
-            return true;
+        for (Prescription pres : prescriptionList) {
+            if (pres.getMedicineName().equals(medicineName)) return true;
         }
         return false;
     }
-    public boolean updateAllPrescriptions(){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            writer.write("Medicine Name,Initial Stock,Low Stock Level Alert");
-            writer.newLine();
-            for (Prescription pres : prescriptionList) {
-                writer.write(pres.toCSV());
-                writer.newLine();
+
+    public boolean updateAllPrescriptions() {
+        List<String[]> updatedData = new ArrayList<>();
+        updatedData.add(new String[]{"PrescriptionID", "PatientID", "PatientName", "DoctorID", "DoctorName", 
+                                     "DatePrescribed", "Medications", "Status", "Notes"}); // Header
+
+        for (Prescription pres : prescriptionList) {
+            updatedData.add(pres.toCSV().split(","));
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
+            for (String[] row : updatedData) {
+                writer.println(String.join(",", row));
             }
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error writing to CSV file: " + e.getMessage());
         }
         return false;
     }
 
-
-    public boolean increaseAmount(String patientID, String medicineID, int newAmount){
+    public boolean increaseAmount(String patientID, String medicineID, int newAmount) {
         prescriptionList = getAllPrescriptions();
-        for (Prescription pres : prescriptionList){
-            if(exists(pres.getPatientID(), pres.getMedicineName())){
-                pres.setPrescriptionAmount(newAmount);
+        for (Prescription pres : prescriptionList) {
+            if (pres.getPatientID().equals(patientID)) {
+                pres.updateMedicationAmount(medicineID, newAmount);
                 return updateAllPrescriptions();
             }
         }
         return false;
     }
+     
 
-    public boolean deletePrescription(String patientID, String medicineID){
+    public boolean updatePrescriptionStatus(String prescriptionID, String newStatus) {
+        csvUpdate.updateField(prescriptionID, "status", newStatus);
+        return true;
+    }
+
+    public boolean deletePrescription(String patientID, String medicineID) {
         prescriptionList = getAllPrescriptions();
-        return prescriptionList.removeIf(n -> 
-        (n.getPatientID().equals(patientID) && n.getMedicineName().equals(medicineID)) 
-        && updateAllPrescriptions());
+        boolean removed = prescriptionList.removeIf(n -> 
+            n.getPatientID().equals(patientID) && n.getMedicineName().equals(medicineID)
+        );
+        if (removed) {
+            updateAllPrescriptions();
+        }
+        return removed;
     }
 }

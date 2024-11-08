@@ -34,37 +34,43 @@ public class DoctorController implements ControllerInt {
         DisplayFormat.clearScreen();
         switch (choice) {
             case 1:
-                //View patient under my care
+                // View patient under my care
                 viewPatientUnderMyCare();
                 break;
-
+    
             case 2: // Create patient medical record
                 CreateRecord record = new CreateRecord(doctor.getUserID());
                 record.createRecord();
                 break;
-
+    
             case 3: // Update record
                 UpdateRecord update = new UpdateRecord(doctor.getUserID());
                 update.updateRecord();
                 break;
-
+    
             case 4: 
                 DoctorUI ui = new DoctorUI(doctor.getUserID(), doctor.getName());
-                ui.start(); 
+                ui.start();
                 DisplayManager.clearScreen();
                 break;
-
+    
             case 5: // Logout
-                LogoutTimer.confirmLogout(); // Confirms logout
-                return false; // Ends the session by returning false
-
+                if (LogoutTimer.confirmLogout()) {
+                    return false; // Ends the session only if logout is confirmed
+                } else {
+                    DisplayManager.clearScreen();
+                    
+                    return true; // Continue the session without printing additional messages
+                }
+    
             default:
                 System.out.println("Invalid choice. Please try again.");
                 break;
         }
-
+    
         return true; // Continue session if choice is not logout
     }
+    
 
     public void viewPatientUnderMyCare() {
         // Retrieve the list of patient IDs under the doctor’s care
@@ -77,14 +83,17 @@ public class DoctorController implements ControllerInt {
         }
     
         // Print the number of patients under the doctor's care
-        System.out.println("There are " + patientIDs.size() + " patients under your care.");
-        System.out.println("=== Patients Under Your Care ===");
+        System.out.println("There are " + patientIDs.size() + " patient(s) under your care.");
+        System.out.println("=== Patient(s) Under Your Care ===");
     
-        // Loop through each patient ID and print the patient's information
+        int count = 1; 
+
         for (String patientID : patientIDs) {
-            System.out.println("\n--- Patient Information ---");
+            System.out.println("\n--- Patient Information " + count + " ---"); 
             DoctorShared.getcsvUtilities().getPatientInformation(patientID);
+            count++; 
         }
+        
     }
     
     

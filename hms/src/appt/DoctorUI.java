@@ -57,7 +57,7 @@ public class DoctorUI {
     private void recordAppointmentOutcome() {
         System.out.println("\nRecording Outcome for Completed Sessions:");
         System.out.println("1. Update New Completed Sessions");
-        System.out.println("2. Edit Existing Completed Sessions");
+        //System.out.println("2. Edit Existing Completed Sessions");
         System.out.print("Please select an option: ");
         
         int choice;
@@ -70,10 +70,7 @@ public class DoctorUI {
                     System.out.println("Updating New Completed Sessions...");
                     apptController.manageCompletedSessions(doctorID, false); // Pass false to update new sessions
                 }
-                case 2 -> {
-                    System.out.println("Editing Existing Completed Sessions...");
-                    apptController.manageCompletedSessions(doctorID, true); // Pass true to edit existing sessions
-                }
+
                 default -> System.out.println("Invalid choice. Returning to the main menu...");
             }
         } catch (InputMismatchException | NumberFormatException e) {

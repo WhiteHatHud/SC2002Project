@@ -40,6 +40,38 @@ public class CSVUtilities {
 
         return roleCountMap;
     }
+    public String generateLatestPatientID() {
+        int highestID = 1000; 
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            // Skip the header line
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue; // Skip empty lines
+                }
+
+                String[] data = line.split(",");
+                if (data.length > 0 && data[0].startsWith("P")) {
+                    try {
+                        int currentID = Integer.parseInt(data[0].substring(1));
+                        if (currentID > highestID) {
+                            highestID = currentID; 
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping invalid ID format: " + data[0]);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+
+
+        return "P" + (highestID + 1);
+    }
 
     public String generateNewStaffID(String role, Map<String, Integer> roleCountMap) {
         String prefix;
@@ -220,6 +252,7 @@ public class CSVUtilities {
                     System.out.println("Contact Info      : " + data[5].trim());
                     System.out.println("Phone Number      : " + data[6].trim());
                     System.out.println("Emergency Number  : " + data[7].trim());
+                    System.out.println("");
                     return;
                 }
             }
@@ -228,6 +261,271 @@ public class CSVUtilities {
             System.out.println("Error reading patient CSV file: " + e.getMessage());
         }
     }
+
+        public void updateDiagnosisRecord(String patientID, String diagnosisDescription, String prescription,
+                                          String treatmentEndDate, String treatmentOutcome,
+                                          String followUpInstructions, String notes) {
+            String filepath = "Diagnosis.csv";
+            List<String[]> records = new ArrayList<>();
+    
+            try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+                String line;
+                boolean isHeader = true;
+    
+                while ((line = br.readLine()) != null) {
+                    if (isHeader) {
+                        isHeader = false; // Skip the header row for processing
+                        if (!line.startsWith("DiagnosisID")) {
+                            records.add(line.split(",")); // Add any existing first line if it's not a header
+                        }
+                        continue;
+                    }
+    
+                    String[] record = line.split(",");
+    
+                    // If this record matches the given PatientID, update the specified fields
+                    if (record[1].trim().equals(patientID)) {
+                        if (diagnosisDescription != null && !diagnosisDescription.isEmpty()) {
+                            record[5] = diagnosisDescription;
+                        }
+                        if (prescription != null && !prescription.isEmpty()) {
+                            record[6] = prescription;
+                        }
+                        if (treatmentEndDate != null && !treatmentEndDate.isEmpty()) {
+                            record[8] = treatmentEndDate;
+                        }
+                        if (treatmentOutcome != null && !treatmentOutcome.isEmpty()) {
+                            record[9] = treatmentOutcome;
+                        }
+                        if (followUpInstructions != null && !followUpInstructions.isEmpty()) {
+                            record[10] = followUpInstructions;
+                        }
+                        if (notes != null && !notes.isEmpty()) {
+                            if (record.length > 11) {
+                                record[11] = notes;
+                            } else {
+                                record = Arrays.copyOf(record, 12); // Extend array to include Notes field
+                                record[11] = notes;
+                            }
+                        }
+                    }
+                    records.add(record);
+                }
+            } catch (IOException e) {
+                System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+                return;
+            }
+    
+            // Write updated records back to the Diagnosis.csv file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {
+                // Always write the header once
+                writer.write("DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription," +
+                             "Prescription,TreatmentStartDate,TreatmentEndDate,TreatmentOutcome,FollowUpInstructions,Notes");
+                writer.newLine();
+    
+                for (String[] record : records) {
+                    writer.write(String.join(",", record));
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Error saving updated diagnosis records: " + e.getMessage());
+            }
+        
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {
+                // Write header row only once
+                writer.write("DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription," +
+                             "Prescription,TreatmentStartDate,TreatmentEndDate,TreatmentOutcome,FollowUpInstructions,Notes");
+                writer.newLine();
+    
+                // Write all records
+                for (String[] record : records) {
+                    writer.write(String.join(",", record));
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Error saving updated diagnosis records: " + e.getMessage());
+            }
+        
+    }
+    
+    public boolean isPatientUnderDoctorCare(String patientID, String doctorID) {
+        String filepath = "Diagnosis.csv"; // Ensure this path is accurate
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip the header row
+                    continue;
+                }
+
+                String[] data = line.split(",");
+                
+                // Check if patientID and doctorID match the respective columns (assuming 2nd and 4th positions)
+                if (data.length > 3 && data[1].trim().equals(patientID) && data[3].trim().equals(doctorID)) {
+                    return true; // Patient is under this doctor’s care
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+        }
+
+        return false; // No matching record found
+    }
+
+    public List<String[]> getRecordsForPatientUnderDoctor(String patientID, String doctorID) {
+        List<String[]> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Diagnosis.csv"))) {
+            String line;
+            boolean isHeader = true;
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header
+                }
+                String[] record = line.split(",");
+                if (record[1].equals(patientID) && record[3].equals(doctorID)) {
+                    records.add(record);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+        }
+        return records;
+    }
+    
+    public void updateDiagnosisRecordByID(String diagnosisID, String diagnosisDescription, String prescription,
+                                          String treatmentEndDate, String treatmentOutcome,
+                                          String followUpInstructions, String notes) {
+        List<String[]> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("Diagnosis.csv"))) {
+            String line;
+            boolean isHeader = true;
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    records.add(line.split(",")); // Add header
+                    continue;
+                }
+                String[] record = line.split(",");
+                if (record[0].equals(diagnosisID)) {
+                    // Update fields as needed
+                    if (diagnosisDescription != null) record[5] = diagnosisDescription;
+                    if (prescription != null) record[6] = prescription;
+                    if (treatmentEndDate != null) record[8] = treatmentEndDate;
+                    if (treatmentOutcome != null) record[9] = treatmentOutcome;
+                    if (followUpInstructions != null) record[10] = followUpInstructions;
+                    if (notes != null) record[11] = notes;
+                }
+                records.add(record);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading Diagnosis CSV file: " + e.getMessage());
+        }
+    
+        // Write updates back to CSV
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Diagnosis.csv"))) {
+            for (String[] record : records) {
+                writer.write(String.join(",", record));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving Diagnosis CSV file: " + e.getMessage());
+        }
+    }
+
+    public List<String[]> getDiagnosisAndPrescriptionByPatientID(String patientID) {
+        List<String[]> result = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            // Read the header line and ignore it
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // Check if the line matches the given PatientID
+                if (data.length > 3 && data[1].equals(patientID)) {
+                    String[] diagnosisDetails = new String[3];
+                    diagnosisDetails[0] = data[5]; // DiagnosisDescription
+                    diagnosisDetails[1] = data[6]; // Prescription
+                    diagnosisDetails[2] = data[4] ; // date of diagnosis
+
+                    result.add(diagnosisDetails);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+        }
+
+        return result;
+    }
+
+    public void updateDoctorNameInCSV(String doctorID, String newDoctorName, String csvFilePath, int idIndex, int nameIndex) {
+        List<String[]> records = new ArrayList<>();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+            String line;
+            boolean isHeader = true;
+            
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                
+                // Add header directly if it's the first line
+                if (isHeader) {
+                    isHeader = false;
+                    records.add(data);
+                    continue;
+                }
+                
+                // Check if the doctor ID matches the given ID
+                if (data.length > idIndex && data[idIndex].trim().equals(doctorID)) {
+                    // Update the doctor's name
+                    data[nameIndex] = newDoctorName;
+                }
+                
+                // Add the (potentially modified) record to the list
+                records.add(data);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV file: " + e.getMessage());
+            return;
+        }
+
+        // Write the updated data back to the CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath))) {
+            for (String[] record : records) {
+                writer.write(String.join(",", record));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+        }
+        
+        System.out.println("Doctor's name is updated!");
+    }
+
+    public void updateDoctorNameInAllCSVs(String doctorID, String newDoctorName) {
+        // Update in appointments.csv (index 4 is doctor ID, 5 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "Appointment.csv", 4, 5);
+
+        // Update in Diagnosis.csv (index 2 is doctor ID, 3 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "Diagnosis.csv", 2, 3);
+
+        // Update in Staff_List.csv (index 1 is doctor ID, 2 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "Staff_List.csv", 1, 2);
+
+        // Update in To be To be prescribed.csv (index 3 is doctor ID, 4 is doctor name)
+        updateDoctorNameInCSV(doctorID, newDoctorName, "To be prescribed.csv", 3, 4);
+    }
+
+    
+
+    
     
     
 }

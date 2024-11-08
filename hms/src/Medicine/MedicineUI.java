@@ -1,5 +1,6 @@
 package Medicine;
 
+import Login.DisplayFormat;
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,10 +8,20 @@ public class MedicineUI extends Medicine {
     MedicineData dataInterface = new MedicineData();
     
     public void displayAllMedicines() {
+        DisplayFormat.clearScreen();
+        
+
+        System.out.printf("%-25s %-15s %-20s%n", "Medicine Name", "Initial Stock (1=100mg)", "Low Stock Level Alert");
+        System.out.println("---------------------------------------------------------------");
+    
+        // Print each medicine's details with formatting
         for (Medicine med : dataInterface.getAllMedicines()) {
-            print(med);
+            System.out.printf("%-25s %-15d %-20d%n", 
+                              med.getMedicineName(), 
+                              med.getInitialStock(), 
+                              med.getLowStockLevelAlert());
         }
-        System.out.println("");
+        System.out.println(); 
     }
     
     public void updateStock(String name, int changeAmount) {

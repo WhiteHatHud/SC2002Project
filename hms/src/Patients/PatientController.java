@@ -3,7 +3,6 @@ import Login.ControllerInt;
 import Login.DisplayFormat;
 import Login.DisplayManager;
 import Utilities.LogoutTimer;
-import appt.DoctorUI;
 import appt.PatientUI;
 
 public class PatientController implements ControllerInt {
@@ -36,18 +35,26 @@ public class PatientController implements ControllerInt {
                 ViewMedicalRecord view = new ViewMedicalRecord();
                 view.viewMedicalRecord(patient);
                 break;
+            
             case 2: // Update personnal info 
                 UpdateInfo updateInfo = new UpdateInfo(patient);
                 updateInfo.updatePersonalInformation();
                 break;
+
             case 3: //Manage appointment matters
                 PatientUI ui = new PatientUI(patient.getUserID(), patient.getName());
                 ui.start();
                 DisplayManager.clearScreen();
                 break;
-            case 4: 
-                LogoutTimer.confirmLogout();
-                return false; 
+
+            case 4: // Logout
+                if (LogoutTimer.confirmLogout()) {
+                    return false; // Ends the session only if logout is confirmed
+                } else {
+                    DisplayManager.clearScreen();
+                    return true; // Continue the session without printing additional messages
+                }
+
             default:
                 System.out.println("Invalid choice. Please try again.");
                 break;
@@ -57,4 +64,5 @@ public class PatientController implements ControllerInt {
         
         return true; // Continue session if choice is not logout
     }
+    
 }
