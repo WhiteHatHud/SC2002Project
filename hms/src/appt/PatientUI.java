@@ -2,7 +2,6 @@ package appt;
 
 import java.util.Scanner;
 
-import Doctors.DoctorShared;
 import Patients.PatientShared;
 
 public class PatientUI {

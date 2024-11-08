@@ -1562,9 +1562,44 @@ public void cancelOrRescheduleAppointment(String patientID) {
         default -> System.out.println("Invalid choice. Returning to the previous menu...");
     }
 }
+public void printAllBookedSchedules() {
+    System.out.println("\n--- All Booked Schedules ---");
 
+    // Retrieve all appointments
+    List<Appointment> appointments = apptData.getAllAppointments();
 
+    // Counter for listing the appointments
+    int count = 1;
 
+    // Check if there are any appointments
+    if (appointments.isEmpty()) {
+        System.out.println("No booked schedules available.");
+        return;
+    }
 
-           
+    // Loop through each appointment and display its details
+    for (Appointment appointment : appointments) {
+        // Only print booked appointments
+        if (appointment.getAppointmentStatus().equalsIgnoreCase("Booked")) {
+            LocalDate date = toLocalDate(appointment.getAppointmentTime());
+            LocalTime time = toLocalTime(appointment.getAppointmentTime());
+
+            System.out.println("===========================================");
+            System.out.printf("| %d. Appointment ID    : %s\n", count++, appointment.getAppointmentID());
+            System.out.printf("| Date                  : %s\n", date);
+            System.out.printf("| Time                  : %s\n", time);
+            System.out.printf("| Doctor                : %s\n", appointment.getDoctorName());
+            System.out.printf("| Doctor ID             : %s\n", appointment.getDoctorID());
+            System.out.printf("| Patient ID            : %s\n", appointment.getPatientID());
+            System.out.printf("| Patient Name          : %s\n", appointment.getPatientName());
+            System.out.println("===========================================");
+        }
+    }
+
+    // Message if no booked appointments were found
+    if (count == 1) {
+        System.out.println("No booked schedules available.");
+    }
+}
+
 }
