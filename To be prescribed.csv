@@ -1,10 +1,10 @@
 PrescriptionID,PatientID,PatientName,DoctorID,DoctorName,DatePrescribed,Medications(mg),Status,Notes
-PR001,P1001,Alice Brown,D002,Fatty,2024-11-05,Paracetamol:400; Amoxicillin:200,Dispensed,With beer
-PR002,P1002,Bob Stone,D002,Fatty,2024-11-05,Hongthai:100,Pending,With water
-PR003,P1002,Bob Stone,D002,Fatty,2024-11-05,Aspirin:200,Dispensed,po
-PR004,P1002,Bob Stone,D002,Fatty,2024-11-05,Aspirin:200,Pending,a
-PR005,P1002,Bob Stone,D002,Fatty,2024-11-05,Aspirin:100,Dispensed,p
-PR006,P1002,Bob Stone,D002,Fatty,2024-11-05,Paracetamol:100,Dispensed,1
+PR001,P1001,Alice Brown,D002,My father,2024-11-05,Paracetamol:400; Amoxicillin:200,Dispensed,With beer
+PR002,P1002,Bob Stone,D002,My father,2024-11-05,Hongthai:100,Pending,With water
+PR003,P1002,Bob Stone,D002,My father,2024-11-05,Aspirin:200,Dispensed,po
+PR004,P1002,Bob Stone,D002,My father,2024-11-05,Aspirin:200,Pending,a
+PR005,P1002,Bob Stone,D002,My father,2024-11-05,Aspirin:100,Dispensed,p
+PR006,P1002,Bob Stone,D002,My father,2024-11-05,Paracetamol:100,Dispensed,1
 PR007,P1001,Alice Brown,D001,John Smith,2024-11-06,Malaypill:100,Prescribed,none
 PR008,P1001,Alice Brown,D024,po2po,2024-11-08,Aspirin:100; Bop:200; Malaypill:300,Pending,Take with water
 PR009,P1001,Alice Brown,D028,asd,2024-11-08,Paracetamol:1000,Pending,nil

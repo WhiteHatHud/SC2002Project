@@ -3,6 +3,7 @@ package Doctors;
 import Login.ControllerInt;
 import Login.DisplayFormat;
 import Login.DisplayManager;
+import Patients.PatientShared;
 import Utilities.LogoutTimer;
 import appt.DoctorUI;
 import java.util.List;
@@ -86,15 +87,35 @@ public class DoctorController implements ControllerInt {
         System.out.println("There are " + patientIDs.size() + " patient(s) under your care.");
         System.out.println("=== Patient(s) Under Your Care ===");
     
-        int count = 1; 
-
+        int count = 1;
+    
         for (String patientID : patientIDs) {
-            System.out.println("\n--- Patient Information " + count + " ---"); 
+            System.out.println("\n--- Patient Information " + count + " ---");
             DoctorShared.getcsvUtilities().getPatientInformation(patientID);
-            count++; 
+            
+            // Retrieve diagnosis data for the current patient ID
+            List<String[]> diagnosisData = DoctorShared.getCSVUtilities3().getDiagnosisAndPrescriptionByPatientID(patientID,doctor.getUserID());
+    
+            if (diagnosisData.isEmpty()) {
+                System.out.println("No Diagnosis found for PatientID: " + patientID);
+            } else {
+                System.out.println("Diagnosis and Prescription for PatientID: " + patientID);
+                System.out.println("-------------------------");
+                int count2 = 1;
+                for (String[] details : diagnosisData) {
+                    System.out.println("Record ID " + count2 + ":");
+                    System.out.println("Diagnosis Description: " + details[0]);
+                    System.out.println("Prescription(mg): " + details[1]);
+                    System.out.println("Date of Diagnosis: " + details[2]);
+                    System.out.println("-------------------------");
+                    count2++;
+                }
+            }
+    
+            count++;
         }
-        
     }
+    
     
     
 }

@@ -1,4 +1,6 @@
 Staff ID,Name,Role,Gender,Age,Office Number,Password
+D001,John Smith,Doctor,Male,45,-,password
+D002,My father,Doctor,F,99,-,password
 D001,John Smith,Doctor,Male,45,-,newPasswordv2
 D002,Fatty,Doctor,Female,38,-,password
 A001,Sarah Lee,Administrator,Female,40,-,password

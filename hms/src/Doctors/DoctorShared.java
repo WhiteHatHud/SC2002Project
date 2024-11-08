@@ -11,6 +11,11 @@ public class DoctorShared {
     private static  CSVUpdater csvUpdater = new CSVUpdater("Staff_List.csv");
     private static  CSVUtilities csvUtilities = new CSVUtilities("Patient List CSV.csv");
     private static  CSVUtilities csvUtilities2 = new CSVUtilities("Staff_List.csv");
+    private static  CSVUtilities csvUtilities3 = new CSVUtilities("Diagnosis.csv");
+    
+    public static CSVUtilities getCSVUtilities3() {
+        return csvUtilities3;
+    }
 
     public static CSVUtilities getcsvUtilities2() {
         return csvUtilities2;
