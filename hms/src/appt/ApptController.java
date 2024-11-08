@@ -573,9 +573,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             }
         }
     }
-    
-    
-    
+        
     private void manageScheduledAppointments(String appointmentID, String userType) {
         Appointment appointment = apptData.getAllAppointments().stream()
                 .filter(app -> app.getAppointmentID().equals(appointmentID))
