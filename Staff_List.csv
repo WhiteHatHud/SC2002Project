@@ -2,7 +2,7 @@ Staff ID,Name,Role,Gender,Age,Office Number,Password
 D001,John Smith,Doctor,Male,45,-,password
 D002,My father,Doctor,F,99,-,password
 D001,John Smith,Doctor,Male,45,-,newPasswordv2
-D002,Kop kun kap,Doctor,Female,38,-,password
+D002,Fatty,Doctor,Female,38,-,password
 A001,Sarah Lee,Administrator,Female,40,-,password
 D003,pollo,Doctor,M,98,-,password
 D005,New comer,Doctor,Female,99,-,password
@@ -27,6 +27,6 @@ D024,po2po,Doctor,F,25,222,password
 D025,popo,Doctor,F,25,222,password
 D026,Popo,Doctor,M,25,25,password
 D027,bad guy,Doctor,M,23,22,password
-D028,asd,Doctor,F,22,2,password
-P004,PPSDA,Pharmacist,Male,23,23,password
 P005,ASLDADS,Pharmacist,Male,23,23,password
+D028,,Doctor,a,2,2,password
+P006,Popol,Pharmacist,M,25,9,password,password
