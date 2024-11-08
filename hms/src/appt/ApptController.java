@@ -1509,6 +1509,61 @@ private void rescheduleAppointmentByPatient(Appointment appointment, String user
     System.out.println("Appointment successfully rescheduled and saved.");
 }
 
+public void cancelOrRescheduleAppointment(String patientID) {
+    // Step 1: Call printPatientAppointments to display the scheduled bookings
+    printPatientAppointments(patientID);
+
+    // Step 2: Prompt the user to enter the Appointment ID they want to edit
+    System.out.print("\nEnter the Appointment ID you want to edit (or '~' to return): ");
+    String appointmentID = scanner.nextLine().trim();
+
+    if (appointmentID.equals("~")) {
+        System.out.println("Returning to the previous menu...");
+        return;
+    }
+
+    // Find the selected appointment
+    Appointment selectedAppointment = apptData.getAllAppointments().stream()
+            .filter(app -> app.getPatientID().equals(patientID))
+            .filter(app -> app.getAppointmentID().equals(appointmentID))
+            .findFirst()
+            .orElse(null);
+
+    if (selectedAppointment == null) {
+        System.out.println("Invalid Appointment ID. Please try again.");
+        return;
+    }
+
+    // Step 3: Prompt the user for action (Cancel or Reschedule)
+    System.out.println("\nSelect an option:");
+    System.out.println("1. Cancel the appointment");
+    System.out.println("2. Reschedule the appointment");
+    System.out.print("Enter your choice (1-2): ");
+    String choice = scanner.nextLine().trim();
+
+    switch (choice) {
+        case "1" -> {
+            // Option 1: Cancel appointment
+            if ("PendingToDoctor".equalsIgnoreCase(selectedAppointment.getAppointmentStatus())) {
+                // Immediate cancellation for PendingToDoctor
+                apptData.deleteAppointment(selectedAppointment.getAppointmentID());
+                System.out.println("Appointment canceled successfully.");
+            } else if ("Booked".equalsIgnoreCase(selectedAppointment.getAppointmentStatus())) {
+                // Call cancelAppointmentByPatient for booked appointments
+                cancelAppointmentByPatient(selectedAppointment.getAppointmentID(), "Patient");
+            } else {
+                System.out.println("Appointment cannot be canceled in its current status.");
+            }
+        }
+        case "2" -> {
+            // Option 2: Reschedule appointment
+            rescheduleAppointmentByPatient(selectedAppointment, "Patient");
+        }
+        default -> System.out.println("Invalid choice. Returning to the previous menu...");
+    }
+}
+
+
 
 
            
