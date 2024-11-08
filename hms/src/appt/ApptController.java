@@ -803,9 +803,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     }
     
-    private void viewPatientAppointments(String patientID, List<Appointment> appointments) {
-        System.out.println("\nViewing your Appointments with status 'PendingToPatient':");
-    
+    private void viewPatientAppointments(String patientID, List<Appointment> appointments) {    
         List<Appointment> pendingAppointments = appointments.stream()
                 .filter(app -> app.getPatientID().equals(patientID) &&
                                app.getAppointmentStatus().equalsIgnoreCase("PendingToPatient"))
@@ -838,8 +836,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     }
     
     private void viewDoctorAppointments(String doctorID, List<Appointment> appointments) {
-        System.out.println("\nViewing your Appointments with status 'PendingToDoctor':");
-    
         List<Appointment> pendingAppointments = appointments.stream()
                 .filter(app -> app.getDoctorID().equals(doctorID) && 
                                app.getAppointmentStatus().equalsIgnoreCase("PendingToDoctor"))
