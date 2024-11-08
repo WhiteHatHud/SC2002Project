@@ -25,12 +25,19 @@ public class ViewMedicalRecord {
             System.out.println("-------------------------");
             int count = 1; 
             for (String[] details : diagnosisData) {
+
                 System.out.println("Record ID " + count + ":");
-                System.out.println("Diagnosis Description: " + details[0]);
-                System.out.println("Prescription(mg): " + details[1]);
-                System.out.println("Date of Diagnosis: " + details[2]);
-                System.out.println("-------------------------");
+                
+                System.out.println("===========================================");
+                System.out.printf("| %-24s : %s\n", "Diagnosis Description", details[0]);
+                System.out.printf("| %-24s : %s\n", "Prescription (mg)", details[1]);
+                System.out.printf("| %-24s : %s\n", "Date of Diagnosis", details[2]);
+                System.out.printf("| %-24s : %s\n", "Treatment Start Date", details[3]);
+                System.out.printf("| %-24s : %s\n", "Treatment End Date", details[4]);
+                System.out.println("===========================================");
+                System.out.println(); // Add extra line for spacing between records       
                 count++;
+
             }
         }
 

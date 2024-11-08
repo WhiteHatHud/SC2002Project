@@ -2,6 +2,7 @@ package appt;
 
 import Doctors.CreateRecord;
 import Doctors.DoctorShared;
+import Patients.PatientShared;
 import Login.DisplayManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -53,24 +54,28 @@ public class ApptController {
     }
 
     // Helper method to get session status
-    private String getSessionStatus(List<Appointment> appointments, LocalDate date, LocalTime sessionTime) {
+    private String getSessionStatus(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
         for (Appointment appointment : appointments) {
             LocalDate appointmentDate = toLocalDate(appointment.getAppointmentTime());
             LocalTime appointmentLocalTime = toLocalTime(appointment.getAppointmentTime());
     
-            if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
+            // Check if the appointment matches the date, time, and doctorID
+            if (appointmentDate.equals(date) && 
+                appointmentLocalTime.equals(sessionTime) && 
+                appointment.getDoctorID().equals(doctorID)) {
+                
                 // Check if the session is blocked
                 if (appointment.getAppointmentStatus().equalsIgnoreCase("Blocked")) {
                     return "Blocked";
                 }
                 // Otherwise, it is booked
-                //System.out.println("booked");
                 return "Booked";
-            } 
+            }
         }
-        // If no matching appointment is found, the session is available
+        // If no matching appointment is found for the given doctor, the session is available
         return "Available"; 
     }
+    
     
     public void rescheduleAppointmentByPatient(String patientID) {
         System.out.println("\n--- Reschedule an Appointment ---");
@@ -124,7 +129,7 @@ public class ApptController {
         }
     
         // Check if the selected session is available
-        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, doctorID);
         if (!sessionStatus.equalsIgnoreCase("Available")) {
             System.out.println("Selected session is not available. Please choose another session.");
             return;
@@ -214,44 +219,45 @@ public void printDoctorScheduleOnDate(String doctorID) {
 }
 
 
-    private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
-        List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
+private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
+    List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
 
-        LocalTime[] sessions = {
-            LocalTime.of(9, 0),
-            LocalTime.of(11, 0),
-            LocalTime.of(14, 0)
-        };
-    
-        // Display available sessions with their statuses
-        for (int i = 0; i < sessions.length; i++) {
-            String status = getSessionStatus(appointments, date, sessions[i]);
-            System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
-        }
-    
-        System.out.println("--------------------");
-        System.out.print("Select a session to view details (1-3) or '~' to return: ");
-        String input = scanner.nextLine().trim();
-    
-        if (input.equals("~")) {
-            System.out.println("Returning to the previous menu...");
+    LocalTime[] sessions = {
+        LocalTime.of(9, 0),
+        LocalTime.of(11, 0),
+        LocalTime.of(14, 0)
+    };
+
+    // Display available sessions with their statuses, passing doctorID to getSessionStatus
+    for (int i = 0; i < sessions.length; i++) {
+        String status = getSessionStatus(appointments, date, sessions[i], doctorID); // Updated call to include doctorID
+        System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
+    }
+
+    System.out.println("--------------------");
+    System.out.print("Select a session to view details (1-3) or '~' to return: ");
+    String input = scanner.nextLine().trim();
+
+    if (input.equals("~")) {
+        System.out.println("Returning to the previous menu...");
+        return;
+    }
+
+    try {
+        int sessionChoice = Integer.parseInt(input);
+
+        if (sessionChoice < 1 || sessionChoice > 3) {
+            System.out.println("Invalid selection. Please try again.");
             return;
         }
-    
-        try {
-            int sessionChoice = Integer.parseInt(input);
-    
-            if (sessionChoice < 1 || sessionChoice > 3) {
-                System.out.println("Invalid selection. Please try again.");
-                return;
-            }
-    
-            LocalTime selectedSession = sessions[sessionChoice - 1];
-            printSessionDetailsAndManage(appointments, date, selectedSession,doctorID);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
-        }
+
+        LocalTime selectedSession = sessions[sessionChoice - 1];
+        printSessionDetailsAndManage(appointments, date, selectedSession, doctorID); // Pass doctorID here as well
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
     }
+}
+
     
     private LocalTime selectSessionFromDate(LocalDate date, String doctorID) {
     List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
@@ -265,7 +271,7 @@ public void printDoctorScheduleOnDate(String doctorID) {
     System.out.println("====================");
 
     for (int i = 0; i < sessions.length; i++) {
-        String status = getSessionStatus(appointments, date, sessions[i]);
+        String status = getSessionStatus(appointments, date, sessions[i], doctorID);
         System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
     }
 
@@ -340,7 +346,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
 
     // Check session status to decide if we should allow creation or blocking
-    String status = getSessionStatus(appointments, date, sessionTime);
+    String status = getSessionStatus(appointments, date, sessionTime, doctorID);
 
     // Offer options based on the session status
     switch (status) {
@@ -417,7 +423,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
         return bookedCount;
     }
-
     //Task 1 Block or Unblock Available Dates
     public void blockSession(LocalDate date, LocalTime time, String doctorID, String doctorName) {
         LocalDate currentDate = LocalDate.now();
@@ -427,8 +432,10 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             System.out.println("Sorry, the session you selected has elapsed. Please book another session. Thank you.");
             return;
         }
-        String status = getSessionStatus(apptData.getAllAppointments(), date, time);
-
+    
+        // Check if the session is available specifically for the given doctor ID
+        String status = getSessionStatus(apptData.getAllAppointments(), date, time, doctorID);
+    
         if (status.equals("Available")) {
             Calendar appointmentTime = Calendar.getInstance();
             appointmentTime.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(),
@@ -442,11 +449,12 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                     doctorID, doctorName, "Blocked");
     
             apptData.addAppointment(blockedAppointment);
-            System.out.println("Session blocked successfully.");
+            System.out.println("Session blocked successfully for Dr. " + doctorName + ".");
         } else {
-            System.out.println("This session is already booked or blocked.");
+            System.out.println("This session is already booked or blocked for Dr. " + doctorName + ".");
         }
     }
+    
     
     
 
@@ -504,40 +512,68 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     }
     
     //==============================================================================================
-    public void printUpcomingSessions(String doctorID, String userType) { //here
+    public void printUpcomingSessions(String doctorID, String userType) {
         List<Appointment> doctorAppointments = viewAppointmentsByDoctor(doctorID);
     
-        // Filter out blocked appointments and sort by Appointment ID
-        doctorAppointments.stream()
+        // Filter out blocked, completed, and cancelled appointments, then sort by Appointment ID
+        List<Appointment> filteredAppointments = doctorAppointments.stream()
                 .filter(appointment -> !appointment.getAppointmentStatus().equalsIgnoreCase("Blocked"))
+                .filter(appointment -> !appointment.getAppointmentStatus().equalsIgnoreCase("Completed"))
+                .filter(appointment -> !appointment.getAppointmentStatus().toLowerCase().contains("cancelled"))
                 .sorted((a1, a2) -> a1.getAppointmentID().compareTo(a2.getAppointmentID()))
-                .forEach(appointment -> {
-                    Calendar appointmentTime = appointment.getAppointmentTime();
-                    LocalDate appointmentDate = LocalDate.of(
-                            appointmentTime.get(Calendar.YEAR),
-                            appointmentTime.get(Calendar.MONTH) + 1,
-                            appointmentTime.get(Calendar.DAY_OF_MONTH)
-                    );
+                .toList();
     
-                    System.out.printf("Appointment ID: %s\n", appointment.getAppointmentID());
-                    System.out.printf("Date: %s\n", appointmentDate);
-                    System.out.printf("Patient ID: %s\n", appointment.getPatientID());
-                    System.out.printf("Patient Name: %s\n", appointment.getPatientName());
-                    System.out.printf("Appointment Status: %s\n", appointment.getAppointmentStatus());
-                    System.out.println("------------------------------");
-                });
+        // Display each filtered appointment in a box-like format
+        filteredAppointments.forEach(appointment -> {
+            Calendar appointmentTime = appointment.getAppointmentTime();
+            LocalDate appointmentDate = LocalDate.of(
+                    appointmentTime.get(Calendar.YEAR),
+                    appointmentTime.get(Calendar.MONTH) + 1,
+                    appointmentTime.get(Calendar.DAY_OF_MONTH)
+            );
     
-        if (doctorAppointments.stream()
-                .noneMatch(appointment -> !appointment.getAppointmentStatus().equalsIgnoreCase("Blocked"))) {
+            System.out.println("===========================================");
+            System.out.printf("| Appointment ID    : %s\n", appointment.getAppointmentID());
+            System.out.printf("| Date              : %s\n", appointmentDate);
+            System.out.printf("| Patient ID        : %s\n", appointment.getPatientID());
+            System.out.printf("| Patient Name      : %s\n", appointment.getPatientName());
+            System.out.printf("| Appointment Status: %s\n", appointment.getAppointmentStatus());
+            System.out.println("===========================================");
+            System.out.println(); // Add an extra line for spacing between appointments
+        });
+    
+        // Check if there are any upcoming sessions to display
+        if (filteredAppointments.isEmpty()) {
             System.out.println("No upcoming sessions available.");
         } else {
-            System.out.print("\nEnter the Appointment ID to manage: ");
-            String appointmentID = scanner.nextLine().trim();
-            manageScheduledAppointments(appointmentID, userType);  // Pass userType to manageScheduledAppointments
+            while (true) {
+                System.out.print("\nEnter the Appointment ID to manage (or '~' to return): ");
+                String appointmentID = scanner.nextLine().trim();
+    
+                // Exit if user types '~'
+                if (appointmentID.equals("~")) {
+                    System.out.println("Returning to the previous menu...");
+                    return;
+                }
+    
+                // Check if the entered Appointment ID exists in the filtered list
+                Appointment selectedAppointment = filteredAppointments.stream()
+                        .filter(app -> app.getAppointmentID().equals(appointmentID))
+                        .findFirst()
+                        .orElse(null);
+    
+                if (selectedAppointment != null) {
+                    // Valid appointment ID found; proceed to manage it
+                    manageScheduledAppointments(appointmentID, userType);  // Pass userType to manageScheduledAppointments
+                    break;
+                } else {
+                    // Invalid appointment ID; prompt the user to try again
+                    System.out.println("Invalid Appointment ID. Please try again.");
+                }
+            }
         }
     }
-    
-    
+        
     private void manageScheduledAppointments(String appointmentID, String userType) {
         Appointment appointment = apptData.getAllAppointments().stream()
                 .filter(app -> app.getAppointmentID().equals(appointmentID))
@@ -578,7 +614,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
                 // Update the appointment status with details of doctor cancellation
                 appointment.setAppointmentStatus(
-                    String.format("Cancelled by %s, ID %s on Session: %s",
+                    String.format("Cancelled by Dr. %s, ID %s on Session: %s",
                                   appointment.getDoctorName(),
                                   appointment.getDoctorID(),
                                   toLocalDate(appointment.getAppointmentTime()) + " " + toLocalTime(appointment.getAppointmentTime()))
@@ -645,7 +681,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     
         // Check if the new session is available
-        String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+        String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, appointment.getDoctorID());
     
         if (!status.equalsIgnoreCase("Available")) {
             System.out.println("Selected session is not available. Please choose another session.");
@@ -692,6 +728,8 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                              appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
                              appointmentTime.get(Calendar.MINUTE) == 0);
                 })
+                .filter(app -> !app.getAppointmentStatus().equalsIgnoreCase("Completed")) // Exclude "Completed" status
+                .filter(app -> !app.getAppointmentStatus().toLowerCase().contains("cancelled")) // Exclude statuses with "cancelled"
                 .forEach(app -> {
                     Calendar appointmentTime = app.getAppointmentTime();
                     LocalDate date = LocalDate.of(
@@ -704,30 +742,38 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                             appointmentTime.get(Calendar.MINUTE)
                     );
     
-                    System.out.printf("Appointment ID: %s\n", app.getAppointmentID());
-                    System.out.printf("Date: %s\n", date);
-                    System.out.printf("Time: %s\n", time);
-                    System.out.printf("Doctor: %s\n", app.getDoctorName());
-                    System.out.printf("Status: %s\n", app.getAppointmentStatus());
-                    System.out.println("------------------------------");
+                    System.out.println("===========================================");
+                    System.out.printf("| Appointment ID : %s\n", app.getAppointmentID());
+                    System.out.printf("| Date           : %s\n", date);
+                    System.out.printf("| Time           : %s\n", time);
+                    System.out.printf("| Doctor         : %s\n", app.getDoctorName());
+                    System.out.printf("| Status         : %s\n", app.getAppointmentStatus());
+                    System.out.println("===========================================");
                 });
     
         // Check if there are no upcoming appointments
-        if (appointments.stream()
+        boolean hasUpcomingAppointments = appointments.stream()
                 .filter(app -> app.getPatientID().equals(patientID))
-                .noneMatch(app -> {
+                .filter(app -> {
                     Calendar appointmentTime = app.getAppointmentTime();
                     return !(appointmentTime.get(Calendar.YEAR) == 1 &&
                              appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
                              appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
                              appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
                              appointmentTime.get(Calendar.MINUTE) == 0);
-                })) {
+                })
+                .anyMatch(app -> 
+                    !app.getAppointmentStatus().equalsIgnoreCase("Completed") && 
+                    !app.getAppointmentStatus().toLowerCase().contains("cancelled")
+                );
+    
+        if (!hasUpcomingAppointments) {
             System.out.println("No upcoming appointments.");
         }
     }
     
-    public void bookNewAppointment(String patientID, String patientName, String doctorID, String doctorName) {
+    
+    public void bookNewAppointment(String patientID, String patientName, String doctorID, String doctorName, String initiator) {
         System.out.println("\nBooking a New Appointment:");
     
         // Validate if the patient exists
@@ -736,8 +782,17 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             System.out.println("Error: Patient ID not found. Booking cannot proceed.");
             return; // Exit if the patient does not exist
         }
-        
+    
         System.out.println("The patient name is: " + patientName);
+    
+        // Validate if the doctor exists
+        doctorName = PatientShared.getCSVUtilities().getDoctorNameByID(doctorID);
+        if (doctorName == null || doctorName.isEmpty()) {
+            System.out.println("Error: Doctor ID not found. Booking cannot proceed.");
+            return; // Exit if the doctor does not exist
+        }
+    
+        System.out.println("The doctor name is: " + doctorName);
     
         // Select a date for the new appointment
         LocalDate appointmentDate = selectDateFromSchedule(doctorID);
@@ -754,7 +809,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     
         // Check the status of the selected session
-        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), appointmentDate, appointmentTime);
+        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), appointmentDate, appointmentTime, doctorID);
         if (!sessionStatus.equalsIgnoreCase("Available")) {
             System.out.println("Error: The selected session is already " + sessionStatus + ". Please choose another session.");
             return;
@@ -763,6 +818,9 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         // Generate a new appointment ID
         String newAppointmentID = generateNewAppointmentID();
     
+        // Set appointment status based on initiator
+        String appointmentStatus = initiator.equalsIgnoreCase("patient") ? "PendingToDoctor" : "PendingToPatient";
+    
         // Create the new appointment object
         Calendar newAppointmentTime = Calendar.getInstance();
         newAppointmentTime.set(appointmentDate.getYear(), appointmentDate.getMonthValue() - 1,
@@ -770,13 +828,14 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         Appointment newAppointment = new DoctorAppointment(
                 newAppointmentID, newAppointmentTime, patientID, patientName,
-                doctorID, doctorName, "PendingToDoctor");
+                doctorID, doctorName, appointmentStatus);
     
         // Save the new appointment to the CSV
         apptData.addAppointment(newAppointment);
     
         System.out.println("Appointment successfully booked with ID: " + newAppointmentID);
     }
+    
     
     
     
@@ -803,9 +862,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     }
     
-    private void viewPatientAppointments(String patientID, List<Appointment> appointments) {
-        System.out.println("\nViewing your Appointments with status 'PendingToPatient':");
-    
+    private void viewPatientAppointments(String patientID, List<Appointment> appointments) {    
         List<Appointment> pendingAppointments = appointments.stream()
                 .filter(app -> app.getPatientID().equals(patientID) &&
                                app.getAppointmentStatus().equalsIgnoreCase("PendingToPatient"))
@@ -838,8 +895,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     }
     
     private void viewDoctorAppointments(String doctorID, List<Appointment> appointments) {
-        System.out.println("\nViewing your Appointments with status 'PendingToDoctor':");
-    
         List<Appointment> pendingAppointments = appointments.stream()
                 .filter(app -> app.getDoctorID().equals(doctorID) && 
                                app.getAppointmentStatus().equalsIgnoreCase("PendingToDoctor"))
@@ -1131,6 +1186,15 @@ public void printCompletedSessionsPatient(String patientID) {
 public void printCancelledAppointments(String userType, String userID) {
     List<Appointment> appointments = apptData.getAllAppointments();
     
+    // Check if there are any appointments with status containing "cancelled"
+    boolean hasCancelledAppointments = appointments.stream()
+            .anyMatch(app -> app.getAppointmentStatus().toLowerCase().contains("cancelled"));
+    
+    if (!hasCancelledAppointments) {
+        System.out.println("No canceled appointments to display.");
+        return;
+    }
+
     // Filter canceled appointments with placeholder date "0001-01-01 00:00" and based on user type
     List<Appointment> cancelledAppointments = appointments.stream()
             .filter(app -> app.getAppointmentStatus().toLowerCase().contains("cancelled"))
@@ -1142,15 +1206,13 @@ public void printCancelledAppointments(String userType, String userID) {
                        appointmentTime.get(Calendar.DAY_OF_MONTH) == 1;
             })
             .filter(app -> (userType.equalsIgnoreCase("doctor") && 
-                            app.getDoctorID().equals(userID) && 
-                            app.getAppointmentStatus().toLowerCase().contains("cancelled by patient")) ||
+                            app.getDoctorID().equals(userID)) ||
                            (userType.equalsIgnoreCase("patient") && 
-                            app.getPatientID().equals(userID) &&
-                            app.getAppointmentStatus().toLowerCase().contains("cancelled by dr")))
+                            app.getPatientID().equals(userID)))
             .toList();
 
     if (cancelledAppointments.isEmpty()) {
-        System.out.println("No canceled appointments to display.");
+        System.out.println("No canceled appointments to display for your specific criteria.");
         return;
     }
 
@@ -1205,19 +1267,21 @@ public void printCancelledAppointments(String userType, String userID) {
                         selectedAppointment.getPatientID(),
                         selectedAppointment.getPatientName(),
                         selectedAppointment.getDoctorID(),
-                        selectedAppointment.getDoctorName());
+                        selectedAppointment.getDoctorName(), "doctor");
             } else if (userType.equalsIgnoreCase("patient")) {
                 bookNewAppointment(
                         selectedAppointment.getPatientID(),
                         selectedAppointment.getPatientName(),
                         selectedAppointment.getDoctorID(),
-                        selectedAppointment.getDoctorName());
+                        selectedAppointment.getDoctorName(), "patient");
             }
         }
         case 3 -> System.out.println("Exiting without changes.");
         default -> System.out.println("Invalid choice. Returning to the main menu...");
     }
 }
+
+
 
 //==================Admin============================
 public void printDoctorScheduleOnDateAdmin(String doctorID) {
@@ -1244,7 +1308,7 @@ private void viewSessionDetailsForDateAdmin(LocalDate date, String doctorID) {
 
     // Display sessions with admin-level editing capabilities
     for (int i = 0; i < sessions.length; i++) {
-        String status = getSessionStatus(appointments, date, sessions[i]);
+        String status = getSessionStatus(appointments, date, sessions[i], doctorID);
         System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
     }
 
@@ -1275,7 +1339,7 @@ private void viewSessionDetailsForDateAdmin(LocalDate date, String doctorID) {
 private void printSessionDetailsAndManageAdmin(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
     printSessionDetailsForDate(date, sessionTime, doctorID);
 
-    String status = getSessionStatus(appointments, date, sessionTime);
+    String status = getSessionStatus(appointments, date, sessionTime, doctorID);
 
     // Handle options based on the session status with admin privileges
     switch (status) {
@@ -1421,7 +1485,7 @@ private void rescheduleAppointmentByPatient(Appointment appointment, String user
     }
 
     // Check if the new session is available
-    String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime);
+    String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, appointment.getDoctorID());
     System.out.println("Debug: Selected session status is: " + status);  // Debugging output
 
     if (!status.equalsIgnoreCase("Available")) {

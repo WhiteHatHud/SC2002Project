@@ -449,12 +449,13 @@ public class CSVUtilities {
                 String[] data = line.split(",");
 
                 // Check if the line matches the given PatientID
-                if (data.length > 3 && data[1].equals(patientID)) {
-                    String[] diagnosisDetails = new String[3];
+                if (data.length > 5 && data[1].equals(patientID)) {
+                    String[] diagnosisDetails = new String[5];
                     diagnosisDetails[0] = data[5]; // DiagnosisDescription
                     diagnosisDetails[1] = data[6]; // Prescription
                     diagnosisDetails[2] = data[4] ; // date of diagnosis
-
+                    diagnosisDetails[3] = data[7];
+                    diagnosisDetails[4] = data[8];   
                     result.add(diagnosisDetails);
                 }
             }
