@@ -5,6 +5,7 @@ import Medicine.PrescriptionsUI.Action;
 import Utilities.LogoutTimer;
 import Utilities.UserInputHandler;
 import java.util.EnumSet;
+import Login.DisplayManager;
 import Medicine.MedicineUI;
 
 public class PharmaController {
@@ -51,7 +52,7 @@ public class PharmaController {
                 break;
 
             case 5: // Logout
-            
+
                 if (LogoutTimer.confirmLogout()) {
                     return false; // Ends the session only if logout is confirmed
                 } else {

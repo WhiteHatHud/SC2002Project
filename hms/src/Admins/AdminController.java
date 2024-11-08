@@ -335,26 +335,33 @@ public class AdminController implements ControllerInt {
         System.out.print("Enter Staff ID to remove: ");
         String staffID = AdminShared.getUserInputHandler().getNextLine();
     
+        // Check if the staff ID exists
+        if (!AdminShared.getCSVUtilities().checkIfUserExists(staffID)) {
+            DisplayManager.clearScreen(); // Clear the screen before displaying the message
+            System.out.println("Invalid staff! Operation aborted.");
+            return; // Return to the menu if the ID is invalid
+        }
+    
         StaffUI staffUI = new StaffUI();
-
         staffUI.checkStaff(staffID);
-
+    
         // Confirm deletion
         System.out.print("Are you sure you want to delete Staff ID " + staffID + "? (yes/no): ");
         String confirmation = AdminShared.getUserInputHandler().getNextLine().trim().toLowerCase();
         if (!confirmation.equals("yes")) {
-            System.out.println("Deletion canceled.");
+            System.out.println("Deletion canceled. Returning to the menu.");
             return;
         }
     
-
         if (staffData.removeStaffByID(staffID)) {
+            DisplayManager.clearScreen(); // Optional: clear the screen before displaying success message
             System.out.println("Staff with ID " + staffID + " has been successfully removed.");
         } else {
+            DisplayManager.clearScreen(); // Optional: clear the screen before displaying error message
             System.out.println("Error: Staff removal failed.");
         }
-
     }
+    
 
     public void registerNewPatient() {
         System.out.println("=== Gather Patient Information ===");

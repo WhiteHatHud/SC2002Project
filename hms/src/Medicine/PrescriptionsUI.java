@@ -146,7 +146,6 @@ public class PrescriptionsUI {
         System.out.print("Enter Date Prescribed (yyyy-MM-dd): ");
         LocalDate datePrescribed = LocalDate.parse(inputHandler.getNextLine());
 
-        // Enter medications as "name:dosage" pairs
         Map<String, Integer> medications = new HashMap<>();
         while (true) {
             System.out.print("Enter Medicine Name (or type 'done' to finish): ");

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+
+import Doctors.DoctorShared;
 
 public class StaffData {
     private static final String FILE_PATH = "Staff_List.csv";
@@ -63,10 +66,125 @@ public class StaffData {
     }
     
 
-    public boolean removeStaffByID(String staffId){
-        List<Staff> staffList = getAllStaff();
-        return staffList.removeIf(n -> (n.getUserID().equals(staffId))) && updateStaffList(staffList);
+public boolean removeStaffByID(String staffId) {
+    List<Staff> staffList = getAllStaff();
+    boolean isRemoved = staffList.removeIf(n -> (n.getUserID().equals(staffId))) && updateStaffList(staffList);
+
+    if (isRemoved) {
+        System.out.println("Please inform patient to re-book his appointment");
+        removeAppointmentsByStaffID(staffId);
+
+        // Check diagnosis.csv and reassign patients if necessary
+        reassignPatientsUnderDoctorCare(staffId);
     }
+
+    return isRemoved;
+}
+
+private void removeAppointmentsByStaffID(String staffId) {
+    String appointmentsFilePath = "appointments.csv";
+    List<String> updatedLines = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(appointmentsFilePath))) {
+        String line;
+        String header = br.readLine(); // Read and keep the header
+        if (header != null) {
+            updatedLines.add(header); // Add header to the new list
+        }
+
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            // Assuming index 4 contains the staff/doctor ID in the appointments CSV
+            if (data.length > 4 && !data[4].equals(staffId)) {
+                updatedLines.add(line); // Keep the line if the staffId does not match
+            }
+        }
+    } catch (IOException e) {
+        System.out.println("Error reading appointments CSV: " + e.getMessage());
+    }
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(appointmentsFilePath))) {
+        for (String updatedLine : updatedLines) {
+            writer.write(updatedLine);
+            writer.newLine();
+        }
+        System.out.println("Appointments updated successfully after removing staff ID: " + staffId);
+    } catch (IOException e) {
+        System.out.println("Error writing to appointments CSV: " + e.getMessage());
+    }
+}
+
+private void reassignPatientsUnderDoctorCare(String doctorId) {
+    String diagnosisFilePath = "diagnosis.csv";
+    List<String[]> diagnosisRecords = new ArrayList<>();
+    List<String[]> patientsToReassign = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(diagnosisFilePath))) {
+        String line;
+        String header = br.readLine();
+        if (header != null) {
+            diagnosisRecords.add(header.split(","));
+        }
+
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            // Assuming index 3 contains the doctor ID in the diagnosis CSV
+            if (data.length > 3 && data[3].equals(doctorId)) {
+                patientsToReassign.add(data); // Collect records needing reassignment
+            } else {
+                diagnosisRecords.add(data); // Keep existing records not needing reassignment
+            }
+        }
+    } catch (IOException e) {
+        System.out.println("Error reading diagnosis CSV: " + e.getMessage());
+        return;
+    }
+
+    // Check if there are any patients needing reassignment
+    if (!patientsToReassign.isEmpty()) {
+        System.out.println("The following patients need reassignment due to the removal of doctor ID " + doctorId + ":");
+        for (String[] patientRecord : patientsToReassign) {
+            System.out.println("Patient ID: " + patientRecord[1] + ", Patient Name: " + patientRecord[2]);
+        }
+
+        String newDoctorId;
+
+        while (true) {
+            System.out.print("Enter a valid doctor ID to reassign these patients: ");
+            newDoctorId =DoctorShared.getUserInputHandler().getNextLine();
+            
+
+            // Validate if the new doctor ID exists using the checkIfUserExists method
+            if (DoctorShared.getcsvUtilities2().checkIfUserExists(newDoctorId)) {
+                break;
+            } else {
+                System.out.println("Error: The entered doctor ID does not exist. Please try again.");
+            }
+        }
+
+        // Update the records with the new doctor ID
+        for (String[] patientRecord : patientsToReassign) {
+            patientRecord[3] = newDoctorId; // Update doctor ID in the record
+            // Optionally update the doctor's name in the record
+            patientRecord[4] = DoctorShared.getcsvUtilities2().getDoctorNameByID(newDoctorId);
+            diagnosisRecords.add(patientRecord);
+        }
+    }
+
+    // Write the updated records back to the diagnosis CSV
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(diagnosisFilePath))) {
+        for (String[] record : diagnosisRecords) {
+            writer.write(String.join(",", record));
+            writer.newLine();
+        }
+        System.out.println("Diagnosis CSV updated with reassigned patients.");
+    } catch (IOException e) {
+        System.out.println("Error writing to diagnosis CSV: " + e.getMessage());
+    }
+}
+
+
+    
  
     public boolean updateStaffList(List<Staff> staffList){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {

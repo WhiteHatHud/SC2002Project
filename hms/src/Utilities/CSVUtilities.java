@@ -507,12 +507,12 @@ public class CSVUtilities {
             System.out.println("Error writing to CSV file: " + e.getMessage());
         }
         
-        System.out.println("Doctor's name is updated!");
+       // System.out.println("Doctor's name is updated!");
     }
 
     public void updateDoctorNameInAllCSVs(String doctorID, String newDoctorName) {
         // Update in appointments.csv (index 4 is doctor ID, 5 is doctor name)
-        updateDoctorNameInCSV(doctorID, newDoctorName, "Appointment.csv", 4, 5);
+        updateDoctorNameInCSV(doctorID, newDoctorName, "appointments.csv", 4, 5);
 
         // Update in Diagnosis.csv (index 2 is doctor ID, 3 is doctor name)
         updateDoctorNameInCSV(doctorID, newDoctorName, "Diagnosis.csv", 2, 3);
