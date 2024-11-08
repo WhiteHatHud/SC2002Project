@@ -4,3 +4,4 @@ DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Pr
 3,P1003,Bob Stone,D002,2024-11-06,PIPI,Paracetamol:200; Aspirin:400; Bop:600,2024-12-12,2025-12-12,THIS NEW,THIS NEW,THIS NEW
 4,P1002,Bob Stone,D002,2024-11-06,HUD,MED:100,2024-12-12,HUD,HUD,HUD,HUD
 5,P1001,Alice Brown,D024,2024-11-08,He is fat,Aspirin:100; Bop:200; Malaypill:300,2024-12-12,,,,Take with water
+6,P1001,Alice Brown,D028,2024-11-08,Sick,Paracetamol:1000,2024-12-28,2024-12-30,,,nil

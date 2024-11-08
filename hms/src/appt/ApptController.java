@@ -546,9 +546,31 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         if (filteredAppointments.isEmpty()) {
             System.out.println("No upcoming sessions available.");
         } else {
-            System.out.print("\nEnter the Appointment ID to manage: ");
-            String appointmentID = scanner.nextLine().trim();
-            manageScheduledAppointments(appointmentID, userType);  // Pass userType to manageScheduledAppointments
+            while (true) {
+                System.out.print("\nEnter the Appointment ID to manage (or '~' to return): ");
+                String appointmentID = scanner.nextLine().trim();
+    
+                // Exit if user types '~'
+                if (appointmentID.equals("~")) {
+                    System.out.println("Returning to the previous menu...");
+                    return;
+                }
+    
+                // Check if the entered Appointment ID exists in the filtered list
+                Appointment selectedAppointment = filteredAppointments.stream()
+                        .filter(app -> app.getAppointmentID().equals(appointmentID))
+                        .findFirst()
+                        .orElse(null);
+    
+                if (selectedAppointment != null) {
+                    // Valid appointment ID found; proceed to manage it
+                    manageScheduledAppointments(appointmentID, userType);  // Pass userType to manageScheduledAppointments
+                    break;
+                } else {
+                    // Invalid appointment ID; prompt the user to try again
+                    System.out.println("Invalid Appointment ID. Please try again.");
+                }
+            }
         }
     }
     
@@ -708,6 +730,8 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                              appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
                              appointmentTime.get(Calendar.MINUTE) == 0);
                 })
+                .filter(app -> !app.getAppointmentStatus().equalsIgnoreCase("Completed")) // Exclude "Completed" status
+                .filter(app -> !app.getAppointmentStatus().toLowerCase().contains("cancelled")) // Exclude statuses with "cancelled"
                 .forEach(app -> {
                     Calendar appointmentTime = app.getAppointmentTime();
                     LocalDate date = LocalDate.of(
@@ -730,19 +754,26 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                 });
     
         // Check if there are no upcoming appointments
-        if (appointments.stream()
+        boolean hasUpcomingAppointments = appointments.stream()
                 .filter(app -> app.getPatientID().equals(patientID))
-                .noneMatch(app -> {
+                .filter(app -> {
                     Calendar appointmentTime = app.getAppointmentTime();
                     return !(appointmentTime.get(Calendar.YEAR) == 1 &&
                              appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
                              appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
                              appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
                              appointmentTime.get(Calendar.MINUTE) == 0);
-                })) {
+                })
+                .anyMatch(app -> 
+                    !app.getAppointmentStatus().equalsIgnoreCase("Completed") && 
+                    !app.getAppointmentStatus().toLowerCase().contains("cancelled")
+                );
+    
+        if (!hasUpcomingAppointments) {
             System.out.println("No upcoming appointments.");
         }
     }
+    
     
     public void bookNewAppointment(String patientID, String patientName, String doctorID, String doctorName, String initiator) {
         System.out.println("\nBooking a New Appointment:");
