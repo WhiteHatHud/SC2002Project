@@ -35,7 +35,7 @@ public class PharmaController {
     }
 
     private boolean handleMainChoice(int choice) {
-        DisplayManager.clearScreen();
+        PharmaDisplayManager.clearScreen();
 
         switch (choice) {
             case 1:
@@ -56,7 +56,7 @@ public class PharmaController {
                 if (LogoutTimer.confirmLogout()) {
                     return false; // Ends the session only if logout is confirmed
                 } else {
-                    DisplayManager.clearScreen();
+                    PharmaDisplayManager.clearScreen();
                     return true; // Continue the session without printing additional messages
                 }
 
