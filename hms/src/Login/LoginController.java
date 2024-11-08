@@ -9,12 +9,14 @@ public class LoginController implements ControllerInt {
     private UserInputHandler inputHandler;
     private LoginInt loginManager;
     private Map<String, UserRegistry> registries;
+    private AccountsInit accountsInit;
 
     public LoginController(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
         this.registries = registries;
         this.loginManager = null;
+        this.accountsInit = new AccountsInit("Patient List CSV.csv", registries);
     }
 
     @Override
@@ -49,17 +51,19 @@ public class LoginController implements ControllerInt {
                 return true;  // Signal to keep showing the main menu
 
             case 2:
-                 System.out.println("Resetting password functionality...");
-                 ResetPasswordController resetPasswordController = new ResetPasswordController();
-                 resetPasswordController.start();
-                 return true;  // Return to the main menu after resetting password
+                System.out.println("Resetting password functionality...");
+                ResetPasswordController resetPasswordController = new ResetPasswordController();
+                boolean shouldReload = resetPasswordController.start();
 
-
+                if (shouldReload) {
+                    System.out.println("Reloading patient data...");
+                    accountsInit.start();  // Reload patient data after password reset
+                }
+                return true;  // Return to the main menu after resetting password
             case 3:
                 System.out.println("System shutting down...");
                 System.exit(0);
                 return false;  // Ends the program, won't return to menu
-
             default:
                 System.out.println("Invalid choice");
                 return true;  // Re-show the menu for invalid input
