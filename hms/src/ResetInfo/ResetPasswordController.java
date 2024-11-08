@@ -18,6 +18,7 @@ public class ResetPasswordController implements ControllerInt {
     private CSVUtilities utilities;
     private StaffData staffData;
     private PatientData patientData;
+    private String errorMessage;
 
     public ResetPasswordController() {
         this.display = new DisplayManager();
@@ -26,11 +27,13 @@ public class ResetPasswordController implements ControllerInt {
         this.csvUpdaterStaff = new CSVUpdater("Staff_List.csv");
         this.staffData = new StaffData();  // Access to staff information
         this.patientData = new PatientData();
+        this.errorMessage = "";
     }
 
     public boolean start() {
         boolean isRunning = true;
         while (isRunning) {
+            DisplayManager.clearScreen();
             displayResetMenu();
             int choice = input.getUserChoice();
             if (choice == 3) {
@@ -44,23 +47,29 @@ public class ResetPasswordController implements ControllerInt {
 
     // Display reset menu options for user to choose between Staff or Patient
     private void displayResetMenu() {
-        DisplayManager.clearScreen();
-        display.showLoginScreen();
+        //DisplayManager.clearScreen();
+        if (errorMessage != ""){
+            DisplayManager.printCentered(errorMessage, 80);
+            display.divider();
+            errorMessage = "";
+        }
         System.out.println("Reset Password Menu");
-        System.out.println("1. Reset Staff Password");
-        System.out.println("2. Reset Patient Password");
+        System.out.println("1. Reset Patient Password");
+        System.out.println("2. Reset Staff Password");
         System.out.println("3. Return to Previous Menu");
+        display.divider();
         System.out.print("Enter your choice: ");
+        
     }
 
     @Override
     public boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
-                resetStaffPassword();
+                resetPatientPassword();
                 break;
             case 2:
-                resetPatientPassword();
+                resetStaffPassword();
                 break;
             case 3:
                 System.out.println("Returning to previous menu...");
@@ -81,10 +90,11 @@ public class ResetPasswordController implements ControllerInt {
         // Retrieve staff by ID using StaffData
         Staff staff = staffData.getStaffByID(staffID);
         if (staff == null) {
-            DisplayManager.authFail();
+            errorMessage = "Invalid Staff ID";
             return;
         }
 
+        display.divider();
         // Verify with staff's name, role, and office number
         System.out.print("Enter your name: ");
         String name = input.getNextLine();
@@ -95,12 +105,13 @@ public class ResetPasswordController implements ControllerInt {
 
         // Validation check
         if (validateStaffIdentity(staff, name, role, officeNumber)) {
+            display.divider();
             DisplayManager.passowrdUpdate();
             String newPassword = input.getNextLine();
             csvUpdaterStaff.updateField(staffID, "Password", newPassword);
-            System.out.println("Password reset successfully for Staff ID: " + staffID);
+            errorMessage = "Password reset successfully";
         } else {
-            System.out.println("Invalid verification details. Password reset failed.");
+            failReturn("Invalid verification details. Password reset failed.");
         }
     }
 
@@ -113,22 +124,24 @@ public class ResetPasswordController implements ControllerInt {
         // Assuming we have a method to retrieve patients by ID, similar to StaffData
         Patient patient = patientData.getPatientByID(patientID);
         if (patient == null) {
-            DisplayManager.authFail();
+            errorMessage = "Invalid Patient ID";
             return;
         }
 
         // Verify with patient's date of birth
+        display.divider();
         System.out.print("Enter your date of birth (YYYY-MM-DD): ");
         String dob = input.getNextLine();
 
         // Validation check
         if (validatePatientIdentity(patient, dob)) {
+            display.divider();
             DisplayManager.passowrdUpdate();
             String newPassword = input.getNextLine();
             csvUpdaterPatient.updateField(patientID, "Password", newPassword);
-            System.out.println("Password reset successfully for Patient ID: " + patientID);
+            errorMessage = "Password reset successfully";
         } else {
-            System.out.println("Invalid date of birth. Password reset failed.");
+            failReturn("Invalid date of birth. Password reset failed.");
         }
     }
 
@@ -144,4 +157,10 @@ public class ResetPasswordController implements ControllerInt {
         return patient.getDateOfBirth().equals(dob);  // Assuming date of birth is stored as a string
     }
 
+    private void failReturn(String message){
+        display.divider();
+        DisplayManager.printCentered(message,80);
+        DisplayManager.printCentered("Press enter to return to main menu", 80);
+        input.getNextLine();
+    }
 }

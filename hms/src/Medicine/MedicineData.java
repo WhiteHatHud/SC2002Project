@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MedicineData {
-    private static final String FILE_PATH = "Medicine_List.csv";
+    private static final String FILE_PATH = "../Medicine_List.csv";
 
     public MedicineData() {}
 
