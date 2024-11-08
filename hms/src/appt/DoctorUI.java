@@ -17,7 +17,7 @@ public class DoctorUI {
         boolean running = true;
         while (running) {
             apptController.updateCompletedSessions();
-            System.out.println("\nWelcome, Dr. " + doctorName);
+            System.out.println("Welcome, Dr. " + doctorName);
             System.out.println("1. View/Edit Personal Schedule");
             System.out.println("2. Accept/Decline Appointment Requests");
             System.out.println("3. View Upcoming Appointments");
