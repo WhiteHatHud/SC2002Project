@@ -69,18 +69,16 @@ public class PrescriptionData {
         return medicationsMap;
     }
 
-    // The rest of the methods remain unchanged
-
     public List<Prescription> getPatientPrescriptionList(String patientID) {
         prescriptionList = getAllPrescriptions();
         prescriptionList.removeIf(n -> !n.getPatientID().equals(patientID));
         return prescriptionList;
     }
 
-    public Prescription getPatientPrescription(String patientID, String medicineID) {
-        prescriptionList = getPatientPrescriptionList(patientID);
+    public Prescription getPrescription(String prescriptionID) {
+        prescriptionList = getAllPrescriptions();
         for (Prescription pres : prescriptionList) {
-            if (pres.getMedicineName().equals(medicineID)) return pres;
+            if (pres.getPrescriptionID().equals(prescriptionID)) return pres;
         }
         return null;
     }
@@ -122,10 +120,10 @@ public class PrescriptionData {
         return false;
     }
 
-    public boolean increaseAmount(String patientID, String medicineID, int newAmount) {
+    public boolean increaseAmount(String prescriptionID, String medicineID, int newAmount) {
         prescriptionList = getAllPrescriptions();
         for (Prescription pres : prescriptionList) {
-            if (pres.getPatientID().equals(patientID)) {
+            if (pres.getPrescriptionID().equals(prescriptionID)) {
                 pres.updateMedicationAmount(medicineID, newAmount);
                 return updateAllPrescriptions();
             }

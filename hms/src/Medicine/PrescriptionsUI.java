@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import Patients.PatientData;
 import Users.StaffData;
+import Pharmacists.*;
 
 public class PrescriptionsUI {
     private PrescriptionData prescriptionData = new PrescriptionData();
@@ -17,7 +18,9 @@ public class PrescriptionsUI {
     private PatientData patientData = new PatientData();
     private StaffData staffData = new StaffData();
     private MedicineData medicineData = new MedicineData();
+    private RequestFormController request;
     private String error = "";
+    private Pharmacist pharma;
 
     // Enum to represent actions in the menu
     public enum Action {
@@ -28,8 +31,9 @@ public class PrescriptionsUI {
     private Set<Action> allowedActions;
 
     // Constructor to set up allowed actions based on role
-    public PrescriptionsUI(Set<Action> allowedActions) {
+    public PrescriptionsUI(Set<Action> allowedActions, Pharmacist pharmacist) {
         this.allowedActions = allowedActions;
+        this.pharma = pharmacist;
     }
 
     // Method to display the menu based on allowed actions
@@ -196,8 +200,27 @@ public class PrescriptionsUI {
                 break;
             case 2:
                 newStatus = "Dispensed"; 
+                Prescription pres = prescriptionData.getPrescription(prescriptionID); 
+                Map<String, Integer> medications = pres.getMedications();
+                for (Map.Entry<String, Integer> entry : medications.entrySet()) {
+                    String medicineName = entry.getKey();
+                    int dosage = entry.getValue();
+                    boolean stockUpdated = medicineData.updateStock(medicineName, -dosage);
+                    Medicine med = medicineData.getMedicineByName(medicineName);
+                    //System.out.println(med.getLowStockLevelAlert() + " " + med.getInitialStock());
+                    if(med.getLowStockLevelAlert() >= med.getInitialStock()){
+                        DisplayManager.printCentered(medicineName + " is low at: " + med.getInitialStock(), 80);
+                        request = new RequestFormController(pharma);
+                        error += " " + request.request(pharma.getName(), pharma.getUserID(), medicineName);
+                    }
+                    if (!stockUpdated) {
+                        System.out.println("Failed to update stock for medicine: " + medicineName);
+                    } else {
+                        System.out.println("Stock updated successfully for medicine: " + medicineName);
+                    }
+                }
                 break;
-        }
+            }
         boolean success = prescriptionData.updatePrescriptionStatus(prescriptionID, newStatus);
         if (success) {
             System.out.println("Prescription status updated successfully.");

@@ -1,10 +1,13 @@
 package Pharmacists;
 
 import Medicine.PrescriptionsUI;
+import Medicine.RequestFormController;
 import Medicine.PrescriptionsUI.Action;
 import Utilities.LogoutTimer;
 import Utilities.UserInputHandler;
 import java.util.EnumSet;
+
+import Login.DisplayManager;
 import Medicine.MedicineUI;
 import Patients.Patient;
 import Patients.PatientData;
@@ -19,21 +22,24 @@ public class PharmaController {
     private MedicineUI medicineUI;
     private PatientData patientData;
     private String errorMessage;
+    private RequestFormController form;
 
     public PharmaController(Pharmacist pharmacist) {
         this.pharmacist = pharmacist;
         this.displayManager = new PharmaDisplayManager();
-        this.prescriptionsUI = new PrescriptionsUI(EnumSet.of(Action.VIEW_ALL, Action.VIEW_PATIENT, Action.UPDATE_STATUS));
+        this.prescriptionsUI = new PrescriptionsUI(EnumSet.of(Action.VIEW_ALL, Action.VIEW_PATIENT, Action.UPDATE_STATUS), pharmacist);
         this.inputHandler = new UserInputHandler();
         this.requestData = new RequestData();
         this.medicineUI = new MedicineUI();
         this.errorMessage = "";
         this.patientData = new PatientData();
+        this.form = new RequestFormController(pharmacist);
     }
 
     public void start() {
         boolean isActive = true;
         while (isActive) {
+            DisplayManager.clearScreen();
             errorMessage = PharmaDisplayManager.loadErrorMessage(errorMessage);
             displayManager.displayMainMenu();  // Call display manager to show the main menu
             int choice = inputHandler.getUserChoice();
@@ -55,7 +61,8 @@ public class PharmaController {
                 medicineUI.displayAllMedicines();
                 break;
             case 4:
-                requestData.request(pharmacist.getUserID(), pharmacist.getName());
+                errorMessage = form.request();
+                //inputHandler.getNextLine();
                 break;
 
             case 5: // Logout
