@@ -11,7 +11,7 @@ public class AdminShared {
     private static final CSVUpdater csvUpdater = new CSVUpdater("Staff_List.csv");
     private static final CSVUtilities csvUtil = new CSVUtilities("Staff_List.csv");
     private static final CSVUpdater csvUpdaterPatient = new CSVUpdater("Patient List CSV.csv");
-    private static final CSVUtilities csvUtilPatient = new CSVUtilities("Patient List CSV..csv");
+    private static final CSVUtilities csvUtilPatient = new CSVUtilities("Patient List CSV.csv");
     private static final AdminDisplayManager displayManager = new AdminDisplayManager();
 
     public static AdminDisplayManager getDisplayManager() {
