@@ -1,17 +1,23 @@
 package Medicine;
 
-import Login.DisplayFormat;
+import Login.DisplayManager;
 import Utilities.UserInputHandler;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import Patients.PatientData;
+import Users.StaffData;
 
 public class PrescriptionsUI {
     private PrescriptionData prescriptionData = new PrescriptionData();
     private UserInputHandler inputHandler = new UserInputHandler();
-    private DisplayFormat displayFormat = new DisplayFormat();
+    private DisplayManager uiManager = new DisplayManager();
+    private PatientData patientData = new PatientData();
+    private StaffData staffData = new StaffData();
+    private MedicineData medicineData = new MedicineData();
+    private String error = "";
 
     // Enum to represent actions in the menu
     public enum Action {
@@ -30,10 +36,11 @@ public class PrescriptionsUI {
     public void displayPrescriptionsMenu() {
         boolean isRunning = true;
         while (isRunning) {
-            DisplayFormat.clearScreen();
-            displayFormat.divider();
-            DisplayFormat.printCentered("Prescription Management System", 73);
-            displayFormat.divider();
+            DisplayManager.clearScreen();
+            error = DisplayManager.loadErrorMessage(error);
+            uiManager.divider();
+            DisplayManager.printCentered("Prescription Management System", 73);
+            uiManager.divider();
 
             int optionNumber = 1;
             if (allowedActions.contains(Action.VIEW_ALL)) {
@@ -52,7 +59,7 @@ public class PrescriptionsUI {
                 System.out.println(optionNumber++ + ". Delete Prescription");
             }
             System.out.println(optionNumber + ". Exit");
-            displayFormat.divider();
+            uiManager.divider();
             System.out.print("Please select an option: ");
 
             int choice = inputHandler.getUserChoice();
@@ -97,7 +104,7 @@ public class PrescriptionsUI {
     // Implement the original six functions
 
     private void viewAllPrescriptions() {
-        DisplayFormat.clearScreen();
+        DisplayManager.clearScreen();
         List<Prescription> prescriptions = prescriptionData.getAllPrescriptions();
         if (prescriptions.isEmpty()) {
             System.out.println("No prescriptions found.");
@@ -111,9 +118,10 @@ public class PrescriptionsUI {
     }
 
     private void viewPatientPrescriptions() {
-        DisplayFormat.clearScreen();
-        System.out.print("Enter Patient ID: ");
-        String patientID = inputHandler.getNextLine();
+        DisplayManager.clearScreen();
+        String patientID = validatePatientID();
+        if (patientID == null) return;
+
         List<Prescription> prescriptions = prescriptionData.getPatientPrescriptionList(patientID);
         if (prescriptions.isEmpty()) {
             System.out.println("No prescriptions found for patient ID: " + patientID);
@@ -127,46 +135,38 @@ public class PrescriptionsUI {
     }
 
     private void addNewPrescription() {
-        DisplayFormat.clearScreen();
+        DisplayManager.clearScreen();
         System.out.print("Enter Prescription ID: ");
         String prescriptionID = inputHandler.getNextLine();
-
-        System.out.print("Enter Patient ID: ");
-        String patientID = inputHandler.getNextLine();
-
-        System.out.print("Enter Patient Name: ");
-        String patientName = inputHandler.getNextLine();
-
-        System.out.print("Enter Doctor ID: ");
-        String doctorID = inputHandler.getNextLine();
-
-        System.out.print("Enter Doctor Name: ");
-        String doctorName = inputHandler.getNextLine();
-
+        //set patient detials
+        String patientID = validatePatientID();
+        if (patientID == null) return;
+        String patientName = patientData.getPatientByID(patientID).getName();
+        //set doctor details
+        String doctorID = validateDoctorID();
+        if (doctorID == null) return;
+        String doctorName = staffData.getStaffByID(doctorID).getName();
         System.out.print("Enter Date Prescribed (yyyy-MM-dd): ");
         LocalDate datePrescribed = LocalDate.parse(inputHandler.getNextLine());
-
         Map<String, Integer> medications = new HashMap<>();
         while (true) {
-            System.out.print("Enter Medicine Name (or type 'done' to finish): ");
-            String medicineName = inputHandler.getNextLine();
+            String medicineName = validateMedicineName();
+            if (medicineName == null) {
+                DisplayManager.printCentered(error, 80);
+                error = "";
+                continue;
+            }
             if ("done".equalsIgnoreCase(medicineName)) {
                 break;
             }
-
             System.out.print("Enter Dosage (mg): ");
             int dosage = inputHandler.getUserChoice();
             medications.put(medicineName, dosage);
         }
-
-        System.out.print("Enter Status: ");
-        String status = inputHandler.getNextLine();
-
         System.out.print("Enter Notes: ");
         String notes = inputHandler.getNextLine();
-
         Prescription prescription = new Prescription(prescriptionID, patientID, patientName, doctorID, doctorName,
-                                                     datePrescribed, medications, status, notes);
+                                                     datePrescribed, medications, "pending", notes);
         boolean success = prescriptionData.addPrescription(prescription);
         if (success) {
             System.out.println("Prescription successfully added.");
@@ -178,13 +178,26 @@ public class PrescriptionsUI {
     }
 
     private void updatePrescriptionStatus() {
-        DisplayFormat.clearScreen();
-        System.out.print("Enter Prescription ID: ");
-        String prescriptionID = inputHandler.getNextLine();
-
-        System.out.print("Enter New Status: ");
-        String newStatus = inputHandler.getNextLine();
-
+        int choice;
+        DisplayManager.clearScreen();
+        String prescriptionID = validatePrescriptionID();
+        if (prescriptionID == null) return;
+        System.out.println("Choose update Status: ");
+        System.out.println("(1) Pending");
+        System.out.println("(2) Dispensed");
+        if ((choice = inputHandler.getUserChoice(2)) == -1){
+            error = "Invalid Input.";
+            return; 
+        } 
+        String newStatus = "Pending";
+        switch(choice){
+            case 1:
+                newStatus = "Pending";
+                break;
+            case 2:
+                newStatus = "Dispensed"; 
+                break;
+        }
         boolean success = prescriptionData.updatePrescriptionStatus(prescriptionID, newStatus);
         if (success) {
             System.out.println("Prescription status updated successfully.");
@@ -196,13 +209,11 @@ public class PrescriptionsUI {
     }
 
     private void deletePrescription() {
-        DisplayFormat.clearScreen();
-        System.out.print("Enter Patient ID: ");
-        String patientID = inputHandler.getNextLine();
-        
-        System.out.print("Enter Medicine Name: ");
-        String medicineName = inputHandler.getNextLine();
-
+        DisplayManager.clearScreen();
+        String patientID = validatePatientID();
+        if (patientID == null) return;
+        String medicineName = validateMedicineName();
+        if (medicineName == null) return;
         boolean success = prescriptionData.deletePrescription(patientID, medicineName);
         if (success) {
             System.out.println("Prescription successfully deleted.");
@@ -214,9 +225,9 @@ public class PrescriptionsUI {
     }
 
     private void printPrescription(Prescription pres) {
-        displayFormat.divider();
-        DisplayFormat.printCentered("Prescription Details", 73);
-        displayFormat.divider();
+        uiManager.divider();
+        DisplayManager.printCentered("Prescription Details", 73);
+        uiManager.divider();
         System.out.println("Prescription ID: " + pres.getPrescriptionID());
         System.out.println("Patient ID: " + pres.getPatientID());
         System.out.println("Patient Name: " + pres.getPatientName());
@@ -231,6 +242,50 @@ public class PrescriptionsUI {
 
         System.out.println("Status: " + pres.getStatus());
         System.out.println("Notes: " + pres.getNotes());
-        displayFormat.divider();
+        uiManager.divider();
     }
+
+    private String validatePrescriptionID() {
+        System.out.print("Enter Prescription ID: ");
+        String prescriptionID = inputHandler.getNextLine();
+    
+        if (!prescriptionData.checkPrescriptionExists(prescriptionID)) {
+            error = "Invalid Prescription ID.";
+            return null; // Return null to indicate invalid ID
+        }
+        return prescriptionID; // Return the valid ID
+    }
+    private String validatePatientID() {
+        System.out.print("Enter patient ID: ");
+        String patientID = inputHandler.getNextLine();
+    
+        if (!patientData.exists(patientID)) {
+            error = "Invalid Patient ID.";
+            return null; // Return null to indicate invalid ID
+        }
+        return patientID; // Return the valid ID
+    }
+
+    private String validateDoctorID() {
+        System.out.print("Enter Doctor ID: ");
+        String doctorID = inputHandler.getNextLine();
+    
+        if (!staffData.exists(doctorID)) {
+            error = "Invalid Doctor ID.";
+            return null; // Return null to indicate invalid ID
+        }
+        return doctorID; // Return the valid ID
+    }
+
+    private String validateMedicineName() {
+        System.out.print("Enter Medicine Name (or type 'done' to finish): ");
+        String medicineName = inputHandler.getNextLine();
+    
+        if (!medicineData.exists(medicineName)) {
+            error = "Invalid medicine name.";
+            return null; // Return null to indicate invalid ID
+        }
+        return medicineName; // Return the valid ID
+    }
+    
 }

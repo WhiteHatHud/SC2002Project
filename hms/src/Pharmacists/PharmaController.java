@@ -5,8 +5,10 @@ import Medicine.PrescriptionsUI.Action;
 import Utilities.LogoutTimer;
 import Utilities.UserInputHandler;
 import java.util.EnumSet;
-import Login.DisplayManager;
 import Medicine.MedicineUI;
+import Patients.Patient;
+import Patients.PatientData;
+import Patients.ViewMedicalRecord;
 
 public class PharmaController {
     private Pharmacist pharmacist;
@@ -15,6 +17,8 @@ public class PharmaController {
     private UserInputHandler inputHandler;
     private RequestData requestData;
     private MedicineUI medicineUI;
+    private PatientData patientData;
+    private String errorMessage;
 
     public PharmaController(Pharmacist pharmacist) {
         this.pharmacist = pharmacist;
@@ -23,11 +27,14 @@ public class PharmaController {
         this.inputHandler = new UserInputHandler();
         this.requestData = new RequestData();
         this.medicineUI = new MedicineUI();
+        this.errorMessage = "";
+        this.patientData = new PatientData();
     }
 
     public void start() {
         boolean isActive = true;
         while (isActive) {
+            errorMessage = PharmaDisplayManager.loadErrorMessage(errorMessage);
             displayManager.displayMainMenu();  // Call display manager to show the main menu
             int choice = inputHandler.getUserChoice();
             isActive = handleMainChoice(choice);
@@ -69,5 +76,14 @@ public class PharmaController {
 
     private void viewAppointmentOutcomeRecord() {
         // appointmentoutcomerecord logic
+        PharmaDisplayManager.printCentered("Enter the patient's ID", 80);
+        String patientID = inputHandler.getNextLine();
+        Patient patient = patientData.getPatientByID(patientID);
+        if (patient == null){
+            errorMessage = "Invalid PatientID";
+            return;
+        }
+        ViewMedicalRecord view = new ViewMedicalRecord();
+        view.viewMedicalRecord(patient);
     }
 }

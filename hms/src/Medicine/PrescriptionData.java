@@ -13,9 +13,8 @@ import java.util.Map;
 public class PrescriptionData {
     private static final String FILE_PATH = "To be prescribed.csv";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    
     private CSVUpdater csvUpdate = new CSVUpdater(FILE_PATH);
-    //private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
+    private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
     private List<Prescription> prescriptionList;
 
     public List<Prescription> getAllPrescriptions() {
@@ -150,4 +149,32 @@ public class PrescriptionData {
         }
         return removed;
     }
+
+    public String generatePrescriptionID() {
+        String prefix = "PR"; // Prefix for Prescription IDs
+        int highestID = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields[0].startsWith(prefix)) { 
+                    int idNumber = Integer.parseInt(fields[0].substring(2));
+                    if (idNumber > highestID) {
+                        highestID = idNumber;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+
+        int newIDNumber = highestID + 1;
+        return prefix + String.format("%03d", newIDNumber); // Returns ID in the format PR001, PR002, etc.
+    }
+
+    public boolean checkPrescriptionExists(String prescriptionID){
+        return csvUtilities.checkIfUserExists(prescriptionID);
+    }
+
 }
