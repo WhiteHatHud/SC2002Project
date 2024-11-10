@@ -48,4 +48,11 @@ public class PatientData {
         }
         return null;
     }
+
+    public boolean exists(String ID){
+        if (getPatientByID(ID) != null){
+            return true;
+        }
+        return false;
+    }
 }

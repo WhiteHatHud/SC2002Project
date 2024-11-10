@@ -88,6 +88,12 @@ public class DisplayManager extends DisplayFormat {
                 printCentered(line, 80);
             }
         }
+        public static String loadErrorMessage(String errorMessage){
+            if (errorMessage != ""){
+                DisplayFormat.printCentered(errorMessage, 80);
+            }
+            return "";
+        }
 
     }
     

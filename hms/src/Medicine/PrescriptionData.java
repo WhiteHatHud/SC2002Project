@@ -13,9 +13,8 @@ import java.util.Map;
 public class PrescriptionData {
     private static final String FILE_PATH = "To be prescribed.csv";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    
     private CSVUpdater csvUpdate = new CSVUpdater(FILE_PATH);
-    //private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
+    private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
     private List<Prescription> prescriptionList;
 
     public List<Prescription> getAllPrescriptions() {
@@ -70,18 +69,16 @@ public class PrescriptionData {
         return medicationsMap;
     }
 
-    // The rest of the methods remain unchanged
-
     public List<Prescription> getPatientPrescriptionList(String patientID) {
         prescriptionList = getAllPrescriptions();
         prescriptionList.removeIf(n -> !n.getPatientID().equals(patientID));
         return prescriptionList;
     }
 
-    public Prescription getPatientPrescription(String patientID, String medicineID) {
-        prescriptionList = getPatientPrescriptionList(patientID);
+    public Prescription getPrescription(String prescriptionID) {
+        prescriptionList = getAllPrescriptions();
         for (Prescription pres : prescriptionList) {
-            if (pres.getMedicineName().equals(medicineID)) return pres;
+            if (pres.getPrescriptionID().equals(prescriptionID)) return pres;
         }
         return null;
     }
@@ -123,10 +120,10 @@ public class PrescriptionData {
         return false;
     }
 
-    public boolean increaseAmount(String patientID, String medicineID, int newAmount) {
+    public boolean increaseAmount(String prescriptionID, String medicineID, int newAmount) {
         prescriptionList = getAllPrescriptions();
         for (Prescription pres : prescriptionList) {
-            if (pres.getPatientID().equals(patientID)) {
+            if (pres.getPrescriptionID().equals(prescriptionID)) {
                 pres.updateMedicationAmount(medicineID, newAmount);
                 return updateAllPrescriptions();
             }
@@ -150,4 +147,32 @@ public class PrescriptionData {
         }
         return removed;
     }
+
+    public String generatePrescriptionID() {
+        String prefix = "PR"; // Prefix for Prescription IDs
+        int highestID = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields[0].startsWith(prefix)) { 
+                    int idNumber = Integer.parseInt(fields[0].substring(2));
+                    if (idNumber > highestID) {
+                        highestID = idNumber;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+
+        int newIDNumber = highestID + 1;
+        return prefix + String.format("%03d", newIDNumber); // Returns ID in the format PR001, PR002, etc.
+    }
+
+    public boolean checkPrescriptionExists(String prescriptionID){
+        return csvUtilities.checkIfUserExists(prescriptionID);
+    }
+
 }
