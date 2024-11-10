@@ -1,11 +1,11 @@
-appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes
+AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes
 A0006,2024-10-30 09:00,PT001,John Doe,D001,Dr. Smith,Completed,Successful,,Weed,Not Given,This is a test lol
-A0007,2024-10-30 14:00,PT001,John Doe,D001,Dr. Smith,Completed
-A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
-A0011,2024-11-01 14:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
-A00012,2024-11-04 14:00,PT003,Hud,DR001,Dr. Smith,PendingToPatient
-A0016,2024-11-02 11:00,PT002,Hud,DR001,Dr. Smith,Completed,Success,Massage,Drugs,GIven
-A0022,2024-11-09 09:00,PT002,Hud,DR001,Dr. Smith,Booked
+A0007,2024-10-30 14:00,PT001,John Doe,D001,Dr. Smith,Completed,,,,,
+A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
+A0011,2024-11-01 14:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
+A00012,2024-11-04 14:00,PT003,Hud,DR001,Dr. Smith,PendingToPatient,,,,,
+A0016,2024-11-02 11:00,PT002,Hud,DR001,Dr. Smith,Completed,Success,Massage,Drugs,GIven,
+A0022,2024-11-09 09:00,PT002,Hud,DR001,Dr. Smith,Completed,,,,,
 A0000,0002-11-30 00:00,00:00,P0,null,null,null,null,null,null,null,null
 A0000,0002-11-30 00:00,00:00,P0,D016,haha,null,null,null,null,null,null
 A0023,2024-11-04 09:00,P1001,haha,D016,haha,Completed
@@ -30,5 +30,7 @@ A0044,2024-11-07 11:00,P1001,Alice Brown,D028,asd,Completed,,,,,
 A0045,2024-11-03 09:00,P1001,Alice Brown,D028,asd,Completed,Gay,Gay,fin,fin,
 A0049,2024-11-10 09:00,P1001,Alice Brown,D027,bad guy,Completed,He is dead,Obese,Medicine,,
 A0051,2024-11-07 09:00,P1001,Alice Brown,D99,po,PendingToDoctor,,,,,
-A0052,2024-11-09 09:00,P1001,Hud,DR002,Dr. Kop kun kap,Booked,,,,,
+A0052,2024-11-09 09:00,P1001,Hud,DR002,Dr. Kop kun kap,Completed,,,,,
 A0053,2024-11-08 09:00,P1001,Alice Brown,D028,asd,Completed,,,,,
+A0054,2024-11-10 09:00,P1003,Charlie White,D026,Popo,Completed,,,,,
+A0055,2024-11-11 09:00,P1003,Charlie White,D026,Popo,PendingToDoctor,,,,,
