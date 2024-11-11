@@ -187,8 +187,7 @@ public class PrescriptionsUI {
         String prescriptionID = validatePrescriptionID();
         if (prescriptionID == null) return;
         System.out.println("Choose update Status: ");
-        System.out.println("(1) Pending");
-        System.out.println("(2) Dispensed");
+        System.out.println("(1) Dispense Medicine");
         if ((choice = inputHandler.getUserChoice(2)) == -1){
             error = "Invalid Input.";
             return; 
@@ -196,9 +195,6 @@ public class PrescriptionsUI {
         String newStatus = "Pending";
         switch(choice){
             case 1:
-                newStatus = "Pending";
-                break;
-            case 2:
                 newStatus = "Dispensed"; 
                 Prescription pres = prescriptionData.getPrescription(prescriptionID); 
                 Map<String, Integer> medications = pres.getMedications();

@@ -6,7 +6,7 @@ PR004,P1002,Bob Stone,D002,My father,2024-11-05,Aspirin:200,Pending,a
 PR005,P1002,Bob Stone,D002,My father,2024-11-05,Aspirin:100,Dispensed,p
 PR006,P1002,Bob Stone,D002,My father,2024-11-05,Paracetamol:100,Dispensed,1
 PR007,P1001,Alice Brown,D001,John Smith,2024-11-06,Malaypill:100,Prescribed,none
-PR008,P1001,Alice Brown,D024,po2po,2024-11-08,Aspirin:100; Bop:200; Malaypill:300,Pending,Take with water
+PR008,P1001,Alice Brown,D024,po2po,2024-11-08,Aspirin:100; Bop:200; Malaypill:300,Dispensed,Take with water
 PR009,P1001,Alice Brown,D028,asd,2024-11-08,Paracetamol:1000,Pending,nil
 PR010,P1001,Alice Brown,D024,po2po,2024-11-08,Paracetamol:1000,Pending,notin
-PR011,P1001,Alice Brown,D024,po2po,2024-11-08,Aspirin:1000,Pending,dw
+PR011,P1001,Alice Brown,D024,po2po,2024-11-08,Aspirin:1,Dispensed,dw
