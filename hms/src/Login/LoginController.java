@@ -21,40 +21,57 @@ public class LoginController implements ControllerInt {
 
     @Override
     public boolean handleChoice(int choice) {
+        if (choice == '~') {
+            // Return to the welcome screen when '~' is pressed
+            return true;  // Signal to show the welcome screen again
+        }
+    
         switch (choice) {
             case 1:
                 boolean validChoice = false;
-
+    
                 while (!validChoice) {
                     displayManager.showLoginScreen();
-                    int option = inputHandler.getUserChoice();
-                    DisplayFormat.clearScreen();
+                    String input = inputHandler.getNextLine().trim();
                     
-                    if (option == 1) {  // Patient
-                        loginManager = new PatientLoginManager(displayManager, inputHandler, registries);
-                        validChoice = true;
-                    } else if (option == 2) {  // Staff
-                        loginManager = new StaffLoginManager(displayManager, inputHandler, registries);
-                        validChoice = true;
-                    } else {
-                        System.out.println("Invalid choice! Please reselect.");
+                    if (input.equals("~")) {
+                        System.out.println("Returning to the previous menu...");
+                        return true;  // Signal to show the welcome screen again
                     }
-
-                    if (loginManager != null) {
-                        boolean continueToMainMenu = !loginManager.start(); 
-                        
-                        if (continueToMainMenu) {
-                            validChoice = false; // Reset validChoice to re-display the main menu
+            
+                    try {
+                        int option = Integer.parseInt(input);
+                        DisplayFormat.clearScreen();
+            
+                        if (option == 1) {  // Patient
+                            loginManager = new PatientLoginManager(displayManager, inputHandler, registries);
+                            break;  // Exit the loop and proceed with login
+                        } else if (option == 2) {  // Staff
+                            loginManager = new StaffLoginManager(displayManager, inputHandler, registries);
+                            break;  // Exit the loop and proceed with login
+                        } else {
+                            System.out.println("Invalid choice! Please reselect.");
                         }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input! Please enter a number.");
                     }
                 }
-                return true;  // Signal to keep showing the main menu
-
+            
+                if (loginManager != null) {
+                    boolean continueToMainMenu = !loginManager.start();
+            
+                    if (continueToMainMenu) {
+                        return true;  // Signal to show the welcome screen again
+                    }
+                }
+            
+                return true; 
+    
             case 2:
                 System.out.println("Resetting password functionality...");
                 ResetPasswordController resetPasswordController = new ResetPasswordController();
                 boolean shouldReload = resetPasswordController.start();
-
+    
                 if (shouldReload) {
                     System.out.println("Reloading patient data...");
                     accountsInit.start();  // Reload patient data after password reset
@@ -69,4 +86,5 @@ public class LoginController implements ControllerInt {
                 return true;  // Re-show the menu for invalid input
         }
     }
+    
 }

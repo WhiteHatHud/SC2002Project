@@ -14,7 +14,7 @@ public class PatientLoginManager implements LoginInt {
     public PatientLoginManager(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
-        this.authenticationService = new AuthenticationService(registries);
+        this.authenticationService = new AuthenticationService();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PatientLoginManager implements LoginInt {
             Masking mask = new Masking();
             String password = mask.readPasswordWithMasking();
     
-            authenticatedPatient = authenticationService.authenticate("patient", userID, password);
+            authenticatedPatient = authenticationService.authenticate(userID, password);
     
             if (authenticatedPatient != null) {
                 DisplayFormat.clearScreen();
