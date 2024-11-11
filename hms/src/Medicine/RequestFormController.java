@@ -34,7 +34,7 @@ public class RequestFormController extends DisplayManager{
         DisplayManager.printCentered("Request for Medicine re-stock", 80);
         display.divider();
         medicine.displayAllMedicines();
-        DisplayManager.printCentered("Which Medicine would you like to request", 80);
+        DisplayManager.printCentered("Which Medicine would you like to request? (Enter the index of medicine)", 80);
         int index = input.getUserChoice();
         DisplayManager.printCentered("Select amount to request", 80);
         for (int i = 100; i<=500; i += 100){

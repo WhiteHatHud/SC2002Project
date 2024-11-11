@@ -1,5 +1,9 @@
 package ResetInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import Login.AccountsInit;
 import Users.Staff;
 import Patients.Patient;
 import Patients.PatientData;
@@ -10,6 +14,7 @@ import Utilities.UserInputHandler;
 import Utilities.CSVUtilities;
 import Users.StaffData;
 
+
 public class ResetPasswordController implements ControllerInt {
     private DisplayManager display;
     private UserInputHandler input;
@@ -19,6 +24,8 @@ public class ResetPasswordController implements ControllerInt {
     private StaffData staffData;
     private PatientData patientData;
     private String errorMessage;
+    private AccountsInit accounts;
+    
 
     public ResetPasswordController() {
         this.display = new DisplayManager();
@@ -28,6 +35,7 @@ public class ResetPasswordController implements ControllerInt {
         this.staffData = new StaffData();  // Access to staff information
         this.patientData = new PatientData();
         this.errorMessage = "";
+
     }
 
     public boolean start() {
@@ -139,7 +147,8 @@ public class ResetPasswordController implements ControllerInt {
             DisplayManager.passowrdUpdate();
             String newPassword = input.getNextLine();
             csvUpdaterPatient.updateField(patientID, "Password", newPassword);
-            errorMessage = "Password reset successfully";
+            errorMessage = "Password reset successfully"; 
+
         } else {
             failReturn("Invalid date of birth. Password reset failed.");
         }

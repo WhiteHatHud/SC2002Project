@@ -20,7 +20,7 @@ public class DisplayManager extends DisplayFormat {
 
         public void showLoginScreen() {
 
-            String[] loginMenu = {"I am a...\n", "1. Patient", "2. Staff\n", "Please enter your choice (1~2): "};
+            String[] loginMenu = {"I am a...\n", "1. Patient", "2. Staff\n", "Please enter your choice (1-2, ~ to return to main meu): "};
 
             for (String line : loginMenu) {
                 printCentered(line, 80);
@@ -30,7 +30,7 @@ public class DisplayManager extends DisplayFormat {
         }
         public void showStaffLoginID() {
 
-            String[] msg = {"Please enter your staff ID (Enter ~ to return to previous menu): "};
+            String[] msg = {"Please enter your staff ID (Enter ~ to return to main menu): "};
             for (String line : msg) {
                 printCentered(line, 80);
             }
@@ -39,7 +39,7 @@ public class DisplayManager extends DisplayFormat {
 
         public void showPatientLoginID() {
 
-            String[] msg = {"Please enter your patient ID (Enter ~ to return to previous menu): "};
+            String[] msg = {"Please enter your patient ID (Enter ~ to return to main menu): "};
             for (String line : msg) {
                 printCentered(line, 80);
             }
