@@ -21,7 +21,8 @@ public class PharmaController {
     private PatientData patientData;
     private String errorMessage;
     private RequestFormController form;
-
+    private Pharmacist pharmacist;
+     
     public PharmaController(Pharmacist pharmacist) {
         this.displayManager = new PharmaDisplayManager();
         this.prescriptionsUI = new PrescriptionsUI(EnumSet.of(Action.VIEW_ALL, Action.VIEW_PATIENT, Action.UPDATE_STATUS), pharmacist);
@@ -30,6 +31,8 @@ public class PharmaController {
         this.errorMessage = "";
         this.patientData = new PatientData();
         this.form = new RequestFormController(pharmacist);
+        this.pharmacist = pharmacist;
+    
     }
 
     public void start() {
@@ -37,11 +40,13 @@ public class PharmaController {
         while (isActive) {
             DisplayManager.clearScreen();
             errorMessage = PharmaDisplayManager.loadErrorMessage(errorMessage);
+            System.out.println("Welcome, Pharmacist " + pharmacist.getName());  // Print the pharmacist's name
             displayManager.displayMainMenu();  // Call display manager to show the main menu
             int choice = inputHandler.getUserChoice();
             isActive = handleMainChoice(choice);
         }
     }
+    
 
     private boolean handleMainChoice(int choice) {
         PharmaDisplayManager.clearScreen();

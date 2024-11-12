@@ -9,11 +9,14 @@ import Pharmacists.Pharmacist;
 import Users.*;
 import Utilities.LogoutTimer;
 import appt.AdminUI;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 
 public class AdminController implements ControllerInt {
-    private final Admin admin;
+    private Admin admin;
     StaffData staffData = new StaffData();
     
     public AdminController(Admin admin) {
@@ -22,14 +25,13 @@ public class AdminController implements ControllerInt {
     }
 
     public boolean start() {
-       
+
+        String name = admin.getName();
 
         boolean isActive = true;
         while (isActive) {
-            System.out.println("Welcome, " + admin.getName());
-            
-            AdminShared.getDisplayManager().displayMenu(); 
-            
+            AdminShared.getDisplayManager().displayMenu(name); 
+
             int choice = AdminShared.getUserInputHandler().getUserChoice();
             isActive = handleChoice(choice);
         }
@@ -39,9 +41,6 @@ public class AdminController implements ControllerInt {
 
     @Override
     public boolean handleChoice(int choice) {
-
-
-        
         switch (choice) {
 
             
@@ -93,6 +92,7 @@ public class AdminController implements ControllerInt {
                     break;
                 case 4:
                     managingStaff = false;
+                    break;
                 default:
                     //Login.DisplayManager.invalidChoice();
                     break;
@@ -171,18 +171,17 @@ public class AdminController implements ControllerInt {
         System.out.println("2. Descending");
         System.out.print("Choose sorting order: ");
         int orderChoice = AdminShared.getUserInputHandler().getUserChoice();
-
+    
         StaffData staffData = new StaffData();
         List<Staff> staffList = staffData.getAllStaff();
         
-
         Comparator<Staff> comparator = null;
         switch (attributeChoice) {
             case 1: // Sort by ID
                 comparator = Comparator.comparing(Staff::getUserID);
                 break;
-            case 2: // Sort by Name
-                comparator = Comparator.comparing(Staff::getName);
+            case 2: // Sort by Name (case-insensitive)
+                comparator = Comparator.comparing(staff -> staff.getName().toLowerCase());
                 break;
             case 3: // Sort by Role
                 comparator = Comparator.comparing(Staff::getRole);
@@ -197,23 +196,22 @@ public class AdminController implements ControllerInt {
                 System.out.println("Invalid attribute choice.");
                 return;
         }
-
+    
         // Apply descending order if selected
         if (orderChoice == 2) {
             comparator = comparator.reversed();
         }
-
+    
         // Sort the list
         Collections.sort(staffList, comparator);
-
+    
         // Display sorted list
         System.out.println("Sorted Staff List: \n");
         for (Staff staff : staffList) {
             System.out.println(staff);
         }
     }
-
-
+    
 
     private void addStaffMember(String role) {
         DisplayManager.clearScreen();
@@ -370,60 +368,100 @@ public class AdminController implements ControllerInt {
     }
     
 
-    public void registerNewPatient() {
-        System.out.println("=== Gather Patient Information ===");
+public void registerNewPatient() {
+    DisplayManager.clearScreen();
+    System.out.println("=== Input Patient Information ===");
 
-        // Array to store patient information
-        String[] patientData = new String[9];
+    String[] patientData = new String[9];
 
-        // Collect patient information and store in the array
-        patientData[0] = AdminShared.getCSVUtilitiesPatient().generateLatestPatientID();
-        System.out.print("Patient is assinged ID: " + patientData[0]);
+    // Collect patient information and store in the array
+    patientData[0] = AdminShared.getCSVUtilitiesPatient().generateLatestPatientID();
+    System.out.println("Patient is assigned ID: " + patientData[0]);
 
-        System.out.print("Enter Name: ");
-        patientData[1] = AdminShared.getUserInputHandler().getNextLine().trim();
+    System.out.print("Enter Name: ");
+    patientData[1] = AdminShared.getUserInputHandler().getNextLine().trim();
 
+    // Validate date of birth input
+    boolean validDate = false;
+    while (!validDate) {
         System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
-        patientData[2] = AdminShared.getUserInputHandler().getNextLine().trim();
-
-        System.out.print("Enter Gender (M/F): ");
-        patientData[3] = AdminShared.getUserInputHandler().getNextLine().trim();
-
-        System.out.print("Enter Blood Type (e.g., A+, O-, etc.): ");
-        patientData[4] = AdminShared.getUserInputHandler().getNextLine().trim();
-
-        System.out.print("Enter Email: ");
-        patientData[5] = AdminShared.getUserInputHandler().getNextLine().trim();
-
-        System.out.print("Enter Contact Number: ");
-        patientData[6] = AdminShared.getUserInputHandler().getNextLine().trim();
-
-        System.out.print("Enter Emergency Contact Number: ");
-        patientData[7] = AdminShared.getUserInputHandler().getNextLine().trim();
-
-        System.out.print("Password Will Be Set to The Default Password");
-        patientData[8] = "password";
-
-        AdminShared.getCSVUpdater().addNewPatient(patientData);
-        Patient newPatient = new Patient(
-            patientData[0], // Patient ID
-            patientData[1], // Name
-            patientData[2], // Date of Birth
-            patientData[3], // Gender
-            patientData[4], // Blood Type
-            patientData[5], // Email
-            patientData[6], // Contact Number
-            patientData[7], // Emergency Contact Number
-            patientData[8]  // Password
-        );
-        PatientRegistry pR = new PatientRegistry();
-        pR.addUser(newPatient);
-
-        
+        String dobInput = AdminShared.getUserInputHandler().getNextLine().trim();
+        try {
+            LocalDate.parse(dobInput);
+            patientData[2] = dobInput;
+            validDate = true;
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
+        }
     }
-    
 
-    
+    // Gender selection
+    String[] genders = {"1. Male", "2. Female"};
+    System.out.println("Select Gender:");
+    for (String genderOption : genders) {
+        System.out.println(genderOption);
+    }
+    boolean validGender = false;
+    while (!validGender) {
+        int genderChoice = AdminShared.getUserInputHandler().getUserChoice();
+        if (genderChoice == 1) {
+            patientData[3] = "Male";
+            validGender = true;
+        } else if (genderChoice == 2) {
+            patientData[3] = "Female";
+            validGender = true;
+        } else {
+            //System.out.println("Invalid choice. Please select 1 for Male or 2 for Female.");
+        }
+    }
+
+    // Blood type selection
+    String[] bloodTypes = {"1. A+", "2. A-", "3. B+", "4. B-", "5. AB+", "6. AB-", "7. O+", "8. O-"};
+    System.out.println("Select Blood Type:");
+    for (String bloodTypeOption : bloodTypes) {
+        System.out.println(bloodTypeOption);
+    }
+    boolean validBloodType = false;
+    while (!validBloodType) {
+        int bloodTypeChoice = AdminShared.getUserInputHandler().getUserChoice();
+        if (bloodTypeChoice >= 1 && bloodTypeChoice <= bloodTypes.length) {
+            patientData[4] = bloodTypes[bloodTypeChoice - 1].substring(3); // Extract the blood type (e.g., "A+" from "1. A+")
+            validBloodType = true;
+        } else {
+            //System.out.println("Invalid choice. Please select a valid option.");
+        }
+    }
+
+    System.out.print("Enter Email: ");
+    patientData[5] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+    System.out.print("Enter Contact Number: ");
+    patientData[6] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+    System.out.print("Enter Emergency Contact Number: ");
+    patientData[7] = AdminShared.getUserInputHandler().getNextLine().trim();
+
+    System.out.println("Password Will Be Set to The Default Password");
+    patientData[8] = "password";
+
+    AdminShared.getCSVUpdaterPatient().addNewPatient(patientData);
+
+    Patient newPatient = new Patient(
+        patientData[0], // Patient ID
+        patientData[1], // Name
+        patientData[2], // Date of Birth
+        patientData[3], // Gender
+        patientData[4], // Blood Type
+        patientData[5], // Email
+        patientData[6], // Contact Number
+        patientData[7], // Emergency Contact Number
+        patientData[8]  // Password
+    );
+    PatientRegistry pR = new PatientRegistry();
+    pR.addUser(newPatient);
+
+    System.out.println("Patient registered successfully!");
+}
 
 
 }
