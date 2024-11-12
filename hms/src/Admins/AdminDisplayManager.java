@@ -4,7 +4,7 @@ import Login.DisplayManager;
 public class AdminDisplayManager extends DisplayManager {
 
     public void displayMenu(){
-        DisplayManager.clearScreen(); 
+        
         System.out.println("1. View and Manage Staffs"); //done 
         System.out.println("2. Manage Appointment Details");// done 
         System.out.println("3. Manage Medication Inventory"); // done
