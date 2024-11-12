@@ -52,15 +52,15 @@ public class RequestFormController extends DisplayManager{
         display.divider();
         DisplayManager.printCentered("Request for Medicine re-stock of " + medicineName, 80);
         display.divider();
-        DisplayManager.printCentered("Select amount to request", 80);
-        for (int i = 100; i<=500; i += 100){
-            System.out.println((i/100)+". "+i+"mg");
+        DisplayManager.printCentered("Select amount to request (1=100mg)", 80);
+        for (int i = 10; i<=50; i += 10){
+            System.out.println((i/10)+". "+i);
         }
         DisplayManager.printCentered("Enter Choice: ", 80);
         while ((amount = input.getUserChoice()) < 0 || amount > 5){
             DisplayManager.printCentered("Invalid Input. Please try again.\n Enter Choice: ",80);
         } 
-        form = new RequestForm(generateRequestID(), medicineName, amount*100, requestorID, requestorName);
+        form = new RequestForm(generateRequestID(), medicineName, amount*10, requestorID, requestorName);
         csvUpdater.addNewLineToCSV(form.toCSVArray(), FILE_PATH, 5);
         
         return "Succesfully Requested " + medicineName + "\n";

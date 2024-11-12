@@ -239,10 +239,11 @@ public void approveReplenishmentRequests() {
     }
 
     System.out.println("=== Replenishment Requests ===");
+    System.out.printf("%-5s %-20s %-10s %-15s %-15s%n", "ID", "Medicine Name", "Quantity", "PharmaID", "PharmaName");
+    System.out.println("---------------------------------------------------------------------");
     for (int i = 0; i < requests.size(); i++) {
         String[] request = requests.get(i);
-        System.out.printf("%d. ID: %s, Medicine: %s, Quantity: %s, PharmaID: %s, PharmaName: %s\n",
-                          i + 1, request[0], request[1], request[2], request[3], request[4]);
+        System.out.printf("%-5s %-20s %-10s %-15s %-15s%n", request[0], request[1], request[2], request[3], request[4]);
     }
 
     // Prompt the admin to select a request to approve
@@ -273,9 +274,8 @@ public void approveReplenishmentRequests() {
     boolean medicineFound = false;
 
     try (BufferedReader reader = new BufferedReader(new FileReader(inventoryFilePath))) {
-        String line;
         inventory.add(reader.readLine().split(",")); // Add header row
-
+        String line;
         while ((line = reader.readLine()) != null) {
             String[] data = line.split(",");
             if (data[0].equalsIgnoreCase(medicineName)) {
@@ -283,7 +283,7 @@ public void approveReplenishmentRequests() {
                 data[1] = String.valueOf(currentStock + quantityToAdd); // Update stock level
                 medicineFound = true;
             }
-            inventory.add(data); 
+            inventory.add(data);
         }
     } catch (IOException e) {
         System.out.println("Error reading medicine inventory.");
@@ -313,7 +313,7 @@ public void approveReplenishmentRequests() {
 
     // Update IDs to be sequential, starting from 1
     for (int i = 0; i < requests.size(); i++) {
-        requests.get(i)[0] = String.valueOf(i + 1); 
+        requests.get(i)[0] = String.valueOf(i + 1);
     }
 
     // Write the updated requests back to the request CSV
@@ -332,5 +332,6 @@ public void approveReplenishmentRequests() {
 
     System.out.println("Request approved and inventory updated successfully for " + medicineName + ".\n");
 }
+
 
 }

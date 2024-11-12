@@ -56,7 +56,7 @@ public class StaffData {
         }
         
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(staff.toCSV() + ",password"); 
+            writer.write(staff.toCSV()); 
             writer.newLine();
             return true;
         } catch (IOException e) {
@@ -108,7 +108,7 @@ private void removeAppointmentsByStaffID(String staffId) {
             writer.write(updatedLine);
             writer.newLine();
         }
-        System.out.println("Appointments updated successfully after removing staff ID: " + staffId);
+        //System.out.println("Appointments updated successfully after removing staff ID: " + staffId);
     } catch (IOException e) {
         System.out.println("Error writing to appointments CSV: " + e.getMessage());
     }
@@ -152,7 +152,7 @@ private void reassignPatientsUnderDoctorCare(String doctorId) {
         while (true) {
             System.out.print("Enter a valid doctor ID to reassign these patients: ");
             newDoctorId =DoctorShared.getUserInputHandler().getNextLine();
-            
+
 
             // Validate if the new doctor ID exists using the checkIfUserExists method
             if (DoctorShared.getcsvUtilities2().checkIfUserExists(newDoctorId)) {

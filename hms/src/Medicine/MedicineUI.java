@@ -101,7 +101,7 @@ public class MedicineUI extends Medicine {
         boolean removed = dataInterface.removeMedicineByName(name);
         
         if (removed) {
-            System.out.println("Medicine successfully removed! \n");
+            //System.out.println("Medicine successfully removed! \n");
         } else {
             System.out.println("Failed to remove medicine. Medicine may not exist in the database.\n");
         }

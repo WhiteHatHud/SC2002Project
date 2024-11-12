@@ -220,47 +220,62 @@ public class CreateRecord {
             System.out.printf("%d. %s\n", i + 1, availableMedicines.get(i).getMedicineName());
         }
 
-        System.out.print("Select medicines for Prescription by entering their numbers (comma-separated): ");
+        System.out.println("Select medicines for Prescription by entering their numbers (comma-separated). ");
+        System.out.print("Enter 0 if there are no prescriptions: ");
+
+
         String[] medicineChoices = scanner.nextLine().trim().split(",");
         List<String> prescriptions = new ArrayList<>();
+        boolean check = false;
 
         try {
             for (String choice : medicineChoices) {
-                int medicineIndex = Integer.parseInt(choice.trim()) - 1;
+                choice = choice.trim();
+                
+                if (choice.equals("0")) {
+                    System.out.println("No medicines will be added.");
+                    prescriptions.clear(); // Ensure no prescriptions are added
+                    check = true ;
+                    break; // Exit the loop as the user chose to skip
+                }
+        
+                int medicineIndex = Integer.parseInt(choice) - 1;
                 if (medicineIndex < 0 || medicineIndex >= availableMedicines.size()) {
                     System.out.println("Invalid selection: " + choice.trim() + ". Record creation aborted.");
                     return;
                 }
-
+        
                 String medicineName = availableMedicines.get(medicineIndex).getMedicineName();
-
+        
                 // Prompt for dosage and validate
                 int dosage;
                 while (true) {
                     System.out.print("Enter dosage for " + medicineName + " (increments of 100): ");
                     dosage = Integer.parseInt(scanner.nextLine().trim());
-
+        
                     if (dosage % 100 == 0) {
+                        prescriptions.add(medicineName + ":" + dosage); // Add medicine and dosage to prescription list
                         break;
                     } else {
                         System.out.println("Dosage must be in increments of 100. Please try again.");
                     }
                 }
-
-                // Add medicine and dosage to prescription list
-                prescriptions.add(medicineName + ":" + dosage);
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Record creation aborted.");
             return;
         }
+        
 
         // Join selected medicines, separated by ";"
         String prescription = String.join("; ", prescriptions);
-
+        String notes ="";
+        if (!check) 
+        {
         System.out.print("Notes for medication: ");
-        String notes = scanner.nextLine().trim();
 
+        notes = scanner.nextLine().trim();
+        }
         // Treatment Start and End Dates
         LocalDate treatmentStartDate;
         while (true) {
@@ -333,11 +348,12 @@ public class CreateRecord {
             };
 
             String pID = generatePrescriptionID();
-
+            if (!check) {
             DoctorShared.getCSVUpdater().addNewLineToCSV(recordData, "Diagnosis.csv", 12);
 
             createPrescriptionRecord(pID, patientID, patientName, doctorID, DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID),
                     diagnosisDate.toString(), prescription, notes);
+            }
             //System.out.println("Record saved successfully.");
         } else {
             System.out.println("Record creation canceled.");

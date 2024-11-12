@@ -192,8 +192,8 @@ public class PrescriptionsUI {
             return;
         }
         System.out.println("Choose update Status: ");
-        System.out.println("(1) Pending");
-        System.out.println("(2) Dispensed");
+        System.out.println("(1) Dispense");
+        //System.out.println("(2) Dispensed");
         DisplayManager.printCentered("Enter choide: ", 80);
         if ((choice = inputHandler.getUserChoice(2)) == -1){
             error = "Invalid Input.";
@@ -201,10 +201,8 @@ public class PrescriptionsUI {
         } 
         String newStatus = "Pending";
         switch(choice){
+
             case 1:
-                newStatus = "Pending";
-                break;
-            case 2:
                 newStatus = "Dispensed";  
                 Map<String, Integer> medications = pres.getMedications();
                 for (Map.Entry<String, Integer> entry : medications.entrySet()) {

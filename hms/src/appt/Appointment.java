@@ -1,5 +1,6 @@
 package appt;
 
+import Login.DisplayManager;
 import java.util.Calendar; // Ensures the format of the date and time when users do appointments
 import java.text.SimpleDateFormat;
 
@@ -31,11 +32,13 @@ public abstract class Appointment {
         this.doctorName = doctorName;
         this.appointmentStatus = appointmentStatus;
     }
-
+    
     // Common getters and setters
 
     public String getAdminID() {
+        
         return adminID;
+
     }
 
     public void setAdminID(String adminName){

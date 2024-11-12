@@ -1,14 +1,14 @@
 appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes
 A0006,2024-10-30 09:00,PT001,John Doe,D001,Dr. Smith,Completed,Successful,,Weed,Not Given,This is a test lol
-A0007,2024-10-30 14:00,PT001,John Doe,D001,Dr. Smith,Completed,,,,,
-A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
-A0011,2024-11-01 14:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
-A00012,2024-11-04 14:00,PT003,Hud,DR001,Dr. Smith,PendingToPatient,,,,,
-A0016,2024-11-02 11:00,PT002,Hud,DR001,Dr. Smith,Completed,Success,Massage,Drugs,GIven,
-A0022,2024-11-09 09:00,PT002,Hud,DR001,Dr. Smith,Completed,,,,,
+A0007,2024-10-30 14:00,PT001,John Doe,D001,Dr. Smith,Completed
+A0010,2024-11-01 11:00,BLOCKED,N/A,D001,Dr. Smith,Blocked
+A0011,2024-11-01 14:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked
+A00012,2024-11-04 14:00,PT003,Hud,DR001,Dr. Smith,PendingToPatient
+A0016,2024-11-02 11:00,PT002,Hud,DR001,Dr. Smith,Completed,Success,Massage,Drugs,GIven
+A0022,2024-11-09 09:00,PT002,Hud,DR001,Dr. Smith,Completed
 A0000,0002-11-30 00:00,00:00,P0,null,null,null,null,null,null,null,null
 A0000,0002-11-30 00:00,00:00,P0,D016,haha,null,null,null,null,null,null
-A0023,2024-11-04 09:00,P1001,haha,D016,haha,Completed,,,,,
+A0023,2024-11-04 09:00,P1001,haha,D016,haha,Completed
 A0000,0002-11-30 00:00,00:00,P0,D017,my father,null,null,null,null,null,null
 A0024,2024-11-04 09:00,P1001,Alice Brown,D017,my father,Completed,,,,,
 A0025,2024-11-04 09:00,P1001,Alice Brown,D019,Dr. Name,Completed,,,,,
