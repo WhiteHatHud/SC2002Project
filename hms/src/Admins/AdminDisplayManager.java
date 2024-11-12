@@ -3,8 +3,11 @@ import Login.DisplayManager;
 
 public class AdminDisplayManager extends DisplayManager {
 
-    public void displayMenu(){
+    public void displayMenu(String name){
+
         DisplayManager.clearScreen(); 
+        System.out.println("Welcome, Admin " + name);
+
         System.out.println("1. View and Manage Staffs"); //done 
         System.out.println("2. Manage Appointment Details");// done 
         System.out.println("3. Manage Medication Inventory"); // done
@@ -43,7 +46,7 @@ public class AdminDisplayManager extends DisplayManager {
         System.out.print("Please enter your choice: ");
     }
     public void manageMedicationInvetoryMenu(){
-
+        DisplayManager.clearScreen();
         System.out.println("=== Medication Inventory Management ===");
         System.out.println("1. View Medication Inventory");
         System.out.println("2. Add New Medication");
@@ -53,6 +56,7 @@ public class AdminDisplayManager extends DisplayManager {
         System.out.println("6. Approve Replenishment Requests");
         System.out.println("7. Return to Main Menu");
         System.out.print("Please enter your choice: ");
+        
 
     }
 
