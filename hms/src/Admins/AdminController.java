@@ -88,6 +88,7 @@ public class AdminController implements ControllerInt {
                     break;
                 case 4:
                     managingStaff = false;
+                    break;
                 default:
                     //Login.DisplayManager.invalidChoice();
                     break;
@@ -166,18 +167,17 @@ public class AdminController implements ControllerInt {
         System.out.println("2. Descending");
         System.out.print("Choose sorting order: ");
         int orderChoice = AdminShared.getUserInputHandler().getUserChoice();
-
+    
         StaffData staffData = new StaffData();
         List<Staff> staffList = staffData.getAllStaff();
         
-
         Comparator<Staff> comparator = null;
         switch (attributeChoice) {
             case 1: // Sort by ID
                 comparator = Comparator.comparing(Staff::getUserID);
                 break;
-            case 2: // Sort by Name
-                comparator = Comparator.comparing(Staff::getName);
+            case 2: // Sort by Name (case-insensitive)
+                comparator = Comparator.comparing(staff -> staff.getName().toLowerCase());
                 break;
             case 3: // Sort by Role
                 comparator = Comparator.comparing(Staff::getRole);
@@ -192,23 +192,22 @@ public class AdminController implements ControllerInt {
                 System.out.println("Invalid attribute choice.");
                 return;
         }
-
+    
         // Apply descending order if selected
         if (orderChoice == 2) {
             comparator = comparator.reversed();
         }
-
+    
         // Sort the list
         Collections.sort(staffList, comparator);
-
+    
         // Display sorted list
         System.out.println("Sorted Staff List: \n");
         for (Staff staff : staffList) {
             System.out.println(staff);
         }
     }
-
-
+    
 
     private void addStaffMember(String role) {
         DisplayManager.clearScreen();
@@ -402,13 +401,13 @@ public void registerNewPatient() {
     while (!validGender) {
         int genderChoice = AdminShared.getUserInputHandler().getUserChoice();
         if (genderChoice == 1) {
-            patientData[3] = "M";
+            patientData[3] = "Male";
             validGender = true;
         } else if (genderChoice == 2) {
-            patientData[3] = "F";
+            patientData[3] = "Female";
             validGender = true;
         } else {
-            System.out.println("Invalid choice. Please select 1 for Male or 2 for Female.");
+            //System.out.println("Invalid choice. Please select 1 for Male or 2 for Female.");
         }
     }
 
@@ -425,7 +424,7 @@ public void registerNewPatient() {
             patientData[4] = bloodTypes[bloodTypeChoice - 1].substring(3); // Extract the blood type (e.g., "A+" from "1. A+")
             validBloodType = true;
         } else {
-            System.out.println("Invalid choice. Please select a valid option.");
+            //System.out.println("Invalid choice. Please select a valid option.");
         }
     }
 
