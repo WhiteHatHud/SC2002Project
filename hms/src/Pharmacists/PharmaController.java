@@ -14,22 +14,18 @@ import Patients.PatientData;
 import Patients.ViewMedicalRecord;
 
 public class PharmaController {
-    private Pharmacist pharmacist;
     private PharmaDisplayManager displayManager;
     private PrescriptionsUI prescriptionsUI;
     private UserInputHandler inputHandler;
-    private RequestData requestData;
     private MedicineUI medicineUI;
     private PatientData patientData;
     private String errorMessage;
     private RequestFormController form;
 
     public PharmaController(Pharmacist pharmacist) {
-        this.pharmacist = pharmacist;
         this.displayManager = new PharmaDisplayManager();
         this.prescriptionsUI = new PrescriptionsUI(EnumSet.of(Action.VIEW_ALL, Action.VIEW_PATIENT, Action.UPDATE_STATUS), pharmacist);
         this.inputHandler = new UserInputHandler();
-        this.requestData = new RequestData();
         this.medicineUI = new MedicineUI();
         this.errorMessage = "";
         this.patientData = new PatientData();
@@ -59,12 +55,13 @@ public class PharmaController {
                 break;
             case 3:
                 medicineUI.displayAllMedicines();
+                displayManager.divider();
+                PharmaDisplayManager.printCentered("Enter to return to pharmacist menu", 80);
+                inputHandler.getNextLine();
                 break;
             case 4:
                 errorMessage = form.request();
-                //inputHandler.getNextLine();
                 break;
-
             case 5: // Logout
 
                 if (LogoutTimer.confirmLogout()) {

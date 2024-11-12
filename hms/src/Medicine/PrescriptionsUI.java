@@ -186,6 +186,11 @@ public class PrescriptionsUI {
         DisplayManager.clearScreen();
         String prescriptionID = validatePrescriptionID();
         if (prescriptionID == null) return;
+        Prescription pres = prescriptionData.getPrescription(prescriptionID);
+        if (pres.getStatus().equals("Dispensed")) {
+            error = prescriptionID+ " has already been dispensed";
+            return;
+        }
         System.out.println("Choose update Status: ");
         System.out.println("(1) Dispense Medicine");
         if ((choice = inputHandler.getUserChoice(2)) == -1){
@@ -195,12 +200,18 @@ public class PrescriptionsUI {
         String newStatus = "Pending";
         switch(choice){
             case 1:
-                newStatus = "Dispensed"; 
-                Prescription pres = prescriptionData.getPrescription(prescriptionID); 
+                newStatus = "Pending";
+                break;
+            case 2:
+                newStatus = "Dispensed";  
                 Map<String, Integer> medications = pres.getMedications();
                 for (Map.Entry<String, Integer> entry : medications.entrySet()) {
                     String medicineName = entry.getKey();
                     int dosage = entry.getValue();
+                    if ((medicineData.getMedicineByName(medicineName).getInitialStock() - dosage) < 0){
+                        error = "Not enough stock to dispense " + medicineName + ". Please submit to request update stock.";
+                        return;
+                    }
                     boolean stockUpdated = medicineData.updateStock(medicineName, -dosage);
                     Medicine med = medicineData.getMedicineByName(medicineName);
                     //System.out.println(med.getLowStockLevelAlert() + " " + med.getInitialStock());

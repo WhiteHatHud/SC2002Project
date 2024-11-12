@@ -10,18 +10,16 @@ public class MedicineUI extends Medicine {
     public void displayAllMedicines() {
         DisplayFormat.clearScreen();
         
-        System.out.printf("%-5s %-25s %-15s %-20s%n", "No.", "Medicine Name", "Initial Stock (1=100mg)", "Low Stock Level Alert");
-        System.out.println("--------------------------------------------------------------------------");
-        
-        // Print each medicine's details with formatting and numbering
-        int count = 1;
+
+        System.out.printf("%-25s %-15s %-20s%n", "Medicine Name", "Initial Stock (1=100mg)", "Low Stock Level Alert");
+        System.out.println("---------------------------------------------------------------");
+        int i = 1;
+        // Print each medicine's details with formatting
         for (Medicine med : dataInterface.getAllMedicines()) {
-            System.out.printf("%-5d %-25s %-15d %-20d%n", 
-                              count, 
+            System.out.printf((i++) + ". %-25s %-15d %-20d%n", 
                               med.getMedicineName(), 
                               med.getInitialStock(), 
                               med.getLowStockLevelAlert());
-            count++;
         }
         System.out.println(); 
     }

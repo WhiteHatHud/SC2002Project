@@ -29,19 +29,18 @@ public class RequestFormController extends DisplayManager{
         display.divider();
     } 
     public String request(){
+        int index, amount;
         DisplayManager.clearScreen();
         display.divider();
-        DisplayManager.printCentered("Request for Medicine re-stock", 80);
-        display.divider();
         medicine.displayAllMedicines();
-        DisplayManager.printCentered("Which Medicine would you like to request? (Enter the index of medicine)", 80);
-        int index = input.getUserChoice();
+        DisplayManager.printCentered("Which Medicine would you like to request (Choose index).", 80);
+        if ((index = input.getUserChoice()) < 0) return "Invalid Input. Please try again.";
         DisplayManager.printCentered("Select amount to request", 80);
         for (int i = 100; i<=500; i += 100){
             System.out.println((i/100)+". "+i+"mg");
         }
         DisplayManager.printCentered("Enter Choice: ", 80);
-        int amount = input.getUserChoice();
+        if ((amount = input.getUserChoice()) < 0) return "Invalid Input. Please try again.";
         form = new RequestForm(generateRequestID(), medicineData.getAllMedicines().get(index).getMedicineName(), amount*100, staff.getUserID(), staff.getName());
         csvUpdater.addNewLineToCSV(form.toCSVArray(), FILE_PATH, 5);
         
@@ -49,6 +48,7 @@ public class RequestFormController extends DisplayManager{
     }
     public String request(String requestorName, String requestorID, String medicineName){
         //DisplayManager.clearScreen();
+        int amount;
         display.divider();
         DisplayManager.printCentered("Request for Medicine re-stock of " + medicineName, 80);
         display.divider();
@@ -57,7 +57,9 @@ public class RequestFormController extends DisplayManager{
             System.out.println((i/100)+". "+i+"mg");
         }
         DisplayManager.printCentered("Enter Choice: ", 80);
-        int amount = input.getUserChoice();
+        while ((amount = input.getUserChoice()) < 0){
+            DisplayManager.printCentered("Invalid Input. Please try again.\n Enter Choice: ",80);
+        } 
         form = new RequestForm(generateRequestID(), medicineName, amount*100, requestorID, requestorName);
         csvUpdater.addNewLineToCSV(form.toCSVArray(), FILE_PATH, 5);
         
