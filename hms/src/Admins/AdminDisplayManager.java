@@ -27,7 +27,7 @@ public class AdminDisplayManager extends DisplayManager {
         System.out.print("Please enter your choice: ");
         
     }
-
+    //change
     public void getManageDoctors(){
         DisplayManager.clearScreen();
         System.out.println("1. Add a New Doctor");
