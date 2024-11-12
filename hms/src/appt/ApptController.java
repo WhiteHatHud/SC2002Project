@@ -787,71 +787,74 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
     
     public void bookNewAppointment(String patientID, String patientName, String doctorID, String doctorName, String initiator) {
-        System.out.println("\nBooking a New Appointment:");
-    
-        // Validate if the patient exists
-        patientName = DoctorShared.getcsvUtilities().getPatientNameByID(patientID);
-        if (patientName == null || patientName.isEmpty()) {
-            System.out.println("Error: Patient ID not found. Booking cannot proceed.");
-            return; // Exit if the patient does not exist
-        }
-    
-        System.out.println("The patient name is: " + patientName);
-    
-        // Validate if the doctor exists
-        doctorName = PatientShared.getCSVUtilities().getDoctorNameByID(doctorID);
-        if (doctorName == null || doctorName.isEmpty()) {
-            System.out.println("Error: Doctor ID not found. Booking cannot proceed.");
-            return; // Exit if the doctor does not exist
-        }
-    
-        System.out.println("The doctor name is: " + doctorName);
-    
-        // Select a date for the new appointment
-        LocalDate appointmentDate = selectDateFromSchedule(doctorID);
-        if (appointmentDate == null) {
-            System.out.println("Booking canceled. Returning to the main menu...");
-            return;
-        }
-    
-        // Select a session time for the chosen date
-        LocalTime appointmentTime = selectSessionFromDate(appointmentDate, doctorID);
-        if (appointmentTime == null) {
-            System.out.println("Booking canceled. Returning to the main menu...");
-            return;
-        }
-    
-        // Check the status of the selected session
-        String sessionStatus = getSessionStatus(apptData.getAllAppointments(), appointmentDate, appointmentTime, doctorID);
-        if (!sessionStatus.equalsIgnoreCase("Available")) {
-            System.out.println("Error: The selected session is already " + sessionStatus + ". Please choose another session.");
-            return;
-        }
-    
-        // Generate a new appointment ID
-        String newAppointmentID = generateNewAppointmentID();
-    
-        // Set appointment status based on initiator
-        String appointmentStatus = initiator.equalsIgnoreCase("patient") ? "PendingToDoctor" : "PendingToPatient";
-    
-        // Create the new appointment object
-        Calendar newAppointmentTime = Calendar.getInstance();
-        newAppointmentTime.set(appointmentDate.getYear(), appointmentDate.getMonthValue() - 1,
-                               appointmentDate.getDayOfMonth(), appointmentTime.getHour(), appointmentTime.getMinute());
-    
-        Appointment newAppointment = new DoctorAppointment(
-                newAppointmentID, newAppointmentTime, patientID, patientName,
-                doctorID, doctorName, appointmentStatus);
-    
-        // Save the new appointment to the CSV
-        apptData.addAppointment(newAppointment);
-        System.out.println("Appointment successfully booked with ID: " + newAppointmentID);
-        System.out.println("===========================================");
+    System.out.println("\nBooking a New Appointment:");
+
+    // Validate if the patient exists
+    patientName = DoctorShared.getcsvUtilities().getPatientNameByID(patientID);
+    if (patientName == null || patientName.isEmpty()) {
+        System.out.println("Error: Patient ID not found. Booking cannot proceed.");
+        return; // Exit if the patient does not exist
     }
-    
-    
-    
-    
+
+    System.out.println("The patient name is: " + patientName);
+
+    // Validate if the doctor exists
+    doctorName = PatientShared.getCSVUtilities().getDoctorNameByID(doctorID);
+    if (doctorName == null || doctorName.isEmpty()) {
+        System.out.println("Error: Doctor ID not found. Booking cannot proceed.");
+        return; // Exit if the doctor does not exist
+    }
+
+    System.out.println("The doctor name is: " + doctorName);
+
+    // Select a date for the new appointment
+    LocalDate appointmentDate = selectDateFromSchedule(doctorID);
+    if (appointmentDate == null) {
+        System.out.println("Booking canceled. Returning to the main menu...");
+        return;
+    }
+
+    // Select a session time for the chosen date
+    LocalTime appointmentTime = selectSessionFromDate(appointmentDate, doctorID);
+    if (appointmentTime == null) {
+        System.out.println("Booking canceled. Returning to the main menu...");
+        return;
+    }
+
+    // Check if the selected date and time have already passed
+    if (appointmentDate.isBefore(LocalDate.now()) || 
+        (appointmentDate.isEqual(LocalDate.now()) && appointmentTime.isBefore(LocalTime.now()))) {
+        System.out.println("There are no more sessions available to book on this date.");
+        return;
+    }
+
+    // Check the status of the selected session
+    String sessionStatus = getSessionStatus(apptData.getAllAppointments(), appointmentDate, appointmentTime, doctorID);
+    if (!sessionStatus.equalsIgnoreCase("Available")) {
+        System.out.println("Error: The selected session is already " + sessionStatus + ". Please choose another session.");
+        return;
+    }
+
+    // Generate a new appointment ID
+    String newAppointmentID = generateNewAppointmentID();
+
+    // Set appointment status based on initiator
+    String appointmentStatus = initiator.equalsIgnoreCase("patient") ? "PendingToDoctor" : "PendingToPatient";
+
+    // Create the new appointment object
+    Calendar newAppointmentTime = Calendar.getInstance();
+    newAppointmentTime.set(appointmentDate.getYear(), appointmentDate.getMonthValue() - 1,
+                           appointmentDate.getDayOfMonth(), appointmentTime.getHour(), appointmentTime.getMinute());
+
+    Appointment newAppointment = new DoctorAppointment(
+            newAppointmentID, newAppointmentTime, patientID, patientName,
+            doctorID, doctorName, appointmentStatus);
+
+    // Save the new appointment to the CSV
+    apptData.addAppointment(newAppointment);
+    System.out.println("Appointment successfully booked with ID: " + newAppointmentID);
+    System.out.println("===========================================");
+}
     
     
     public String generateNewAppointmentID() {
@@ -1616,11 +1619,9 @@ public void printAllBookedSchedules() {
             System.out.println("===========================================");
         }
     }
-
     // Message if no booked appointments were found
     if (count == 1) {
         System.out.println("No booked schedules available.");
     }
 }
-
 }
