@@ -106,7 +106,7 @@ public class AdminController implements ControllerInt {
             AdminShared.getDisplayManager().getManageDoctors();
             int doctorChoice = AdminShared.getUserInputHandler().getUserChoice();
             String role = "Doctor";
-
+    
             switch (doctorChoice) {
                 case 1:
                     addStaffMember(role);
@@ -115,12 +115,13 @@ public class AdminController implements ControllerInt {
                     updateStaffInfo(role);
                     break;
                 case 3:
-                    removeStaff();
+                    removeStaff(role); // Pass "Doctor" as the role
                     break;
                 case 4:
                     managingDoctors = false;
+                    break;
                 default:
-                    //Login.DisplayManager.invalidChoice();
+                    // Login.DisplayManager.invalidChoice();
                     break;
             }
         }
@@ -134,7 +135,6 @@ public class AdminController implements ControllerInt {
             String role = "Pharmacist";
             DisplayManager.clearScreen();
             switch (pharmacistChoice) {
-                
                 case 1:
                     addStaffMember(role);
                     break;
@@ -142,13 +142,13 @@ public class AdminController implements ControllerInt {
                     updateStaffInfo(role);
                     break;
                 case 3:
-                    removeStaff();
+                    removeStaff(role); // Pass "Pharmacist" as the role
                     break;
                 case 4:
                     managingPharmacists = false;
                     break;
                 default:
-                    //Login.DisplayManager.invalidChoice();
+                    // Login.DisplayManager.invalidChoice();
                     break;
             }
         }
@@ -205,63 +205,91 @@ public class AdminController implements ControllerInt {
         // Sort the list
         Collections.sort(staffList, comparator);
     
+        // Display formatted header
+        System.out.printf("%-10s %-20s %-15s %-10s %-5s%n", "ID", "Name", "Role", "Gender", "Age");
+        System.out.println("---------------------------------------------------------------");
+    
         // Display sorted list
-        System.out.println("Sorted Staff List: \n");
         for (Staff staff : staffList) {
-            System.out.println(staff);
+            System.out.printf("%-10s %-20s %-15s %-10s %-5d%n", 
+                              staff.getUserID(), 
+                              staff.getName(), 
+                              staff.getRole(), 
+                              staff.getGender(), 
+                              staff.getAge());
         }
+        DisplayManager.pauseContinue();
     }
+    
     
 
     private void addStaffMember(String role) {
         DisplayManager.clearScreen();
         System.out.println("Adding a new " + role.toLowerCase() + "...");
-
+    
         // Generate staff ID based on the role
         Map<String, Integer> roleCountMap = staffData.countRolesAndGenerateID();
         String staffID = staffData.generateNewStaffID(role, roleCountMap);
-
+    
         System.out.println("The Assigned " + role + "'s ID is: " + staffID);
-
-        
+    
         System.out.print("Enter " + role + "'s Name: ");
         String name = AdminShared.getUserInputHandler().getNextLine();
-
-        System.out.print("Enter " + role + "'s Gender (M/F): ");
-        String gender = AdminShared.getUserInputHandler().getNextLine();
-
+    
+        // Gender selection
+        String gender = "";
+        boolean validGender = false;
+        System.out.println("Select Gender:");
+        System.out.println("1. Male");
+        System.out.println("2. Female");
+        while (!validGender) {
+            int genderChoice = AdminShared.getUserInputHandler().getUserChoice();
+            if (genderChoice == 1) {
+                gender = "Male";
+                validGender = true;
+            } else if (genderChoice == 2) {
+                gender = "Female";
+                validGender = true;
+            } else {
+                System.out.println("Invalid choice. Please select 1 for Male or 2 for Female.");
+            }
+        }
+    
         int age;
         while (true) {
             System.out.print("Enter " + role + "'s Age: ");
             try {
                 age = AdminShared.getUserInputHandler().getUserChoice();
                 if (age > 0) break;
-                else System.out.println("Age must be a positive number.");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid age.");
             }
-        }   
-
+        }
+    
         System.out.print("Enter " + role + "'s Office Number: ");
         String officeNumber = AdminShared.getUserInputHandler().getNextLine();
-
+    
         String password = "password";
-
+    
         Staff staff;
         if (role.equalsIgnoreCase("Doctor")) {
-            staff = new Doctor(staffID, name, role, gender, age, officeNumber,password);
+            staff = new Doctor(staffID, name, role, gender, age, officeNumber, password);
         } else if (role.equalsIgnoreCase("Pharmacist")) {
-            staff = new Pharmacist(staffID, name, role, gender, age, officeNumber,password);
+            staff = new Pharmacist(staffID, name, role, gender, age, officeNumber, password);
         } else {
             System.out.println("Invalid role specified.");
             return;
         }
-
-
+        
         if (staffData.addStaff(staff)) {
             System.out.println(role + " added successfully with ID: " + staffID);
+            System.out.print("Press any key to continue...");
+            Scanner scanner=new Scanner(System.in);
+            scanner.nextLine(); // Wait for user to press any key
+            DisplayManager.clearScreen();
         }
     }
+    
     private void updateStaffInfo(String role) {
         System.out.println("Updating " + role.toLowerCase() + " information...");
         System.out.print("Enter " + role + " ID to update: ");
@@ -270,12 +298,14 @@ public class AdminController implements ControllerInt {
         String idPrefix = role.equalsIgnoreCase("Doctor") ? "D" : "P";
         if (!staffID.startsWith(idPrefix)) {
             System.out.println("Error: Invalid " + role + " ID. " + role + " IDs must start with '" + idPrefix + "'.");
+            DisplayManager.pauseContinue();
             return;
         }
     
         // Check if the ID exists in the CSV file
         if (!AdminShared.getCSVUtilities().checkIfUserExists(staffID)) {
             System.out.println(role + " ID not found.");
+            DisplayManager.pauseContinue();
             return;
         }
     
@@ -293,21 +323,60 @@ public class AdminController implements ControllerInt {
             int choice = AdminShared.getUserInputHandler().getUserChoice();
     
             String fieldName = null;
+            String newValue = "";
+    
             switch (choice) {
                 case 1:
                     fieldName = "Name";
+                    System.out.print("Enter new value for Name: ");
+                    newValue = AdminShared.getUserInputHandler().getNextLine().trim();
                     break;
                 case 2:
                     fieldName = "Gender";
+                    System.out.println("Select new gender:");
+                    System.out.println("1. Male");
+                    System.out.println("2. Female");
+                    boolean validGender = false;
+                    while (!validGender) {
+                        int genderChoice = AdminShared.getUserInputHandler().getUserChoice();
+                        if (genderChoice == 1) {
+                            newValue = "Male";
+                            validGender = true;
+                        } else if (genderChoice == 2) {
+                            newValue = "Female";
+                            validGender = true;
+                        } else {
+                            System.out.println("Invalid choice. Please select 1 for Male or 2 for Female.");
+                        }
+                    }
                     break;
                 case 3:
                     fieldName = "Age";
+                    boolean validAge = false;
+                    while (!validAge) {
+                        System.out.print("Enter new value for Age: ");
+                        try {
+                            int age = AdminShared.getUserInputHandler().getUserChoice();
+                            if (age > 0) {
+                                newValue = String.valueOf(age);
+                                validAge = true;
+                            } else {
+                                System.out.println("Age must be a positive number.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a valid age.");
+                        }
+                    }
                     break;
                 case 4:
                     fieldName = "Office Number";
+                    System.out.print("Enter new value for Office Number: ");
+                    newValue = AdminShared.getUserInputHandler().getNextLine().trim();
                     break;
                 case 5:
                     fieldName = "Password";
+                    System.out.print("Enter new value for Password: ");
+                    newValue = AdminShared.getUserInputHandler().getNextLine().trim();
                     break;
                 case 6:
                     continueUpdating = false; // Exit the loop
@@ -319,10 +388,7 @@ public class AdminController implements ControllerInt {
                     continue;
             }
     
-            if (fieldName != null) {
-                System.out.print("Enter new value for " + fieldName + ": ");
-                String newValue = AdminShared.getUserInputHandler().getNextLine();
-    
+            if (fieldName != null && !newValue.isEmpty()) {
                 // Update the specified field for the given Staff ID
                 AdminShared.getCSVUpdater().updateField(staffID, fieldName, newValue);
                 System.out.println(fieldName + " updated successfully for " + role + " ID " + staffID + ".");
@@ -335,16 +401,27 @@ public class AdminController implements ControllerInt {
         }
     }
     
+    
 
-    public void removeStaff() {
+    public void removeStaff(String role) {
         System.out.print("Enter Staff ID to remove: ");
         String staffID = AdminShared.getUserInputHandler().getNextLine();
     
         // Check if the staff ID exists
         if (!AdminShared.getCSVUtilities().checkIfUserExists(staffID)) {
-            DisplayManager.clearScreen(); // Clear the screen before displaying the message
+            DisplayManager.clearScreen(); 
             System.out.println("Invalid staff! Operation aborted.");
+            DisplayManager.pauseContinue();
             return; // Return to the menu if the ID is invalid
+        }
+    
+        // Validate the role of the staff ID
+        Staff staff = staffData.getStaffByID(staffID);
+        if (staff == null || !staff.getRole().equalsIgnoreCase(role)) {
+            DisplayManager.clearScreen();
+            System.out.println("Error: The entered ID does not belong to a " + role + ". Operation aborted.");
+            DisplayManager.pauseContinue();
+            return;
         }
     
         StaffUI staffUI = new StaffUI();
@@ -359,13 +436,11 @@ public class AdminController implements ControllerInt {
         }
     
         if (staffData.removeStaffByID(staffID)) {
-            DisplayManager.clearScreen(); // Optional: clear the screen before displaying success message
+            DisplayManager.clearScreen(); 
             System.out.println("Staff with ID " + staffID + " has been successfully removed.");
-        } else {
-            DisplayManager.clearScreen(); // Optional: clear the screen before displaying error message
-            System.out.println("Error: Staff removal failed.");
-        }
+        } 
     }
+    
     
 
 public void registerNewPatient() {

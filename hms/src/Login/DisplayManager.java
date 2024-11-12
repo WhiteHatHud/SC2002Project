@@ -1,5 +1,7 @@
 package Login;
 
+import java.util.Scanner;
+
 public class DisplayManager extends DisplayFormat {
 
     public void showWelcomeScreen() {
@@ -93,6 +95,13 @@ public class DisplayManager extends DisplayFormat {
                 DisplayFormat.printCentered(errorMessage, 80);
             }
             return "";
+        }
+
+        public static void pauseContinue(){
+        System.out.print("Press any key to continue...");
+        Scanner scanner =new Scanner(System.in);    
+        scanner.nextLine(); // Wait for user to press any key
+        DisplayManager.clearScreen();
         }
 
     }

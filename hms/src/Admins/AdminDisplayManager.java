@@ -16,7 +16,7 @@ public class AdminDisplayManager extends DisplayManager {
     }
 
     public void getViewAndManageStaffMenu(){
-        //DisplayManager.clearScreen();
+        DisplayManager.clearScreen();
         System.out.println("=== View and Manage Hospital Staff ===");
         System.out.println("1. Manage Doctors");
         System.out.println("2. Manage Pharmacists");

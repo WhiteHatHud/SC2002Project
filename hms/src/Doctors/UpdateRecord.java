@@ -90,40 +90,45 @@ public class UpdateRecord {
             System.out.printf("%d. %s\n", i + 1, availableMedicines.get(i).getMedicineName());
         }
     
-        System.out.print("Select medicines for Prescription by entering their numbers (comma-separated): ");
+        System.out.println("Select medicines for Prescription by entering their numbers (comma-separated). ");
+        System.out.print("Enter 0 if there are no prescriptions: ");
         String[] medicineChoices = scanner.nextLine().trim().split(",");
         List<String> prescriptions = new ArrayList<>();
     
         try {
             for (String choice : medicineChoices) {
-                int medicineIndex = Integer.parseInt(choice.trim()) - 1;
+                choice = choice.trim();
+                
+                if (choice.equals("0")) {
+                    System.out.println("No medicines will be added.");
+                    prescriptions.clear(); // Ensure no prescriptions are added
+                    break; // Exit the loop as the user chose to skip
+                }
+        
+                int medicineIndex = Integer.parseInt(choice) - 1;
                 if (medicineIndex < 0 || medicineIndex >= availableMedicines.size()) {
-                    System.out.println("Invalid selection: " + choice.trim() + ". Record update aborted.");
+                    System.out.println("Invalid selection: " + choice.trim() + ". Record creation aborted.");
                     return;
                 }
-    
-                // Get medicine name
+        
                 String medicineName = availableMedicines.get(medicineIndex).getMedicineName();
-    
+        
                 // Prompt for dosage and validate
                 int dosage;
                 while (true) {
                     System.out.print("Enter dosage for " + medicineName + " (increments of 100): ");
                     dosage = Integer.parseInt(scanner.nextLine().trim());
-    
-                    // Check if dosage is in increments of 100
+        
                     if (dosage % 100 == 0) {
-                        break; // Exit loop if dosage is valid
+                        prescriptions.add(medicineName + ":" + dosage); // Add medicine and dosage to prescription list
+                        break;
                     } else {
                         System.out.println("Dosage must be in increments of 100. Please try again.");
                     }
                 }
-    
-                // Add medicine and dosage to prescription list
-                prescriptions.add(medicineName + ":" + dosage);
             }
         } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Record update aborted.");
+            System.out.println("Invalid input. Record creation aborted.");
             return;
         }
     
@@ -198,7 +203,7 @@ public class UpdateRecord {
         }
         writer.write(recordLine);
         writer.newLine();
-        System.out.println("Prescription record saved successfully!");
+        //System.out.println("Prescription record saved successfully!");
     } catch (IOException e) {
         System.out.println("Error writing to Prescription CSV file: " + e.getMessage());
     }
