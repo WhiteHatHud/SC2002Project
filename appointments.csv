@@ -1,4 +1,4 @@
-AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes
+appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes
 A0006,2024-10-30 09:00,PT001,John Doe,D001,Dr. Smith,Completed,Successful,,Weed,Not Given,This is a test lol
 A0007,2024-10-30 14:00,PT001,John Doe,D001,Dr. Smith,Completed,,,,,
 A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
@@ -34,3 +34,7 @@ A0052,2024-11-09 09:00,P1001,Hud,DR002,Dr. Kop kun kap,Completed,,,,,
 A0053,2024-11-08 09:00,P1001,Alice Brown,D028,asd,Completed,,,,,
 A0054,2024-11-10 09:00,P1003,Charlie White,D026,Popo,Completed,,,,,
 A0056,2024-11-12 09:00,P1001,Alice Brown,D027,bad guy,Completed,,,,,
+A0059,2024-11-13 14:00,P1001,Alice Brown,D026,Popo,Booked,,,,,
+A0060,2024-11-14 09:00,P1001,Alice Brown,D026,Popo,Booked,,,,,
+A0061,2024-11-14 11:00,P1001,Alice Brown,D026,Popo,PendingToDoctor,,,,,
+A0062,2024-11-15 09:00,P1001,Alice Brown,D026,Popo,PendingToDoctor,,,,,

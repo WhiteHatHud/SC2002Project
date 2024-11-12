@@ -5,6 +5,7 @@ import Doctors.DoctorShared;
 import Patients.PatientShared;
 import Login.DisplayManager;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -237,9 +238,11 @@ private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
     // Check if there are any remaining sessions
     if (remainingSessions.length == 0) {
         System.out.println("There are no more sessions available to book on this date.");
-        return;
+        System.out.print("Press any key to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine(); // Wait for user to press any key
+        DisplayManager.clearScreen();
     }
-
     // Display available sessions with their statuses, passing doctorID to getSessionStatus
     for (int i = 0; i < remainingSessions.length; i++) {
         String status = getSessionStatus(appointments, date, remainingSessions[i], doctorID);
@@ -278,8 +281,8 @@ private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
         LocalTime.of(11, 0),
         LocalTime.of(14, 0)
     };
-
-    System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n", doctorID, date);
+    String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
+    System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n", doctorName, date);
     System.out.println("====================");
 
     for (int i = 0; i < sessions.length; i++) {
@@ -727,63 +730,96 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
 
     //-==---------------Patient Methods -======================
-    public void printPatientAppointments(String patientID) {
-        List<Appointment> appointments = apptData.getAllAppointments();
-    
-        appointments.stream()
-                .filter(app -> app.getPatientID().equals(patientID))
-                .filter(app -> {
+   public void printPatientAppointments(String patientID) {
+    List<Appointment> appointments = apptData.getAllAppointments();
+    LocalDateTime now = LocalDateTime.now(); // Capture the current date and time
+
+    appointments.stream()
+            .filter(app -> app.getPatientID().equals(patientID))
+            .filter(app -> {
+                Calendar appointmentTime = app.getAppointmentTime();
+                // Exclude appointments with placeholder date and time (0001-01-01 00:00)
+                return !(appointmentTime.get(Calendar.YEAR) == 1 &&
+                         appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
+                         appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
+                         appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
+                         appointmentTime.get(Calendar.MINUTE) == 0);
+            })
+            .filter(app -> !app.getAppointmentStatus().equalsIgnoreCase("Completed")) // Exclude "Completed" status
+            .filter(app -> !app.getAppointmentStatus().toLowerCase().contains("cancelled")) // Exclude statuses with "cancelled"
+            .filter(app -> {
+                // Exclude "PendingToDoctor" or "PendingToPatient" appointments if the session time has passed
+                if (app.getAppointmentStatus().equalsIgnoreCase("PendingToDoctor") ||
+                    app.getAppointmentStatus().equalsIgnoreCase("PendingToPatient")) {
                     Calendar appointmentTime = app.getAppointmentTime();
-                    // Exclude appointments with placeholder date and time (0001-01-01 00:00)
-                    return !(appointmentTime.get(Calendar.YEAR) == 1 &&
-                             appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
-                             appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
-                             appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
-                             appointmentTime.get(Calendar.MINUTE) == 0);
-                })
-                .filter(app -> !app.getAppointmentStatus().equalsIgnoreCase("Completed")) // Exclude "Completed" status
-                .filter(app -> !app.getAppointmentStatus().toLowerCase().contains("cancelled")) // Exclude statuses with "cancelled"
-                .forEach(app -> {
-                    Calendar appointmentTime = app.getAppointmentTime();
-                    LocalDate date = LocalDate.of(
+                    LocalDate appointmentDate = LocalDate.of(
                             appointmentTime.get(Calendar.YEAR),
                             appointmentTime.get(Calendar.MONTH) + 1,
                             appointmentTime.get(Calendar.DAY_OF_MONTH)
                     );
-                    LocalTime time = LocalTime.of(
+                    LocalTime appointmentLocalTime = LocalTime.of(
                             appointmentTime.get(Calendar.HOUR_OF_DAY),
                             appointmentTime.get(Calendar.MINUTE)
                     );
-    
-                    System.out.println("===========================================");
-                    System.out.printf("| Appointment ID : %s\n", app.getAppointmentID());
-                    System.out.printf("| Date           : %s\n", date);
-                    System.out.printf("| Time           : %s\n", time);
-                    System.out.printf("| Doctor         : %s\n", app.getDoctorName());
-                    System.out.printf("| Status         : %s\n", app.getAppointmentStatus());
-                    System.out.println("===========================================");
-                });
-    
-        // Check if there are no upcoming appointments
-        boolean hasUpcomingAppointments = appointments.stream()
-                .filter(app -> app.getPatientID().equals(patientID))
-                .filter(app -> {
-                    Calendar appointmentTime = app.getAppointmentTime();
-                    return !(appointmentTime.get(Calendar.YEAR) == 1 &&
-                             appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
-                             appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
-                             appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
-                             appointmentTime.get(Calendar.MINUTE) == 0);
-                })
-                .anyMatch(app -> 
-                    !app.getAppointmentStatus().equalsIgnoreCase("Completed") && 
-                    !app.getAppointmentStatus().toLowerCase().contains("cancelled")
+                    LocalDateTime appointmentDateTime = LocalDateTime.of(appointmentDate, appointmentLocalTime);
+                    return appointmentDateTime.isAfter(now); // Only include if the appointment is in the future
+                }
+                return true; // Include all other statuses
+            })
+            .forEach(app -> {
+                Calendar appointmentTime = app.getAppointmentTime();
+                LocalDate date = LocalDate.of(
+                        appointmentTime.get(Calendar.YEAR),
+                        appointmentTime.get(Calendar.MONTH) + 1,
+                        appointmentTime.get(Calendar.DAY_OF_MONTH)
                 );
-    
-        if (!hasUpcomingAppointments) {
-            System.out.println("No upcoming appointments.");
-        }
+                LocalTime time = LocalTime.of(
+                        appointmentTime.get(Calendar.HOUR_OF_DAY),
+                        appointmentTime.get(Calendar.MINUTE)
+                );
+
+                System.out.println("===========================================");
+                System.out.printf("| Appointment ID : %s\n", app.getAppointmentID());
+                System.out.printf("| Date           : %s\n", date);
+                System.out.printf("| Time           : %s\n", time);
+                System.out.printf("| Doctor         : %s\n", app.getDoctorName());
+                System.out.printf("| Status         : %s\n", app.getAppointmentStatus());
+                System.out.println("===========================================");
+            });
+
+    // Check if there are no upcoming appointments
+    boolean hasUpcomingAppointments = appointments.stream()
+            .filter(app -> app.getPatientID().equals(patientID))
+            .filter(app -> {
+                Calendar appointmentTime = app.getAppointmentTime();
+                return !(appointmentTime.get(Calendar.YEAR) == 1 &&
+                         appointmentTime.get(Calendar.MONTH) == Calendar.JANUARY &&
+                         appointmentTime.get(Calendar.DAY_OF_MONTH) == 1 &&
+                         appointmentTime.get(Calendar.HOUR_OF_DAY) == 0 &&
+                         appointmentTime.get(Calendar.MINUTE) == 0);
+            })
+            .anyMatch(app -> 
+                !app.getAppointmentStatus().equalsIgnoreCase("Completed") && 
+                !app.getAppointmentStatus().toLowerCase().contains("cancelled") &&
+                (!app.getAppointmentStatus().equalsIgnoreCase("PendingToDoctor") && 
+                 !app.getAppointmentStatus().equalsIgnoreCase("PendingToPatient") ||
+                 LocalDateTime.of(app.getAppointmentTime().get(Calendar.YEAR),
+                                  app.getAppointmentTime().get(Calendar.MONTH) + 1,
+                                  app.getAppointmentTime().get(Calendar.DAY_OF_MONTH),
+                                  app.getAppointmentTime().get(Calendar.HOUR_OF_DAY),
+                                  app.getAppointmentTime().get(Calendar.MINUTE)).isAfter(now))
+            );
+
+    if (!hasUpcomingAppointments) {
+        System.out.println("No upcoming appointments.");
     }
+
+    System.out.print("Press any key to continue...");
+    Scanner scanner = new Scanner(System.in);
+    scanner.nextLine(); // Wait for user to press any key
+    DisplayManager.clearScreen();
+}
+
     
     
     public void bookNewAppointment(String patientID, String patientName, String doctorID, String doctorName, String initiator) {
@@ -825,6 +861,10 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     if (appointmentDate.isBefore(LocalDate.now()) || 
         (appointmentDate.isEqual(LocalDate.now()) && appointmentTime.isBefore(LocalTime.now()))) {
         System.out.println("There are no more sessions available to book on this date.");
+        System.out.print("Press any key to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine(); // Wait for user to press any key
+        DisplayManager.clearScreen();
         return;
     }
 
@@ -854,6 +894,10 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     apptData.addAppointment(newAppointment);
     System.out.println("Appointment successfully booked with ID: " + newAppointmentID);
     System.out.println("===========================================");
+    System.out.print("Press any key to continue...");
+    Scanner scanner = new Scanner(System.in);
+    scanner.nextLine(); // Wait for user to press any key
+    DisplayManager.clearScreen();
 }
     
     
@@ -886,6 +930,10 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         if (pendingAppointments.isEmpty()) {
             System.out.println("No 'PendingToPatient' appointments.");
+            System.out.print("Press any key to continue...");
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine(); // Wait for user to press any key
+            DisplayManager.clearScreen();
             return;
         }
     
@@ -1157,7 +1205,6 @@ System.out.println("--------------------------------------------------");
     create.createRecord(selectedAppointment.getPatientID(),selectedAppointment.getPatientName());
 
     System.out.println("Appointment details " + (isEdit ? "edited" : "filled") + " and saved successfully.");
-    DisplayManager.clearScreen();
 }
 
 
@@ -1216,6 +1263,10 @@ public void printCancelledAppointments(String userType, String userID) {
     
     if (!hasCancelledAppointments) {
         System.out.println("No canceled appointments to display.");
+        System.out.print("Press any key to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine(); // Wait for user to press any key
+        DisplayManager.clearScreen();
         return;
     }
 
@@ -1282,10 +1333,15 @@ public void printCancelledAppointments(String userType, String userID) {
             // Acknowledge and delete the appointment
             apptData.deleteAppointment(selectedAppointmentID);
             System.out.println("Appointment acknowledged and deleted successfully.");
+            System.out.print("Press any key to continue...");
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine(); // Wait for user to press any key
+            DisplayManager.clearScreen();
         }
         case 2 -> {
             // Book a new appointment
             System.out.println("Proceeding to book a new appointment...");
+        
             if (userType.equalsIgnoreCase("doctor")) {
                 bookNewAppointment(
                         selectedAppointment.getPatientID(),
@@ -1299,6 +1355,10 @@ public void printCancelledAppointments(String userType, String userID) {
                         selectedAppointment.getDoctorID(),
                         selectedAppointment.getDoctorName(), "patient");
             }
+        
+            // Delete the original canceled appointment after attempting the new booking
+            apptData.deleteAppointment(selectedAppointmentID);
+            System.out.println("Original canceled appointment deleted successfully.");
         }
         case 3 -> System.out.println("Exiting without changes.");
         default -> System.out.println("Invalid choice. Returning to the main menu...");
@@ -1473,8 +1533,16 @@ private void cancelAppointmentByPatient(String appointmentID, String userType) {
         // Save the updated status and outcome to the CSV
         apptData.updateAppointmentInCSV(appointment);
         System.out.println("Appointment successfully marked as cancelled.");
+        System.out.print("Press any key to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine(); // Wait for user to press any key
+        DisplayManager.clearScreen();
     } else {
         System.out.println("Appointment not found. Unable to cancel.");
+        System.out.print("Press any key to continue...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine(); // Wait for user to press any key
+        DisplayManager.clearScreen();
     }
 }
 
