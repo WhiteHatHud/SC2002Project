@@ -192,7 +192,9 @@ public class PrescriptionsUI {
             return;
         }
         System.out.println("Choose update Status: ");
-        System.out.println("(1) Dispense Medicine");
+        System.out.println("(1) Pending");
+        System.out.println("(2) Dispensed");
+        DisplayManager.printCentered("Enter choide: ", 80);
         if ((choice = inputHandler.getUserChoice(2)) == -1){
             error = "Invalid Input.";
             return; 
