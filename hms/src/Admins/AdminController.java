@@ -25,11 +25,13 @@ public class AdminController implements ControllerInt {
     }
 
     public boolean start() {
+
         String name = admin.getName();
 
         boolean isActive = true;
         while (isActive) {
             AdminShared.getDisplayManager().displayMenu(name); 
+
             int choice = AdminShared.getUserInputHandler().getUserChoice();
             isActive = handleChoice(choice);
         }
@@ -40,6 +42,8 @@ public class AdminController implements ControllerInt {
     @Override
     public boolean handleChoice(int choice) {
         switch (choice) {
+
+            
             case 1: 
                 viewAndManageStaff();
                 break;

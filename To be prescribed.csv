@@ -10,3 +10,4 @@ PR008,P1001,Alice Brown,D024,po2po,2024-11-08,Aspirin:100; Bop:200; Malaypill:30
 PR009,P1001,Alice Brown,D028,asd,2024-11-08,Paracetamol:1000,Pending,nil
 PR010,P1001,Alice Brown,D024,po2po,2024-11-08,Paracetamol:1000,Pending,notin
 PR011,P1001,Alice Brown,D024,po2po,2024-11-08,Aspirin:1,Dispensed,dw
+PR012,P1001,Alice Brown,D026,Popo,2024-11-12,Paracetamol:1000; Aspirin:2000; Bop:3000,Dispensed,Please Die

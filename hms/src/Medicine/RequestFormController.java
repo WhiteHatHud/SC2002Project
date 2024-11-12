@@ -40,8 +40,8 @@ public class RequestFormController extends DisplayManager{
             System.out.println((i/100)+". "+i+"mg");
         }
         DisplayManager.printCentered("Enter Choice: ", 80);
-        if ((amount = input.getUserChoice()) < 0) return "Invalid Input. Please try again.";
-        form = new RequestForm(generateRequestID(), medicineData.getAllMedicines().get(index).getMedicineName(), amount*100, staff.getUserID(), staff.getName());
+        if ((amount = input.getUserChoice()) < 0 || amount > 5) return "Invalid Input. Please try again.";
+        form = new RequestForm(generateRequestID(), medicineData.getAllMedicines().get(index-1).getMedicineName(), amount*100, staff.getUserID(), staff.getName());
         csvUpdater.addNewLineToCSV(form.toCSVArray(), FILE_PATH, 5);
         
         return "Succesfully Requested";
@@ -57,7 +57,7 @@ public class RequestFormController extends DisplayManager{
             System.out.println((i/100)+". "+i+"mg");
         }
         DisplayManager.printCentered("Enter Choice: ", 80);
-        while ((amount = input.getUserChoice()) < 0){
+        while ((amount = input.getUserChoice()) < 0 || amount > 5){
             DisplayManager.printCentered("Invalid Input. Please try again.\n Enter Choice: ",80);
         } 
         form = new RequestForm(generateRequestID(), medicineName, amount*100, requestorID, requestorName);

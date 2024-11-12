@@ -5,3 +5,4 @@ DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Pr
 4,P1002,Bob Stone,D002,2024-11-06,HUD,MED:100,2024-12-12,HUD,HUD,HUD,HUD
 5,P1001,Alice Brown,D024,2024-11-08,He is skinny,Aspirin:1000,2024-12-12,202025-12-12,Death,KMS,dw
 6,P1001,Alice Brown,D001,2024-11-08,Sick,Paracetamol:1000,2024-12-28,2024-12-30,,,nil
+7,P1001,Alice Brown,D026,2024-11-12,Cancer,Paracetamol:1000; Aspirin:2000; Bop:3000,2024-11-14,2024-11-17,,,Please Die

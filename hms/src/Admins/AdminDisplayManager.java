@@ -2,12 +2,10 @@ package Admins;
 import Login.DisplayManager;
 
 public class AdminDisplayManager extends DisplayManager {
-
     public void displayMenu(String name){
 
         DisplayManager.clearScreen(); 
         System.out.println("Welcome, Admin " + name);
-
         System.out.println("1. View and Manage Staffs"); //done 
         System.out.println("2. Manage Appointment Details");// done 
         System.out.println("3. Manage Medication Inventory"); // done

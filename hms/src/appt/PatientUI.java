@@ -1,5 +1,6 @@
 package appt;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import Patients.PatientShared;
@@ -15,23 +16,24 @@ public class PatientUI {
         this.patientName = patientName;
     }
 
-    public void start() {
-        boolean running = true;
-        while (running) {
-            System.out.println("Welcome, " + patientName);
-            System.out.println("1. View My Appointments");
-            System.out.println("2. Book a New Appointment");
-            System.out.println("3. Accept/Decline Appointments");
-            System.out.println("4. View Canceled Appointments");
-            System.out.println("5. View Completed Appointment Outcomes");
-            System.out.println("6. View Upcoming Sessions");
-            System.out.println("7. Reschedule/Cancel Appointments"); // New option for rescheduling/canceling
-            System.out.println("8. Exit");
-            System.out.print("Please select an option: ");
-    
+   public void start() {
+    boolean running = true;
+    while (running) {
+        System.out.println("Welcome, " + patientName);
+        System.out.println("1. View My Appointments");
+        System.out.println("2. Book a New Appointment");
+        System.out.println("3. Accept/Decline Appointments");
+        System.out.println("4. View Canceled Appointments");
+        System.out.println("5. View Completed Appointment Outcomes");
+        System.out.println("6. View Upcoming Sessions");
+        System.out.println("7. Reschedule/Cancel Appointments"); // New option for rescheduling/canceling
+        System.out.println("8. Exit");
+        System.out.print("Please select an option: ");
+
+        try {
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
-    
+
             switch (choice) {
                 case 1 -> apptController.printPatientAppointments(patientID);
                 case 2 -> bookNewAppointment();
@@ -46,8 +48,12 @@ public class PatientUI {
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a number corresponding to a menu option.");
+            scanner.nextLine(); // Clear the invalid input
         }
     }
+}
     
 
     // Method to book a new appointment, prompting for doctor details
