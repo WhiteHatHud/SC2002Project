@@ -41,7 +41,7 @@ public class RequestFormController extends DisplayManager{
         }
         DisplayManager.printCentered("Enter Choice: ", 80);
         if ((amount = input.getUserChoice()) < 0) return "Invalid Input. Please try again.";
-        form = new RequestForm(generateRequestID(), medicineData.getAllMedicines().get(index).getMedicineName(), amount*100, staff.getUserID(), staff.getName());
+        form = new RequestForm(generateRequestID(), medicineData.getAllMedicines().get(index-1).getMedicineName(), amount*100, staff.getUserID(), staff.getName());
         csvUpdater.addNewLineToCSV(form.toCSVArray(), FILE_PATH, 5);
         
         return "Succesfully Requested";
