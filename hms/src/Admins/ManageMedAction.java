@@ -103,7 +103,7 @@ private void updateStockLevel() {
 
     // Ask the user for the change amount
     System.out.print("Enter the amount to change the stock level (positive to increase, negative to decrease): ");
-    int changeAmount = input.getAnyInt();
+    int changeAmount = input.getNonZero();
 
     // Calculate new stock level and check if it would be negative
     int newStockLevel = currentStock + changeAmount;
