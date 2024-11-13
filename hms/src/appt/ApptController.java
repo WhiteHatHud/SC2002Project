@@ -832,7 +832,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         return; // Exit if the doctor does not exist
     }
 
-    System.out.println("The doctor name is: " + doctorName);
+    //System.out.println("The doctor name is: " + doctorName);
 
     // Select a date for the new appointment
     LocalDate appointmentDate = selectDateFromSchedule(doctorID);

@@ -1,0 +1,17 @@
+ID,Medicine Name,Quantity,PharmaID,PharmaName
+1,Amoxicillin,500,P005,ASLDADS
+2,Aspirin,300,P006,Popol
+3,Aspirin,400,P006,Popol
+4,Aspirin,500,P006,Popol
+5,Aspirin,100,P006,Popol
+6,Amoxicillin,500,P006,Popol
+7,Aspirin,500,P006,Popol
+8,Paracetamol,200,P006,Popol
+9,Amoxicillin,200,P006,Popol
+10,Paracetamol,500,P006,Popol
+11,Amoxicillin,500,P006,Popol
+12,Paracetamol,500,P006,Popol
+13,Amoxicillin,300,P006,Popol
+14,Amoxicillin,100,P006,Popol
+15,Aspirin,300,P006,Popol
+16,Amoxicillin,500,P006,Popol

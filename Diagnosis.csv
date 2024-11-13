@@ -10,3 +10,4 @@ DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Pr
 8,P1002,Bob Stone,D031,2024-11-13,He died,Paracetamol:200; Aspirin:400,2024-12-12,,,,Die
 9,P1001,Alice Brown,D033,2024-11-13,null,Paracetamol:500,2024-12-12,2024-12-12,Died,died,died
 10,P1001,Alice Brown,D031,2024-11-13,null,Paracetamol:100,2024-12-12,null,null,null,null
+11,P1006,Alice Brown,D031,2024-11-13,null,Paracetamol:100,2024-12-12,null,null,null,null
