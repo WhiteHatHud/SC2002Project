@@ -48,7 +48,7 @@ public class RequestFormController extends DisplayManager{
     }
     public String request(String requestorName, String requestorID, String medicineName){
         //DisplayManager.clearScreen();
-        int amount;
+        int amount = -1;
         display.divider();
         DisplayManager.printCentered("Request for Medicine re-stock of " + medicineName, 80);
         display.divider();
@@ -57,8 +57,9 @@ public class RequestFormController extends DisplayManager{
             System.out.println((i/10)+". "+i);
         }
         DisplayManager.printCentered("Enter Choice: ", 80);
-        while ((amount = input.getUserChoice()) < 0 || amount > 5){
+        while (amount < 0 || amount > 5){
             DisplayManager.printCentered("Invalid Input. Please try again.\n Enter Choice: ",80);
+            amount = input.getUserChoice();
         } 
         form = new RequestForm(generateRequestID(), medicineName, amount*10, requestorID, requestorName);
         csvUpdater.addNewLineToCSV(form.toCSVArray(), FILE_PATH, 5);

@@ -14,6 +14,7 @@ public class PatientController implements ControllerInt {
     }
 
     public boolean start() {
+        DisplayFormat.clearScreen();
         System.out.println("Welcome, " + patient.getName()); 
         
         boolean isActive = true;

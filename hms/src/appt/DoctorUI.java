@@ -1,6 +1,8 @@
 package appt;
 
 import Doctors.DoctorShared;
+import Login.DisplayManager;
+
 import java.util.InputMismatchException;
 public class DoctorUI {
     
@@ -29,28 +31,41 @@ public class DoctorUI {
             int choice = DoctorShared.getUserInputHandler().getUserChoice();
 
             switch (choice) {
-                case 1 -> apptController.printDoctorScheduleOnDate(doctorID);
+                case 1 -> printDoctorScheduleOnDate();
                 case 2 -> viewPendingAppointments();
-                case 3 -> apptController.printUpcomingSessions(doctorID, "doctor");
+                case 3 -> printUpcomingSessions();
                 case 4 -> viewCanceledAppointments();
                 case 5 -> recordAppointmentOutcome();
                 case 6 -> {
                     running = false; // Exit loop to return to DoctorController
                 }
-                default -> System.out.println("Invalid choice. Please try again.");
+                default -> System.out.println("Invalid input. Please enter a number corresponding to a menu option.");
             }
         }
+    }
+
+    private void printDoctorScheduleOnDate(){
+        apptController.printDoctorScheduleOnDate(doctorID);
+        DisplayManager.pauseContinue();
     }
 
     private void viewPendingAppointments() {
         System.out.println("\nViewing Pending Appointments:");
         apptController.viewRequests("doctor", doctorID);
+        DisplayManager.pauseContinue();
     }
 
     // Method to view canceled appointments
     private void viewCanceledAppointments() {
         System.out.println("\nViewing Canceled Appointments:");
         apptController.printCancelledAppointments("doctor", doctorID);
+        DisplayManager.pauseContinue();
+    }
+
+    private void printUpcomingSessions(){
+        apptController.printUpcomingSessions(doctorID, "doctor");
+        DisplayManager.pauseContinue();
+
     }
 
     // method to record the outcome of completed appointments
@@ -74,7 +89,8 @@ public class DoctorUI {
                 default -> System.out.println("Invalid choice. Returning to the main menu...");
             }
         } catch (InputMismatchException | NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a valid number. Returning to the main menu...");
+            System.out.println("Invalid input. Please enter a valid number.");
+            DisplayManager.pauseContinue();
         }
     }
 }
