@@ -17,7 +17,7 @@ public class RequestFormController extends DisplayManager{
     private MedicineData medicineData = new MedicineData();
     private DisplayManager display = new DisplayManager();
     private UserInputHandler input = new UserInputHandler();
-    private static final String FILE_PATH = "RequestFormPharma.csv";
+    private static final String FILE_PATH = "RequestFromPharma.csv";
     private CSVUpdater csvUpdater = new CSVUpdater(FILE_PATH);
     private Pharmacist staff;
     public RequestFormController(Pharmacist staff){
