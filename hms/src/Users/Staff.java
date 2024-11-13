@@ -13,7 +13,7 @@ public class Staff extends Users{
         this.gender = gender;
         this.age = age;
         this.officeNumber = officeNumber;
-        this.password = password; 
+        this.password = "password"; 
     }
     public String getRole(){
         return role;

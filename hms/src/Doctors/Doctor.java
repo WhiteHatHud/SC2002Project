@@ -25,6 +25,6 @@ public class Doctor extends Staff {
     @Override
     public String toCSV() {
         
-        return String.join(",", userID, name, role, gender, String.valueOf(age), officeNumber);
+        return String.join(",", userID, name, role, gender, String.valueOf(age), officeNumber, password);
     }
 }

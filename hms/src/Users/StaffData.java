@@ -50,6 +50,7 @@ public class StaffData {
         }
         return null;
     }
+    
     public boolean addStaff(Staff staff){
         if (exists(staff.getUserID())) {
             return false;
