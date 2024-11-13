@@ -3,6 +3,7 @@ import Login.DisplayManager;
 import Medicine.Medicine;
 import Medicine.MedicineData;
 import Medicine.MedicineUI;
+import Utilities.UserInputHandler;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -15,9 +16,7 @@ public class ManageMedAction {
     
     MedicineUI med = new MedicineUI();
     MedicineData data = new MedicineData();
-
-
-    
+    UserInputHandler input = new UserInputHandler();
 
     public void start() {
         Scanner scanner = new Scanner(System.in);
@@ -28,7 +27,7 @@ public class ManageMedAction {
             AdminShared.getDisplayManager().manageMedicationInvetoryMenu();
     
             System.out.print("Please enter your choice: ");
-            choice = scanner.nextInt();
+            choice = input.getPositiveInt();
     
             switch (choice) {
                 case 1 -> viewInventory();
@@ -89,9 +88,8 @@ private void updateStockLevel() {
     }
 
     // Prompt the user to select a medicine
-    Scanner scanner = new Scanner(System.in);
     System.out.print("Enter the number of the medicine you want to update: ");
-    int choice = scanner.nextInt();
+    int choice = input.getPositiveInt();
 
     // Validate the choice
     if (choice < 1 || choice > medicines.size()) {
@@ -106,7 +104,7 @@ private void updateStockLevel() {
 
     // Ask the user for the change amount
     System.out.print("Enter the amount to change the stock level (positive to increase, negative to decrease): ");
-    int changeAmount = scanner.nextInt();
+    int changeAmount = input.getNonZero();
 
     // Calculate new stock level and check if it would be negative
     int newStockLevel = currentStock + changeAmount;
@@ -141,9 +139,8 @@ private void removeMedication() {
     }
 
     // Prompt the user to select a medicine
-    Scanner scanner = new Scanner(System.in);
     System.out.print("Enter the number of the medicine you want to remove: ");
-    int choice = scanner.nextInt();
+    int choice = input.getPositiveInt();
 
     // Validate the choice
     if (choice < 1 || choice > medicines.size()) {
@@ -157,7 +154,7 @@ private void removeMedication() {
 
     // Confirm removal
     System.out.print("Are you sure you want to remove " + name + " from the inventory? (yes/no): ");
-    String confirmation = scanner.next().trim().toLowerCase();
+    String confirmation = input.getNextLine().trim().toLowerCase();
     if (!confirmation.equals("yes")) {
         System.out.println("Operation cancelled. Medicine was not removed.");
         return;
@@ -190,16 +187,8 @@ private void updateLowStockAlert() {
                           i + 1, med.getMedicineName(), med.getLowStockLevelAlert(), med.getInitialStock());
     }
 
-    // Prompt the user to select a medicine
-    Scanner scanner = new Scanner(System.in);
     System.out.print("Enter the number of the medicine you want to update: ");
-    int choice = scanner.nextInt();
-
-    // Validate the choice
-    if (choice < 1 || choice > medicines.size()) {
-        System.out.println("Invalid choice.");
-        return;
-    }
+    int choice = input.getPositiveInt();
 
     // Get the selected medicine
     Medicine selectedMedicine = medicines.get(choice - 1);
@@ -207,7 +196,7 @@ private void updateLowStockAlert() {
 
     // Prompt for the new low stock alert level
     System.out.print("Enter the new low stock alert level: ");
-    int newLowStockLevel = scanner.nextInt();
+    int newLowStockLevel = input.getPositiveInt();
 
     // Update the low stock level alert
     med.updateLowStockLevelAlert(name, newLowStockLevel);
@@ -247,9 +236,8 @@ public void approveReplenishmentRequests() {
     }
 
     // Prompt the admin to select a request to approve
-    Scanner scanner = new Scanner(System.in);
     System.out.print("Enter the ID of the request you want to approve: ");
-    int choice = scanner.nextInt() - 1;
+    int choice = input.getPositiveInt() - 1;
 
     if (choice < 0 || choice >= requests.size()) {
         System.out.println("Invalid choice.");
@@ -263,7 +251,7 @@ public void approveReplenishmentRequests() {
 
     // Confirm approval
     System.out.printf("Are you sure you want to approve the request to add %d units of %s? (yes/no): ", quantityToAdd, medicineName);
-    String confirmation = scanner.next().trim().toLowerCase();
+    String confirmation = input.getNextLine().trim().toLowerCase();
     if (!confirmation.equals("yes")) {
         System.out.println("Approval canceled.");
         return;

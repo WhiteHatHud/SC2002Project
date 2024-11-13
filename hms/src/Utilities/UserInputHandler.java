@@ -54,4 +54,20 @@ public class UserInputHandler {
         }
         return line;
     }
+
+    public int getPositiveInt(){
+        int choice = -1;
+        while (choice < 1){
+            choice = getUserChoice();
+        }
+        return choice;
+    }
+
+    public int getAnyInt(){
+        int choice = 0;
+        while (choice == 0){
+            choice = getUserChoice();
+        }
+        return choice;
+    }
 }
