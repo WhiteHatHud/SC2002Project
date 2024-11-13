@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -557,13 +558,14 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         // Check if there are any upcoming sessions to display
         if (filteredAppointments.isEmpty()) {
             System.out.println("No upcoming sessions available.");
+            
         } else {
             while (true) {
                 System.out.print("\nEnter the Appointment ID to manage (or '~' to return): ");
                 String appointmentID = scanner.nextLine().trim();
     
                 // Exit if user types '~'
-                if (appointmentID.equals("~")) {
+                if (appointmentID.equals("~") ) {
                     System.out.println("Returning to the previous menu...");
                     return;
                 }
@@ -586,31 +588,46 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
     }
         
-    private void manageScheduledAppointments(String appointmentID, String userType) {
-        Appointment appointment = apptData.getAllAppointments().stream()
-                .filter(app -> app.getAppointmentID().equals(appointmentID))
-                .findFirst()
-                .orElse(null);
-    
-        if (appointment == null) {
-            System.out.println("Invalid Appointment ID. Returning to the previous menu...");
-            return;
-        }
-    
-        System.out.printf("Managing Appointment ID: %s\n", appointmentID);
-        System.out.println("1. Cancel Appointment");
-        System.out.println("2. Reschedule Appointment");
+private void manageScheduledAppointments(String appointmentID, String userType) {
+    Appointment appointment = apptData.getAllAppointments().stream()
+            .filter(app -> app.getAppointmentID().equals(appointmentID))
+            .findFirst()
+            .orElse(null);
+
+    if (appointment == null) {
+        System.out.println("Invalid Appointment ID. Returning to the previous menu...");
+        return;
+    }
+
+    System.out.printf("Managing Appointment ID: %s\n", appointmentID);
+    System.out.println("1. Cancel Appointment");
+    System.out.println("2. Reschedule Appointment");
+
+    while (true) {
         System.out.print("Select an option: ");
-    
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-    
-        switch (choice) {
-            case 1 -> cancelAppointment(appointmentID, userType); // Pass userType to cancelAppointment
-            case 2 -> rescheduleAppointment(appointment, userType); // Pass userType to rescheduleAppointment
-            default -> System.out.println("Invalid option. Returning to the previous menu...");
+        
+        try {
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            
+            switch (choice) {
+                case 1 -> {
+                    cancelAppointment(appointmentID, userType); // Pass userType to cancelAppointment
+                    return;
+                }
+                case 2 -> {
+                    rescheduleAppointment(appointment, userType); // Pass userType to rescheduleAppointment
+                    return;
+                }
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid number (1 or 2).");
+            scanner.nextLine(); // Clear the invalid input from scanner
         }
     }
+}
+
     
     
     private void cancelAppointment(String appointmentID, String userType) {
@@ -1448,7 +1465,7 @@ public void printUpcomingPatientSessions(String patientID, String userType) {
         return;
     }
 
-    System.out.print("\nEnter the Appointment ID to manage: ");
+    System.out.print("\nEnter the Appointment ID to manage: (Leave blank to return to menu)");
     String appointmentID = scanner.nextLine().trim();
     manageScheduledAppointmentsForPatient(appointmentID, userType, patientID);  // Pass userType and patientID
 }

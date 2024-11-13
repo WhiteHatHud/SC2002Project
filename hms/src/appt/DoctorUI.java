@@ -90,7 +90,8 @@ public class DoctorUI {
             }
         } catch (InputMismatchException | NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid number.");
-            DisplayManager.pauseContinue();
+            return;
         }
+        DisplayManager.pauseContinue();
     }
 }
