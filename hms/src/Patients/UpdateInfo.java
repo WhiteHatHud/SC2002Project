@@ -54,8 +54,9 @@ public class UpdateInfo {
     }
 
     private void updateEmail() {
+        PatientShared.getUserInputHandler().getNextLine(); 
         System.out.print("New Email (leave blank to keep current): ");
-        String newEmail = PatientShared.getUserInputHandler().getInput();
+        String newEmail = PatientShared.getUserInputHandler().getNextLine();
         if (!newEmail.isBlank()) {
             patient.setEmail(newEmail);
             Login.DisplayFormat.clearScreen();
@@ -69,8 +70,9 @@ public class UpdateInfo {
     }
 
     private void updateContactNumber() {
+        PatientShared.getUserInputHandler().getNextLine(); 
         System.out.print("New Contact Number (leave blank to keep current): ");
-        String newContactNumber = PatientShared.getUserInputHandler().getInput();
+        String newContactNumber = PatientShared.getUserInputHandler().getNextLine();
         
         // Validate if the number is exactly 8 digits
         if (!newContactNumber.isBlank() && newContactNumber.matches("\\d{8}")) {
@@ -89,8 +91,9 @@ public class UpdateInfo {
     }
 
     private void updateEmergencyContact() {
+        PatientShared.getUserInputHandler().getNextLine(); 
         System.out.print("New Emergency Contact (leave blank to keep current): ");
-        String newEmergencyContact = PatientShared.getUserInputHandler().getInput();
+        String newEmergencyContact = PatientShared.getUserInputHandler().getNextLine();
         
         // Validate if the emergency contact number is exactly 8 digits
         if (!newEmergencyContact.isBlank() && newEmergencyContact.matches("\\d{8}")) {

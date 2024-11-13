@@ -114,6 +114,7 @@ public class DoctorController implements ControllerInt {
     
             count++;
         }
+        DisplayManager.pauseContinue();
     }
     
     

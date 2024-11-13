@@ -413,12 +413,12 @@ public class CSVUtilities {
                 String[] record = line.split(",");
                 if (record[0].equals(diagnosisID)) {
                     // Update fields as needed
-                    if (diagnosisDescription != null) record[5] = diagnosisDescription;
-                    if (prescription != null) record[6] = prescription;
-                    if (treatmentEndDate != null) record[8] = treatmentEndDate;
-                    if (treatmentOutcome != null) record[9] = treatmentOutcome;
-                    if (followUpInstructions != null) record[10] = followUpInstructions;
-                    if (notes != null) record[11] = notes;
+                    record[5] = diagnosisDescription;
+                    record[6] = prescription;
+                    record[8] = treatmentEndDate;
+                    record[9] = treatmentOutcome;
+                    record[10] = followUpInstructions;
+                    record[11] = notes;
                 }
                 records.add(record);
             }

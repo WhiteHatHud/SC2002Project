@@ -46,7 +46,6 @@ public class ManageMedAction {
             if (choice != 7) {
                 System.out.println("Press Enter to return to the Manage Medication Inventory menu...");
                 scanner.nextLine();  // Consume the newline
-                scanner.nextLine();  // Wait for Enter
             }
     
         } while (true);
@@ -104,7 +103,7 @@ private void updateStockLevel() {
 
     // Ask the user for the change amount
     System.out.print("Enter the amount to change the stock level (positive to increase, negative to decrease): ");
-    int changeAmount = input.getNonZero();
+    int changeAmount = input.getAnyInt();
 
     // Calculate new stock level and check if it would be negative
     int newStockLevel = currentStock + changeAmount;
