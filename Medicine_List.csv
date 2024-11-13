@@ -1,9 +1,9 @@
 Medicine Name,Initial Stock,Low Stock Level Alert
-Paracetamol,19,20
+Paracetamol,0,20
 Aspirin,97,100
 Bop,20,23
 Malaypill,2100,10
-Amoxicillin,800,15
+Amoxicillin,600,15
 Penicillin,2300,100
 Chinesepill,200,25
 Test,100,50

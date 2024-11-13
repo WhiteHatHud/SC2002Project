@@ -35,6 +35,9 @@ public class MedicineData {
         }
         return medicines;
     }
+    public int getNumMedicines(){
+        return getAllMedicines().size();
+    }
     
     // Retrieves a single medicine by name , case insensetive
     public Medicine getMedicineByName(String name) {
