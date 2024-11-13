@@ -8,5 +8,5 @@ DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Pr
 6,P1001,Alice Brown,D019,kakaka,Sick,Paracetamol:1000,2024-12-28,2024-12-30,,,nil
 7,P1005,Popi,D011,2024-11-13,He died,Paracetamol:200; Aspirin:300,2024-12-12,2024-12-12,Died,Come back,Well
 8,P1002,Bob Stone,D031,2024-11-13,He died,Paracetamol:200; Aspirin:400,2024-12-12,,,,Die
-9,P1001,Alice Brown,D031,2024-11-13,Died,,2024-12-12
-10,P1001,Alice Brown,D033,2024-11-13,null,Paracetamol:500,2024-12-12,2024-12-12,Died,died,died
+9,P1001,Alice Brown,D033,2024-11-13,null,Paracetamol:500,2024-12-12,2024-12-12,Died,died,died
+10,P1001,Alice Brown,D031,2024-11-13,null,Paracetamol:100,2024-12-12,null,null,null,null

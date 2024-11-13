@@ -436,35 +436,36 @@ public class CSVUtilities {
             System.out.println("Error saving Diagnosis CSV file: " + e.getMessage());
         }
     }
-
     public List<String[]> getDiagnosisAndPrescriptionByPatientID(String patientID) {
         List<String[]> result = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("Diagnosis.csv"))) {
             String line;
-            // Read the header line and ignore it
-            br.readLine();
-
+            br.readLine(); // Skip header
+    
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-
-                // Check if the line matches the given PatientID
-                if (data.length > 5 && data[1].equals(patientID)) {
+    
+                // Check that the array has the expected number of columns
+                if (data.length >= 12 && data[1].equals(patientID)) {
                     String[] diagnosisDetails = new String[5];
                     diagnosisDetails[0] = data[5]; // DiagnosisDescription
                     diagnosisDetails[1] = data[6]; // Prescription
-                    diagnosisDetails[2] = data[4] ; // date of diagnosis
-                    diagnosisDetails[3] = data[7];
-                    diagnosisDetails[4] = data[8];   
+                    diagnosisDetails[2] = data[4]; // Date of Diagnosis
+                    diagnosisDetails[3] = data[7]; // Treatment Start Date
+                    diagnosisDetails[4] = data[8]; // Treatment End Date
                     result.add(diagnosisDetails);
+                } else if (data.length < 12) {
+                    System.out.println("Skipping record due to insufficient data: " + Arrays.toString(data));
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading CSV file: " + e.getMessage());
         }
-
+    
         return result;
     }
+    
     public List<String[]> getDiagnosisAndPrescriptionByPatientID(String patientID, String doctorID) {
         List<String[]> result = new ArrayList<>();
     

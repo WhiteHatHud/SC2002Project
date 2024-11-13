@@ -18,3 +18,6 @@ PR016,P1005,Popi,D011,Hud father,2024-11-13,Paracetamol:200; Aspirin:300,Pending
 PR017,P1002,Bob Stone,D031,Popeyes,2024-11-13,Paracetamol:200; Aspirin:400,Pending,Die
 PR018,P1001,Alice Brown,D033,EthanHudEthan,2024-11-13,Paracetamol:200; Aspirin:300; Bop:400,Pending,Die
 PR019,P1001,Alice Brown,D033,EthanHudEthan,2024-11-13,Paracetamol:500,Pending,died
+PR020,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:100; Aspirin:400,Pending,No
+PR021,P1001,Alice Brown,D031,Popeyes,2024-11-13,Aspirin:100,Pending,
+PR022,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:100,Pending,
