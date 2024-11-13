@@ -238,10 +238,6 @@ private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
     // Check if there are any remaining sessions
     if (remainingSessions.length == 0) {
         System.out.println("There are no more sessions available to book on this date.");
-        System.out.print("Press any key to continue...");
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine(); // Wait for user to press any key
-        DisplayManager.clearScreen();
     }
     // Display available sessions with their statuses, passing doctorID to getSessionStatus
     for (int i = 0; i < remainingSessions.length; i++) {
@@ -813,11 +809,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     if (!hasUpcomingAppointments) {
         System.out.println("No upcoming appointments.");
     }
-
-    System.out.print("Press any key to continue...");
-    Scanner scanner = new Scanner(System.in);
-    scanner.nextLine(); // Wait for user to press any key
-    DisplayManager.clearScreen();
 }
 
     
@@ -861,10 +852,7 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     if (appointmentDate.isBefore(LocalDate.now()) || 
         (appointmentDate.isEqual(LocalDate.now()) && appointmentTime.isBefore(LocalTime.now()))) {
         System.out.println("There are no more sessions available to book on this date.");
-        System.out.print("Press any key to continue...");
-        Scanner scanner = new Scanner(System.in);
         scanner.nextLine(); // Wait for user to press any key
-        DisplayManager.clearScreen();
         return;
     }
 
@@ -894,10 +882,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     apptData.addAppointment(newAppointment);
     System.out.println("Appointment successfully booked with ID: " + newAppointmentID);
     System.out.println("===========================================");
-    System.out.print("Press any key to continue...");
-    Scanner scanner = new Scanner(System.in);
-    scanner.nextLine(); // Wait for user to press any key
-    DisplayManager.clearScreen();
 }
     
     
@@ -930,10 +914,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
     
         if (pendingAppointments.isEmpty()) {
             System.out.println("No 'PendingToPatient' appointments.");
-            System.out.print("Press any key to continue...");
-            Scanner scanner = new Scanner(System.in);
-            scanner.nextLine(); // Wait for user to press any key
-            DisplayManager.clearScreen();
             return;
         }
     
@@ -1263,10 +1243,6 @@ public void printCancelledAppointments(String userType, String userID) {
     
     if (!hasCancelledAppointments) {
         System.out.println("No canceled appointments to display.");
-        System.out.print("Press any key to continue...");
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine(); // Wait for user to press any key
-        DisplayManager.clearScreen();
         return;
     }
 
@@ -1333,10 +1309,8 @@ public void printCancelledAppointments(String userType, String userID) {
             // Acknowledge and delete the appointment
             apptData.deleteAppointment(selectedAppointmentID);
             System.out.println("Appointment acknowledged and deleted successfully.");
-            System.out.print("Press any key to continue...");
-            Scanner scanner = new Scanner(System.in);
             scanner.nextLine(); // Wait for user to press any key
-            DisplayManager.clearScreen();
+
         }
         case 2 -> {
             // Book a new appointment
@@ -1533,16 +1507,8 @@ private void cancelAppointmentByPatient(String appointmentID, String userType) {
         // Save the updated status and outcome to the CSV
         apptData.updateAppointmentInCSV(appointment);
         System.out.println("Appointment successfully marked as cancelled.");
-        System.out.print("Press any key to continue...");
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine(); // Wait for user to press any key
-        DisplayManager.clearScreen();
     } else {
         System.out.println("Appointment not found. Unable to cancel.");
-        System.out.print("Press any key to continue...");
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine(); // Wait for user to press any key
-        DisplayManager.clearScreen();
     }
 }
 
@@ -1578,7 +1544,6 @@ private void rescheduleAppointmentByPatient(Appointment appointment, String user
 
     // Check if the new session is available
     String status = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, appointment.getDoctorID());
-    System.out.println("Debug: Selected session status is: " + status);  // Debugging output
 
     if (!status.equalsIgnoreCase("Available")) {
         System.out.println("Selected session is not available. Please choose another session.");
@@ -1639,7 +1604,6 @@ public void cancelOrRescheduleAppointment(String patientID) {
             if ("PendingToDoctor".equalsIgnoreCase(selectedAppointment.getAppointmentStatus())) {
                 // Immediate cancellation for PendingToDoctor
                 apptData.deleteAppointment(selectedAppointment.getAppointmentID());
-                System.out.println("Appointment canceled successfully.");
             } else if ("Booked".equalsIgnoreCase(selectedAppointment.getAppointmentStatus())) {
                 // Call cancelAppointmentByPatient for booked appointments
                 cancelAppointmentByPatient(selectedAppointment.getAppointmentID(), "Patient");

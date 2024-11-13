@@ -2,6 +2,7 @@ package appt;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import Login.DisplayManager;
 
 import Patients.PatientShared;
 
@@ -35,7 +36,7 @@ public class PatientUI {
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
-                case 1 -> apptController.printPatientAppointments(patientID);
+                case 1 -> printPatientAppointments();
                 case 2 -> bookNewAppointment();
                 case 3 -> viewPendingAppointments();
                 case 4 -> viewCanceledAppointments();
@@ -52,8 +53,14 @@ public class PatientUI {
             System.out.println("Invalid input. Please enter a number corresponding to a menu option.");
             scanner.nextLine(); // Clear the invalid input
         }
+
     }
 }
+
+    private void printPatientAppointments() {
+        apptController.printPatientAppointments(patientID);
+        DisplayManager.pauseContinue();
+    }
     
 
     // Method to book a new appointment, prompting for doctor details
@@ -64,42 +71,53 @@ public class PatientUI {
         String doctorName = PatientShared.getCSVUtilities().getDoctorNameByID(doctorID);
         if (doctorName == null || doctorName.isEmpty()) {
             System.out.println("Error: Doctor ID not found. Please check the ID and try again.");
+            DisplayManager.pauseContinue();
             return; // Exit if the patient does not exist
         }
         System.out.println("The Doctor name is: " + doctorName);
 
         // Call ApptController's bookNewAppointment with patient and doctor details
         apptController.bookNewAppointment(patientID, patientName, doctorID, doctorName, "Patient");
+        DisplayManager.pauseContinue();
+
     }
 
     // Method to view pending appointments with status 'PendingToPatient'
     private void viewPendingAppointments() {
         System.out.println("\nShowing Pending Appointments:");
         apptController.viewRequests("patient", patientID); // Pass "patient" as the userType
+        DisplayManager.pauseContinue();
+
     }
 
     // Method to view canceled appointments
     private void viewCanceledAppointments() {
         System.out.println("\nViewing Canceled Appointments:");
         apptController.printCancelledAppointments("patient", patientID); // Pass "patient" as the userType
+        DisplayManager.pauseContinue();
+
     }
 
     // Method to view completed appointment outcomes
     private void viewCompletedOutcomes() {
         System.out.println("\nViewing Completed Appointment Outcomes:");
         apptController.printCompletedSessionsPatient(patientID); // Calls method to print completed sessions
+        DisplayManager.pauseContinue();
     }
 
     // New method to view upcoming sessions and manage appointments
     private void viewUpcomingSessions() {
         System.out.println("\nViewing Upcoming Sessions:");
         apptController.printUpcomingPatientSessions(patientID, "patient"); // Call to view upcoming patient sessions
+        DisplayManager.pauseContinue();
     }
 
     // Method to reschedule or cancel an appointment
 private void rescheduleOrCancelAppointment() {
     System.out.println("\nReschedule or Cancel Appointments:");
     apptController.cancelOrRescheduleAppointment(patientID);
+    DisplayManager.pauseContinue();
+
 }
 
 
