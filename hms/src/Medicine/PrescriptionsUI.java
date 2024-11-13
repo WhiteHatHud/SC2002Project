@@ -182,62 +182,86 @@ public class PrescriptionsUI {
     }
 
     private void updatePrescriptionStatus() {
-        int choice;
         DisplayManager.clearScreen();
+        int choice;
         String prescriptionID = validatePrescriptionID();
+    
+        // Error checking invalid prescription ID
         if (prescriptionID == null) return;
+    
+        // Load prescription into local to update
         Prescription pres = prescriptionData.getPrescription(prescriptionID);
+    
+        // Check if already dispensed
         if (pres.getStatus().equals("Dispensed")) {
-            error = prescriptionID+ " has already been dispensed";
+            error = prescriptionID + " has already been dispensed";
             return;
         }
-        System.out.println("Choose update Status: ");
-        System.out.println("(1) Dispense");
-        //System.out.println("(2) Dispensed");
-        DisplayManager.printCentered("Enter choide: ", 80);
-        if ((choice = inputHandler.getUserChoice(2)) == -1){
-            error = "Invalid Input.";
-            return; 
-        } 
-        String newStatus = "Pending";
-        switch(choice){
-
-            case 1:
-                newStatus = "Dispensed";  
-                Map<String, Integer> medications = pres.getMedications();
-                for (Map.Entry<String, Integer> entry : medications.entrySet()) {
-                    String medicineName = entry.getKey();
-                    int dosage = entry.getValue();
-                    if ((medicineData.getMedicineByName(medicineName).getInitialStock() - dosage) < 0){
-                        error = "Not enough stock to dispense " + medicineName + ". Please submit to request update stock.";
-                        return;
-                    }
-                    boolean stockUpdated = medicineData.updateStock(medicineName, -dosage);
-                    Medicine med = medicineData.getMedicineByName(medicineName);
-                    //System.out.println(med.getLowStockLevelAlert() + " " + med.getInitialStock());
-                    if(med.getLowStockLevelAlert() >= med.getInitialStock()){
-                        DisplayManager.printCentered(medicineName + " is low at: " + med.getInitialStock(), 80);
-                        request = new RequestFormController(pharma);
-                        error += " " + request.request(pharma.getName(), pharma.getUserID(), medicineName);
-                    }
-                    if (!stockUpdated) {
-                        System.out.println("Failed to update stock for medicine: " + medicineName);
-                    } else {
-                        System.out.println("Stock updated successfully for medicine: " + medicineName);
-                    }
-                }
-                break;
+    
+        // Display confirmation message for dispense
+        System.out.println("Enter (1) to dispense, any other character to return to prescription menu");
+        System.out.print("Answer: ");
+        if ((choice = inputHandler.getUserChoice()) != 1) return;
+    
+        // Go through list of prescriptions from prescription CSV and check stock in medicine list
+        Map<String, Integer> prescriptionList = pres.getMedications();
+        boolean needsRestock = false;
+    
+        // Step 1: Check stock for all medicines and create restock request if needed
+        for (Map.Entry<String, Integer> entry : prescriptionList.entrySet()) {
+            String medicineName = entry.getKey();
+            int dosage = entry.getValue();
+            Medicine med = medicineData.getMedicineByName(medicineName);
+    
+            // Check if there's enough stock to dispense
+            if (med.getInitialStock() - dosage < 0) {
+                System.out.println("Not enough stock to dispense " + medicineName + ". Creating a restock request...");
+                request = new RequestFormController(pharma);
+                request.request(pharma.getName(), pharma.getUserID(), medicineName);
+    
+                // Mark that we need restock
+                needsRestock = true;
             }
-        boolean success = prescriptionData.updatePrescriptionStatus(prescriptionID, newStatus);
-        if (success) {
-            System.out.println("Prescription status updated successfully.");
-        } else {
-            System.out.println("Failed to update prescription status.");
         }
-        System.out.println("Press Enter to return to the main menu.");
-        inputHandler.getNextLine();  // Wait for user input before returning
-    }
+    
+        // If any medicine needs restocking, exit the method
+        if (needsRestock) {
+            error = "At least 1 medicines need restocking. Restock before prescribing.";
+            return;
+        }
+    
+        // Step 2: If all medicines have sufficient stock, update stock and prescription status
+        for (Map.Entry<String, Integer> entry : prescriptionList.entrySet()) {
+            String medicineName = entry.getKey();
+            int dosage = entry.getValue();
+            Medicine med = medicineData.getMedicineByName(medicineName);
+    
+            DisplayManager.printCentered("Update Stock" + med.initialStock + med.lowStockLevelAlert, 80);
+            // Update stock
+            if (medicineData.updateStock(medicineName, -dosage)) {
+                System.out.println("Stock updated successfully for medicine: " + medicineName);
+                med = medicineData.getMedicineByName(medicineName);
+            } else {
+                System.out.println("Failed to update stock for medicine: " + medicineName);
+            }
+            DisplayManager.printCentered("after update" + med.initialStock + med.lowStockLevelAlert, 80);
 
+            // Check if stock is below low level alert create request
+            if (med.getLowStockLevelAlert() >= med.getInitialStock()) {
+                System.out.println(medicineName + " is low at: " + med.getInitialStock());
+                request = new RequestFormController(pharma);
+                request.request(pharma.getName(), pharma.getUserID(), medicineName);
+            }
+        }
+    
+        // Update prescription status once stock is updated
+        if (prescriptionData.updatePrescriptionStatus(prescriptionID, "Dispensed")) {
+            error = "Prescription status updated successfully.";
+        } else {
+            error = "Failed to update prescription status.";
+        }
+    }
+    
     private void deletePrescription() {
         DisplayManager.clearScreen();
         String patientID = validatePatientID();
