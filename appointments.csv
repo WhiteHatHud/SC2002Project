@@ -1,4 +1,4 @@
-AppointmentID,DateTime,PatientID,PatientName,DoctorID,DoctorName,AppointmentStatus,Outcome,Service,Medicine,MedicineStatus,Notes
+appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes
 A0006,2024-10-30 09:00,PT001,John Doe,D001,Dr. Smith,Completed,Successful,,Weed,Not Given,This is a test lol
 A0007,2024-10-30 14:00,PT001,John Doe,D001,Dr. Smith,Completed,,,,,
 A0010,2024-11-01 11:00,BLOCKED,N/A,DR001,Dr. Smith,Blocked,,,,,
@@ -38,7 +38,6 @@ A0061,0001-01-01 00:00,P1001,Alice Brown,D026,Popo,Cancelled by Patient Alice Br
 A0062,0001-01-01 00:00,P1001,Alice Brown,D026,Popo,Cancelled by Patient Alice Brown, ID P1001 on Session: 2024-11-15 09:00,Cancelled,,,
 A0063,0001-01-01 00:00,P1001,Alice Brown,D031,Popeyes,Cancelled by Patient Alice Brown, ID P1001 on Session: 2024-11-13 14:00,Cancelled,,,
 A0064,2024-11-13 09:00,P1001,Alice Brown,D031,Popeyes,Completed,,,,,
-A0065,2024-11-14 09:00,BLOCKED,N/A,D031,Popeyes,Blocked,,,,,
-A0066,0001-01-01 00:00,P1001,Alice Brown,D031,Popeyes,Cancelled by Dr. Popeyes, ID D031 on Session: 2024-11-16 09:00,Cancelled,,,
 A0067,0001-01-01 00:00,P1001,Alice Brown,D031,Popeyes,Cancelled by Patient Alice Brown, ID P1001 on Session: 2024-11-15 09:00,Cancelled,,,
-A0058,2024-11-14 09:00,P1001,Alice Brown,D031,Popeyes,PendingToPatient,,,,,
+A0058,2024-11-14 09:00,P1001,Alice Brown,D031,Popeyes,Booked,,,,,
+A0068,2024-11-15 09:00,BLOCKED,N/A,D031,Dr. Admin,Blocked,,,,,

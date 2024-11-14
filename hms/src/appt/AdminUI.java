@@ -1,6 +1,8 @@
 package appt;
 import java.util.Scanner;
 
+import Login.DisplayManager;
+
 public class AdminUI {
 
     Scanner scanner = new Scanner(System.in);
@@ -40,6 +42,7 @@ public class AdminUI {
         System.out.print("\nEnter Doctor ID: ");
         String doctorID = scanner.nextLine().trim();
         apptController.printDoctorScheduleOnDateAdmin(doctorID);
+        DisplayManager.pauseContinue();
     }
 
     // Method to view appointments by Patient's schedule
@@ -47,10 +50,12 @@ public class AdminUI {
         System.out.print("\nEnter Patient ID: ");
         String patientID = scanner.nextLine().trim();
         apptController.printPatientAppointments(patientID);
+        DisplayManager.pauseContinue();
     }
 
     // Method to view all booked schedules
     private void viewAllBookedSchedules() {
         apptController.printAllBookedSchedules();
+        DisplayManager.pauseContinue();
     }
 }
