@@ -4,13 +4,36 @@ import ResetInfo.ResetPasswordController;
 import Utilities.UserInputHandler;
 import java.util.Map;
 
+/**
+ * Manages the login flow and menu choices for the Hospital Management System.
+ * This class interacts with the display manager, input handler, and login managers
+ * to guide users through login and password reset functionalities.
+ */
 public class LoginController implements ControllerInt {
+    
+    /** Manages the display of various screens in the login process. */
     private DisplayManager displayManager;
+    
+    /** Handles user input for menu selections and data entry. */
     private UserInputHandler inputHandler;
+    
+    /** Manages specific login functionality based on user type (Patient or Staff). */
     private LoginInt loginManager;
+    
+    /** Stores user registries by type, used to initialize accounts. */
     private Map<String, UserRegistry> registries;
+    
+    /** Initializes accounts from a CSV file. */
     private AccountsInit accountsInit;
 
+    /**
+     * Constructs a LoginController with specified display manager, input handler,
+     * and user registries. It also initializes the account information from a CSV file.
+     *
+     * @param displayManager Manages screen displays for login prompts and messages.
+     * @param inputHandler   Handles user input.
+     * @param registries     A map of user type to user registry.
+     */
     public LoginController(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
@@ -19,6 +42,13 @@ public class LoginController implements ControllerInt {
         this.accountsInit = new AccountsInit("Patient List CSV.csv", registries);
     }
 
+    /**
+     * Handles a user's choice from the main menu and performs the associated action.
+     * Choices include login as Patient or Staff, reset password, or quit the system.
+     *
+     * @param choice The user's menu choice.
+     * @return {@code true} to reload the welcome screen; {@code false} to exit the program.
+     */
     @Override
     public boolean handleChoice(int choice) {
         if (choice == '~') {
@@ -77,14 +107,15 @@ public class LoginController implements ControllerInt {
                     accountsInit.start();  // Reload patient data after password reset
                 }
                 return true;  // Return to the main menu after resetting password
+                
             case 3:
                 System.out.println("System shutting down...");
                 System.exit(0);
                 return false;  // Ends the program, won't return to menu
+                
             default:
                 System.out.println("Invalid choice");
                 return true;  // Re-show the menu for invalid input
         }
     }
-    
 }
