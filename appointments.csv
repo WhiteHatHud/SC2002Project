@@ -1,2 +1,3 @@
 appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes
 A0001,2024-11-15 09:00,P1001,Michael Jackson,D001,Smith,PendingToDoctor,,,,,
+A0002,2024-11-16 11:00,P1001,Michael Jackson,D001,Smith,PendingToDoctor,,,,,
