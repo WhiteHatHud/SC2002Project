@@ -12,7 +12,7 @@ import java.util.Map;
 public class PrescriptionData {
     private static final String FILE_PATH = "To be prescribed.csv";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private CSVHandler csvUpdate = new CSVUpdater(FILE_PATH);
+    private CSVUpdater csvUpdate = new CSVUpdater(FILE_PATH);
     private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
     private List<Prescription> prescriptionList;
 
