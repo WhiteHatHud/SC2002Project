@@ -1,4 +1,5 @@
 package Login;
+
 import Doctors.Doctor;
 import Doctors.DoctorController;
 import Pharmacists.PharmaController;
@@ -10,18 +11,46 @@ import Utilities.Masking;
 import Utilities.UserInputHandler;
 import java.util.Map;
 
+/**
+ * Manages the login process for staff members (Pharmacist, Doctor, Admin).
+ * This class prompts staff for their user ID and password, authenticates them using {@link AuthStaff},
+ * and, if successful, launches the appropriate controller based on their role.
+ */
 public class StaffLoginManager implements LoginInt {
+
+    /** Manages display for login prompts and messages. */
     private DisplayManager displayManager;
+
+    /** Handles user input during the login process. */
     private UserInputHandler inputHandler;
+
+    /** Authenticates staff members by verifying their credentials. */
     private AuthStaff authStaff;
+
+    /** Flag indicating if the user wants to return to the main menu. */
     private boolean returnToMenu = false;
 
+    /**
+     * Constructs a StaffLoginManager with the specified display manager, input handler,
+     * and user registries. Initializes the authentication service for staff login.
+     *
+     * @param displayManager Manages display screens for login prompts and messages.
+     * @param inputHandler   Handles user input during the login process.
+     * @param registries     A map of user type to user registry (not directly used in this class).
+     */
     public StaffLoginManager(DisplayManager displayManager, UserInputHandler inputHandler, Map<String, UserRegistry> registries) {
         this.displayManager = displayManager;
         this.inputHandler = inputHandler;
         this.authStaff = new AuthStaff("Staff_List.csv");
     }
 
+    /**
+     * Starts the login process for a staff member. This method prompts for the staff’s user ID
+     * and password, authenticates the credentials, and initiates the appropriate controller
+     * (PharmaController, DoctorController, or AdminController) based on the authenticated staff member’s role.
+     *
+     * @return {@code false} if login was successful or if the user chooses to return to the main menu.
+     */
     @Override
     public boolean start() {
         returnToMenu = false;
@@ -69,6 +98,11 @@ public class StaffLoginManager implements LoginInt {
         return false;
     }
 
+    /**
+     * Checks if the user has chosen to return to the main menu.
+     *
+     * @return {@code true} if the user wants to return to the main menu, {@code false} otherwise.
+     */
     public boolean shouldReturnToMenu() {
         return returnToMenu;
     }

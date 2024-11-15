@@ -1,13 +1,1 @@
 DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Prescription,TreatmentStartDate,TreatmentEndDate,TreatmentOutcome,FollowUpInstructions,Notes
-5,P1001,Alice Brown,D024,2024-11-08,He is skinny,Aspirin:1000,2024-12-12,2025-12-12,Death,KMS,dw
-3,P1003,Bob Stone,D009,Ethan LOP,PIPI,Paracetamol:200; Aspirin:400; Bop:600,2024-12-12,2025-12-12,THIS NEW,THIS NEW,THIS NEW
-4,P1002,Bob Stone,D009,Ethan LOP,HUD,MED:100,2024-12-12,HUD,HUD,HUD,HUD
-7,P1001,Alice Brown,D019,kakaka,Cancer,Paracetamol:200; Aspirin:300,2024-11-14,2024-12-12,Died,Come back,Well
-1,P1001,Alice Brown,D019,kakaka,new new,Malaypill:100,2024-12-12,2020-11-01,recovered,daily,none
-2,P1002,Bob Stone,D019,kakaka,NEW FAT,Paracetamol:100; Aspirin:200,2024-12-12,,,,NEW FAT
-6,P1001,Alice Brown,D019,kakaka,Sick,Paracetamol:1000,2024-12-28,2024-12-30,,,nil
-7,P1005,Popi,D011,2024-11-13,He died,Paracetamol:200; Aspirin:300,2024-12-12,2024-12-12,Died,Come back,Well
-8,P1002,Bob Stone,D031,2024-11-13,He died,Paracetamol:200; Aspirin:400,2024-12-12,,,,Die
-9,P1001,Alice Brown,D033,2024-11-13,null,Paracetamol:500,2024-12-12,2024-12-12,Died,died,died
-10,P1001,Alice Brown,D031,2024-11-13,null,Paracetamol:100,2024-12-12,null,null,null,null
-11,P1006,Alice Brown,D031,2024-11-13,null,Paracetamol:100,2024-12-12,null,null,null,null
