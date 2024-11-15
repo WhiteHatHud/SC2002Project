@@ -8,14 +8,30 @@ import Utilities.LogoutTimer;
 import appt.DoctorUI;
 import java.util.List;
 
+/**
+ * The {@code DoctorController} class is responsible for managing the interactions and
+ * actions performed by a doctor in the system. This includes viewing patients under care,
+ * creating and updating medical records, and logging out.
+ */
 public class DoctorController implements ControllerInt {
 
     private Doctor doctor;
 
+    /**
+     * Constructs a {@code DoctorController} for a specific doctor.
+     *
+     * @param doctor the {@code Doctor} object associated with this controller
+     */
     public DoctorController(Doctor doctor) {
         this.doctor = doctor;
     }
 
+    /**
+     * Starts the doctor session, displaying a welcome message and presenting the doctor
+     * with various options until they choose to log out.
+     *
+     * @return {@code false} if the session is ended, typically when the doctor logs out
+     */
     public boolean start() {
         DisplayFormat.clearScreen();
         System.out.println("Welcome, " + doctor.getName());
@@ -24,44 +40,49 @@ public class DoctorController implements ControllerInt {
         while (isActive) {
             DoctorShared.getDisplayManager().getDisplayMenu();
             int choice = DoctorShared.getUserInputHandler().getUserChoice();
-            isActive = handleChoice(choice); // Keeps looping until the user chooses to logout
+            isActive = handleChoice(choice);
         }
 
-        return false; // Ends session if logged out
+        return false;
     }
 
+    /**
+     * Handles the menu choice selected by the doctor. Depending on the choice, the doctor
+     * can view patients, create or update records, manage appointments, or log out.
+     *
+     * @param choice the menu option selected by the doctor
+     * @return {@code true} to continue the session, {@code false} if logging out
+     */
     @Override
     public boolean handleChoice(int choice) {
         DisplayFormat.clearScreen();
         switch (choice) {
             case 1:
-                // View patient under my care
                 viewPatientUnderMyCare();
                 break;
     
-            case 2: // Create patient medical record
+            case 2:
                 CreateRecord record = new CreateRecord(doctor.getUserID());
                 record.createRecord();
                 break;
     
-            case 3: // Update record
+            case 3:
                 UpdateRecord update = new UpdateRecord(doctor.getUserID());
                 update.updateRecord();
                 break;
     
-            case 4: 
+            case 4:
                 DoctorUI ui = new DoctorUI(doctor.getUserID(), doctor.getName());
                 ui.start();
                 DisplayManager.clearScreen();
                 break;
     
-            case 5: // Logout
+            case 5:
                 if (LogoutTimer.confirmLogout()) {
-                    return false; // Ends the session only if logout is confirmed
+                    return false;
                 } else {
                     DisplayManager.clearScreen();
-                    
-                    return true; // Continue the session without printing additional messages
+                    return true;
                 }
     
             default:
@@ -69,32 +90,31 @@ public class DoctorController implements ControllerInt {
                 break;
         }
     
-        return true; // Continue session if choice is not logout
+        return true;
     }
-    
 
+    /**
+     * Displays a list of patients under the care of the doctor along with their diagnosis and
+     * prescription history. For each patient, the system retrieves basic information and displays
+     * relevant medical records if available.
+     */
     public void viewPatientUnderMyCare() {
-        // Retrieve the list of patient IDs under the doctor’s care
         List<String> patientIDs = DoctorShared.getcsvUtilities().getPatientIDsUnderDoctorCare(doctor.getUserID());
     
-        // Check if there are any patients under the doctor’s care
         if (patientIDs.isEmpty()) {
             System.out.println("No patients found under your care.");
             return;
         }
     
-        // Print the number of patients under the doctor's care
         System.out.println("There are " + patientIDs.size() + " patient(s) under your care.");
         System.out.println("=== Patient(s) Under Your Care ===");
     
         int count = 1;
-    
         for (String patientID : patientIDs) {
             System.out.println("\n--- Patient Information " + count + " ---");
             DoctorShared.getcsvUtilities().getPatientInformation(patientID);
             
-            // Retrieve diagnosis data for the current patient ID
-            List<String[]> diagnosisData = DoctorShared.getCSVUtilities3().getDiagnosisAndPrescriptionByPatientID(patientID,doctor.getUserID());
+            List<String[]> diagnosisData = DoctorShared.getCSVUtilities3().getDiagnosisAndPrescriptionByPatientID(patientID, doctor.getUserID());
     
             if (diagnosisData.isEmpty()) {
                 System.out.println("No Diagnosis found for PatientID: " + patientID);
@@ -111,12 +131,8 @@ public class DoctorController implements ControllerInt {
                     count2++;
                 }
             }
-    
             count++;
         }
         DisplayManager.pauseContinue();
     }
-    
-    
-    
 }
