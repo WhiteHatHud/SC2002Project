@@ -6,10 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class AuthenticationService {
-    private String patientCSVFile = "Patient List CSV.csv"; // Path to the CSV file
+    private String patientCSVFile = "Patient List CSV.csv";
 
     public AuthenticationService() {
-        // Constructor can be empty or used for any initialization needed
     }
 
     public Patient authenticate(String userID, String password) {

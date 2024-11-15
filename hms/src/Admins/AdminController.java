@@ -538,5 +538,4 @@ public void registerNewPatient() {
     System.out.println("Patient registered successfully!");
 }
 
-
 }

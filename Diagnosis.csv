@@ -11,3 +11,4 @@ DiagnosisID,PatientID,PatientName,DoctorID,DiagnosisDate,DiagnosisDescription,Pr
 9,P1001,Alice Brown,D033,2024-11-13,null,Paracetamol:500,2024-12-12,2024-12-12,Died,died,died
 10,P1001,Alice Brown,D031,2024-11-13,null,Paracetamol:100,2024-12-12,null,null,null,null
 11,P1006,Alice Brown,D031,2024-11-13,null,Paracetamol:100,2024-12-12,null,null,null,null
+12,P1001,Alice Brown,D031,2024-11-15,o,Bop:100,2024-12-12,,,,no

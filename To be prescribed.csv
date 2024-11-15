@@ -19,5 +19,10 @@ PR017,P1002,Bob Stone,D031,Popeyes,2024-11-13,Paracetamol:200; Aspirin:400,Pendi
 PR018,P1001,Alice Brown,D033,EthanHudEthan,2024-11-13,Paracetamol:200; Aspirin:300; Bop:400,Pending,Die
 PR019,P1001,Alice Brown,D033,EthanHudEthan,2024-11-13,Paracetamol:500,Pending,died
 PR020,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:100; Aspirin:400,Pending,No
-PR021,P1001,Alice Brown,D031,Popeyes,2024-11-13,Aspirin:100,Pending
-PR022,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:100,Pending
+PR021,P1001,Alice Brown,D031,Popeyes,2024-11-13,Aspirin:100,Pending,
+PR022,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:100,Pending,
+PR023,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:200,Pending,Take after meal
+PR024,P1001,Alice Brown,D031,Popeyes,2024-11-13,Penicillin:200,Pending,Nil
+PR025,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:100; Aspirin:200,Pending,Take Paracetamol 2 times daily and Aspiring once
+PR026,P1001,Alice Brown,D031,Popeyes,2024-11-13,Paracetamol:100; Aspirin:200,Pending,Take once
+PR027,P1001,Alice Brown,D031,Popeyes,2024-11-15,Bop:100,Pending,no

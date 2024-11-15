@@ -1,4 +1,9 @@
+/**
+ * Utility class for handling logout confirmation and countdown with interruption support.
+ * Provides a mechanism for users to confirm logout with an option to cancel during a countdown.
+ */
 package Utilities;
+
 import Login.DisplayFormat;
 import java.io.IOException;
 import java.util.Scanner;
@@ -8,6 +13,13 @@ public class LogoutTimer {
     private static final Scanner scanner = new Scanner(System.in);
     private static volatile boolean interrupted = false; // Shared flag for detecting interruptions
 
+    /**
+     * Prompts the user to confirm logout. If the user confirms, starts a countdown 
+     * that can be interrupted by entering any character.
+     *
+     * @return true if the logout is confirmed and the countdown completes, false if the 
+     *         logout is canceled or interrupted.
+     */
     public static boolean confirmLogout() {
         System.out.print("Logging out, confirm? Enter (yes/no): ");
         String input = scanner.nextLine().trim().toLowerCase();
@@ -27,6 +39,12 @@ public class LogoutTimer {
         }
     }
 
+    /**
+     * Initiates a countdown timer that counts down from 3 to 1. 
+     * The countdown can be interrupted if the user enters any character.
+     *
+     * @return true if the countdown completes without interruption, false if interrupted.
+     */
     private static boolean countdown() {
         System.out.println("Logging out in...(Enter any character to cancel logout)");
 
