@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVUpdater {
+public class CSVUpdater implements CSVHandler{
     private String csvFile;
 
     public CSVUpdater(String csvFile) {
