@@ -21,7 +21,19 @@ public class Prescription extends Medicine {
     // Default constructor
     public Prescription() {}
 
-    // Constructor matching the CSV structure
+    /**
+     * Constructs a {@code Prescription} object with specified details.
+     *
+     * @param prescriptionID the unique identifier of the prescription
+     * @param patientID the unique identifier of the patient
+     * @param patientName the name of the patient
+     * @param doctorID the unique identifier of the doctor
+     * @param doctorName the name of the doctor
+     * @param datePrescribed the date the prescription was issued
+     * @param medications a map of medications and their dosages
+     * @param status the status of the prescription (e.g., "Pending")
+     * @param notes any additional notes related to the prescription
+     */
     public Prescription(String prescriptionID, String patientID, String patientName, String doctorID, 
                         String doctorName, LocalDate datePrescribed, Map<String, Integer> medications, 
                         String status, String notes) {

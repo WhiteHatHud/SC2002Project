@@ -1,46 +1,111 @@
 package Medicine;
 
-public class Medicine{
+/**
+ * The {@code Medicine} class represents a medicine with basic properties such as
+ * its name, stock level, and low stock alert level. It includes methods for 
+ * getting and setting these properties, as well as a method to convert the 
+ * medicine information to a CSV format.
+ */
+public class Medicine {
+
+    /** The name of the medicine */
     protected String medicineName;
+
+    /** The initial stock level of the medicine */
     protected int initialStock;
+
+    /** The stock level at which a low stock alert is triggered */
     protected int lowStockLevelAlert;
 
-    public Medicine(){
+    /**
+     * Default constructor for {@code Medicine}, initializes the medicine with 
+     * default values: empty name, 0 initial stock, and 0 low stock alert level.
+     */
+    public Medicine() {
         medicineName = "";
         initialStock = 0;
         lowStockLevelAlert = 0;
     }
 
-    public Medicine(String medicineName, int initialStock, int lowStockLevelAlert){
+    /**
+     * Parameterized constructor for {@code Medicine}.
+     *
+     * @param medicineName       the name of the medicine
+     * @param initialStock       the initial stock level of the medicine
+     * @param lowStockLevelAlert the stock level at which a low stock alert is triggered
+     */
+    public Medicine(String medicineName, int initialStock, int lowStockLevelAlert) {
         this.medicineName = medicineName;
         this.initialStock = initialStock;
         this.lowStockLevelAlert = lowStockLevelAlert;
     }
 
-    //getters
-    public String getMedicineName(){
+    // Getters
+
+    /**
+     * Gets the name of the medicine.
+     *
+     * @return the name of the medicine
+     */
+    public String getMedicineName() {
         return medicineName;
     }
-    public int getInitialStock(){
+
+    /**
+     * Gets the initial stock level of the medicine.
+     *
+     * @return the initial stock level
+     */
+    public int getInitialStock() {
         return initialStock;
     }
-    public int getLowStockLevelAlert(){
+
+    /**
+     * Gets the low stock level alert threshold.
+     *
+     * @return the low stock level alert threshold
+     */
+    public int getLowStockLevelAlert() {
         return lowStockLevelAlert;
     }
-    //setters
-    public void setMedicineName(String newName){
+
+    // Setters
+
+    /**
+     * Sets a new name for the medicine.
+     *
+     * @param newName the new name of the medicine
+     */
+    public void setMedicineName(String newName) {
         medicineName = newName;
     }
-    public void setInitialStock(int stock){
+
+    /**
+     * Sets a new initial stock level for the medicine.
+     *
+     * @param stock the new initial stock level
+     */
+    public void setInitialStock(int stock) {
         initialStock = stock;
     }
-    public void setLowStockLevel(int level){
+
+    /**
+     * Sets a new low stock alert level for the medicine.
+     *
+     * @param level the new low stock alert level
+     */
+    public void setLowStockLevel(int level) {
         lowStockLevelAlert = level;
     }
-    public String toCSV(){
+
+    /**
+     * Converts the medicine's information to a CSV format.
+     *
+     * @return a CSV string representing the medicine's information
+     */
+    public String toCSV() {
         String stringStock = String.valueOf(initialStock);
         String stringLevel = String.valueOf(lowStockLevelAlert);
         return String.join(",", medicineName, stringStock, stringLevel);
     }
-    
 }
