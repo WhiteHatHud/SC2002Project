@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"appt"},{"l":"Login"}];updateSearchResults();
+packageSearchIndex = [{"l":"Admins"},{"l":"All Packages","u":"allpackages-index.html"},{"l":"appt"},{"l":"Doctors"},{"l":"Login"},{"l":"MedicalHistory"},{"l":"Medicine"},{"l":"Patients"},{"l":"Pharmacists"},{"l":"ResetInfo"},{"l":"Users"},{"l":"Utilities"}];updateSearchResults();
