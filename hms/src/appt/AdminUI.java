@@ -1,16 +1,30 @@
 package appt;
-import java.util.Scanner;
 
+import java.util.Scanner;
 import Login.DisplayManager;
 
+/**
+ * Provides the user interface for an administrator to view and manage appointment schedules.
+ * The admin can view schedules by doctor, by patient, or view all booked schedules.
+ */
 public class AdminUI {
 
-    Scanner scanner = new Scanner(System.in);
-    ApptController apptController = new ApptController();
+    /** Scanner for capturing user input. */
+    private Scanner scanner = new Scanner(System.in);
 
+    /** Controller for handling appointment-related actions. */
+    private ApptController apptController = new ApptController();
+
+    /**
+     * Constructs an AdminUI instance.
+     */
     public AdminUI() {
     }
 
+    /**
+     * Starts the admin interface, presenting options for viewing schedules.
+     * The admin can choose to view schedules by doctor, by patient, or view all booked schedules.
+     */
     public void start() {
         boolean running = true;
         while (running) {
@@ -37,7 +51,10 @@ public class AdminUI {
         }
     }
 
-    // Method to view appointments by Doctor's schedule
+    /**
+     * Allows the admin to view appointments by a specific doctor's schedule.
+     * Prompts for the doctor ID and displays the schedule.
+     */
     private void viewByDoctorSchedule() {
         System.out.print("\nEnter Doctor ID: ");
         String doctorID = scanner.nextLine().trim();
@@ -45,7 +62,10 @@ public class AdminUI {
         DisplayManager.pauseContinue();
     }
 
-    // Method to view appointments by Patient's schedule
+    /**
+     * Allows the admin to view appointments by a specific patient's schedule.
+     * Prompts for the patient ID and displays the appointments.
+     */
     private void viewByPatientSchedule() {
         System.out.print("\nEnter Patient ID: ");
         String patientID = scanner.nextLine().trim();
@@ -53,7 +73,10 @@ public class AdminUI {
         DisplayManager.pauseContinue();
     }
 
-    // Method to view all booked schedules
+    /**
+     * Displays all booked schedules.
+     * Calls the appointment controller to retrieve and print all schedules.
+     */
     private void viewAllBookedSchedules() {
         apptController.printAllBookedSchedules();
         DisplayManager.pauseContinue();
