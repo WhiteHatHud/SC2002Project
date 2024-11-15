@@ -15,74 +15,101 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+/**
+ * Controller class for managing appointments. Provides methods to view,
+ * reschedule, and check the availability of appointments.
+ */
 public class ApptController {
+    /** Data access object for appointment data storage and retrieval. */
     private ApptData apptData;
-    private final Scanner scanner = new Scanner(System.in); // Reusable scanner
 
+    /** Scanner for capturing user input, reused across methods. */
+    private final Scanner scanner = new Scanner(System.in);
+
+    /**
+     * Constructs an ApptController with an initialized ApptData object.
+     */
     public ApptController() {
         this.apptData = new ApptData();
     }
     
+    /**
+     * Retrieves a list of unique patient IDs under the specified doctor's care.
+     *
+     * @param doctorID The ID of the doctor whose patients are to be retrieved.
+     * @return A list of unique patient IDs under the specified doctor's care.
+     */
     public List<String> getPatientsUnderCare(String doctorID) {
-        // List to store unique patient names under the specified doctor’s care
         Set<String> patientNames = new HashSet<>();
-
-        // Get all appointments from the apptData
         List<Appointment> appointments = apptData.getAllAppointments();
 
-        // Iterate through appointments to check if each appointment has the specified doctorID
         for (Appointment appointment : appointments) {
             if (appointment.getDoctorID().equals(doctorID)) {
-                // Add the patient's name to the set if under this doctor's care
                 patientNames.add(appointment.getPatientID());
             }
         }
 
-        // Convert the set to a list to return unique patient names
         return new ArrayList<>(patientNames);
     }
-    // Method to view all appointments for a doctor
-    public List<Appointment> viewAppointmentsByDoctor(String doctorID) {
 
+    /**
+     * Retrieves a list of appointments for a specified doctor.
+     *
+     * @param doctorID The ID of the doctor.
+     * @return A list of appointments for the specified doctor.
+     */
+    public List<Appointment> viewAppointmentsByDoctor(String doctorID) {
         List<Appointment> appointments = apptData.getAllAppointments();
         List<Appointment> doctorAppointments = new ArrayList<>();
+        
         for (Appointment appointment : appointments) {
             if (appointment.getDoctorID().equals(doctorID)) {
                 doctorAppointments.add(appointment);
-                
             }
         }
+        
         return doctorAppointments;
     }
 
-    // Helper method to get session status
+    /**
+     * Checks the availability status of a session for a given doctor, date, and time.
+     *
+     * @param appointments  The list of appointments to check against.
+     * @param date          The date of the session.
+     * @param sessionTime   The time of the session.
+     * @param doctorID      The ID of the doctor.
+     * @return "Blocked" if the session is blocked, "Booked" if the session is booked,
+     *         or "Available" if the session is available.
+     */
     private String getSessionStatus(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
         for (Appointment appointment : appointments) {
             LocalDate appointmentDate = toLocalDate(appointment.getAppointmentTime());
             LocalTime appointmentLocalTime = toLocalTime(appointment.getAppointmentTime());
     
-            // Check if the appointment matches the date, time, and doctorID
             if (appointmentDate.equals(date) && 
                 appointmentLocalTime.equals(sessionTime) && 
                 appointment.getDoctorID().equals(doctorID)) {
                 
-                // Check if the session is blocked
                 if (appointment.getAppointmentStatus().equalsIgnoreCase("Blocked")) {
                     return "Blocked";
                 }
-                // Otherwise, it is booked
+                
                 return "Booked";
             }
         }
-        // If no matching appointment is found for the given doctor, the session is available
+        
         return "Available"; 
     }
     
-    
+    /**
+     * Allows a patient to reschedule an appointment. Provides options to select
+     * a new date and time if the current appointment is booked and available for rescheduling.
+     *
+     * @param patientID The ID of the patient who wants to reschedule.
+     */
     public void rescheduleAppointmentByPatient(String patientID) {
         System.out.println("\n--- Reschedule an Appointment ---");
     
-        // Retrieve all appointments for the patient
         List<Appointment> patientAppointments = apptData.getAllAppointments().stream()
                 .filter(app -> app.getPatientID().equals(patientID) && app.getAppointmentStatus().equalsIgnoreCase("Booked"))
                 .toList();
@@ -92,7 +119,6 @@ public class ApptController {
             return;
         }
     
-        // Display patient's booked appointments
         System.out.println("Select an appointment to reschedule:");
         for (int i = 0; i < patientAppointments.size(); i++) {
             Appointment appointment = patientAppointments.get(i);
@@ -102,76 +128,68 @@ public class ApptController {
                     i + 1, appointment.getAppointmentID(), appointmentDate, appointmentTime, appointment.getDoctorName());
         }
     
-        // Get the user's choice
         System.out.print("Enter the number of the appointment to reschedule: ");
         int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
     
         if (choice < 1 || choice > patientAppointments.size()) {
             System.out.println("Invalid selection.");
             return;
         }
     
-        // Select the chosen appointment
         Appointment appointmentToReschedule = patientAppointments.get(choice - 1);
         String doctorID = appointmentToReschedule.getDoctorID();
     
-        // Select a new date
         LocalDate newDate = selectDateFromSchedule(doctorID);
         if (newDate == null) {
             System.out.println("Rescheduling canceled. Returning to main menu...");
             return;
         }
     
-        // Select a new session time for the chosen date
         LocalTime newTime = selectSessionFromDate(newDate, doctorID);
         if (newTime == null) {
             System.out.println("Rescheduling canceled. Returning to main menu...");
             return;
         }
     
-        // Check if the selected session is available
         String sessionStatus = getSessionStatus(apptData.getAllAppointments(), newDate, newTime, doctorID);
         if (!sessionStatus.equalsIgnoreCase("Available")) {
             System.out.println("Selected session is not available. Please choose another session.");
             return;
         }
     
-        // Confirm and update appointment details
         Calendar newAppointmentTime = Calendar.getInstance();
         newAppointmentTime.set(newDate.getYear(), newDate.getMonthValue() - 1, newDate.getDayOfMonth(),
                                newTime.getHour(), newTime.getMinute());
         appointmentToReschedule.setAppointmentTime(newAppointmentTime);
-        appointmentToReschedule.setAppointmentStatus("PendingToDoctor"); // Update status for doctor approval
+        appointmentToReschedule.setAppointmentStatus("PendingToDoctor");
     
-        // Save the updated appointment to the CSV
         apptData.updateAppointmentInCSV(appointmentToReschedule);
     
         System.out.println("Appointment successfully rescheduled and pending doctor approval.");
     }
-    
-    
-
-
+ /**
+     * Allows the user to select a date from the next seven days for a given doctor.
+     * Displays available dates along with the number of booked sessions on each day.
+     *
+     * @param doctorID The ID of the doctor whose schedule is being checked.
+     * @return The selected LocalDate, or null if the user cancels the selection.
+     */
     public LocalDate selectDateFromSchedule(String doctorID) {
         LocalDate today = LocalDate.now();
         List<LocalDate> next7Days = new ArrayList<>();
     
-
         System.out.println("\n====================");
         System.out.println(" Select a Date ");
         System.out.println("====================");
         System.out.println("Or type '~' to return to the previous menu:");
         System.out.println("--------------------");
     
-        // Generate the next 7 days with booked sessions count
         for (int i = 0; i < 7; i++) {
             LocalDate date = today.plusDays(i);
             next7Days.add(date);
-    
-            // This method already has a null check on appointment times
             int bookedSessions = countBookedSessions(date, doctorID); 
-            System.out.printf("%d. %s [%d/3]\n", (i + 1), date, bookedSessions); // Display with [x/3]
+            System.out.printf("%d. %s [%d/3]\n", (i + 1), date, bookedSessions);
         }
     
         System.out.println("--------------------");
@@ -180,7 +198,7 @@ public class ApptController {
     
         if (input.equals("~")) {
             System.out.println("Returning to the previous menu...");
-            return null;  // Indicate that the user canceled
+            return null;
         }
     
         try {
@@ -188,7 +206,7 @@ public class ApptController {
     
             if (choice < 1 || choice > 7) {
                 System.out.println("Invalid selection. Please try again.");
-                return selectDateFromSchedule(doctorID);  // Retry on invalid input
+                return selectDateFromSchedule(doctorID);
             }
     
             LocalDate selectedDate = next7Days.get(choice - 1);
@@ -197,208 +215,229 @@ public class ApptController {
     
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a number (1-7) or '~' to return.");
-            return selectDateFromSchedule(doctorID);  // Retry on invalid input
+            return selectDateFromSchedule(doctorID);
         }
-    }    
-
-
-//============================== Doctor [View Personal Schedule] =====================
-
-
-
-public void printDoctorScheduleOnDate(String doctorID) {
-    LocalDate selectedDate = selectDateFromSchedule(doctorID);
-
-    if (selectedDate == null) {
-        // User canceled the selection
-        return;
     }
 
-    System.out.printf("\nSessions for Dr. %s on %s:\n", doctorID, selectedDate);
-    System.out.println("====================");
+    /**
+     * Displays a specific doctor's schedule for a selected date, including the status of each session.
+     *
+     * @param doctorID The ID of the doctor whose schedule is being viewed.
+     */
+    public void printDoctorScheduleOnDate(String doctorID) {
+        LocalDate selectedDate = selectDateFromSchedule(doctorID);
 
-    viewSessionDetailsForDate(selectedDate, doctorID);
-}
+        if (selectedDate == null) {
+            return;  // User canceled the selection
+        }
 
+        System.out.printf("\nSessions for Dr. %s on %s:\n", doctorID, selectedDate);
+        System.out.println("====================");
 
-private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
-    List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
-
-    LocalTime[] allSessions = {
-        LocalTime.of(9, 0),
-        LocalTime.of(11, 0),
-        LocalTime.of(14, 0)
-    };
-
-    // Filter sessions based on current time
-    LocalTime now = LocalTime.now();
-    LocalTime[] remainingSessions = java.util.Arrays.stream(allSessions)
-        .filter(session -> session.isAfter(now) || !date.equals(LocalDate.now()))
-        .toArray(LocalTime[]::new);
-
-    // Check if there are any remaining sessions
-    if (remainingSessions.length == 0) {
-        System.out.println("There are no more sessions available to book on this date.");
-    }
-    // Display available sessions with their statuses, passing doctorID to getSessionStatus
-    for (int i = 0; i < remainingSessions.length; i++) {
-        String status = getSessionStatus(appointments, date, remainingSessions[i], doctorID);
-        System.out.printf("%d. %s [%s]\n", (i + 1), remainingSessions[i], status);
+        viewSessionDetailsForDate(selectedDate, doctorID);
     }
 
-    System.out.println("--------------------");
-    System.out.print("Select a session to view details (1-" + remainingSessions.length + ") or '~' to return: ");
-    String input = scanner.nextLine().trim();
+    /**
+     * Displays details for all available sessions on a given date for a specific doctor.
+     * Shows each session's time and availability status.
+     *
+     * @param date The date of the sessions.
+     * @param doctorID The ID of the doctor whose sessions are being viewed.
+     */
+    private void viewSessionDetailsForDate(LocalDate date, String doctorID) {
+        List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
 
-    if (input.equals("~")) {
-        System.out.println("Returning to the previous menu...");
-        return;
-    }
+        LocalTime[] allSessions = {
+            LocalTime.of(9, 0),
+            LocalTime.of(11, 0),
+            LocalTime.of(14, 0)
+        };
 
-    try {
-        int sessionChoice = Integer.parseInt(input);
+        LocalTime now = LocalTime.now();
+        LocalTime[] remainingSessions = java.util.Arrays.stream(allSessions)
+            .filter(session -> session.isAfter(now) || !date.equals(LocalDate.now()))
+            .toArray(LocalTime[]::new);
 
-        if (sessionChoice < 1 || sessionChoice > remainingSessions.length) {
-            System.out.println("Invalid selection. Please try again.");
+        if (remainingSessions.length == 0) {
+            System.out.println("There are no more sessions available to book on this date.");
             return;
         }
 
-        LocalTime selectedSession = remainingSessions[sessionChoice - 1];
-        printSessionDetailsAndManage(appointments, date, selectedSession, doctorID);
-    } catch (NumberFormatException e) {
-        System.out.println("Invalid input. Please enter a number (1-" + remainingSessions.length + ") or '~' to return.");
-    }
-}
+        for (int i = 0; i < remainingSessions.length; i++) {
+            String status = getSessionStatus(appointments, date, remainingSessions[i], doctorID);
+            System.out.printf("%d. %s [%s]\n", (i + 1), remainingSessions[i], status);
+        }
 
-    
+        System.out.println("--------------------");
+        System.out.print("Select a session to view details (1-" + remainingSessions.length + ") or '~' to return: ");
+        String input = scanner.nextLine().trim();
+
+        if (input.equals("~")) {
+            System.out.println("Returning to the previous menu...");
+            return;
+        }
+
+        try {
+            int sessionChoice = Integer.parseInt(input);
+
+            if (sessionChoice < 1 || sessionChoice > remainingSessions.length) {
+                System.out.println("Invalid selection. Please try again.");
+                return;
+            }
+
+            LocalTime selectedSession = remainingSessions[sessionChoice - 1];
+            printSessionDetailsAndManage(appointments, date, selectedSession, doctorID);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number (1-" + remainingSessions.length + ") or '~' to return.");
+        }
+    }
+
+    /**
+     * Allows the user to select a specific session time on a given date for a doctor.
+     * Displays each session with its availability status.
+     *
+     * @param date The date for which a session is being selected.
+     * @param doctorID The ID of the doctor.
+     * @return The selected LocalTime for the session, or null if the user cancels.
+     */
     private LocalTime selectSessionFromDate(LocalDate date, String doctorID) {
-    List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
-    LocalTime[] sessions = {
-        LocalTime.of(9, 0),
-        LocalTime.of(11, 0),
-        LocalTime.of(14, 0)
-    };
-    String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
-    System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n", doctorName, date);
-    System.out.println("====================");
+        List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
+        LocalTime[] sessions = {
+            LocalTime.of(9, 0),
+            LocalTime.of(11, 0),
+            LocalTime.of(14, 0)
+        };
+        String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
+        System.out.printf("\nAvailable Sessions for Dr. %s on %s:\n", doctorName, date);
+        System.out.println("====================");
 
-    for (int i = 0; i < sessions.length; i++) {
-        String status = getSessionStatus(appointments, date, sessions[i], doctorID);
-        System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
-    }
-
-    System.out.println("--------------------");
-    System.out.print("Select a session (1-3) or '~' to return: ");
-    String input = scanner.nextLine().trim();
-
-    if (input.equals("~")) {
-        System.out.println("Returning to the previous menu...");
-        return null; // Indicate cancellation
-    }
-
-    try {
-        int sessionChoice = Integer.parseInt(input);
-
-        if (sessionChoice < 1 || sessionChoice > 3) {
-            System.out.println("Invalid selection. Please try again.");
-            return selectSessionFromDate(date, doctorID); // Retry on invalid input
+        for (int i = 0; i < sessions.length; i++) {
+            String status = getSessionStatus(appointments, date, sessions[i], doctorID);
+            System.out.printf("%d. %s [%s]\n", (i + 1), sessions[i], status);
         }
 
-        return sessions[sessionChoice - 1];
+        System.out.println("--------------------");
+        System.out.print("Select a session (1-3) or '~' to return: ");
+        String input = scanner.nextLine().trim();
 
-    } catch (NumberFormatException e) {
-        System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
-        return selectSessionFromDate(date, doctorID); // Retry on invalid input
-    }
-}
+        if (input.equals("~")) {
+            System.out.println("Returning to the previous menu...");
+            return null;
+        }
 
-private void printSessionDetailsForDate(LocalDate date, LocalTime sessionTime, String doctorID) {
-    List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
+        try {
+            int sessionChoice = Integer.parseInt(input);
 
-    System.out.printf("\nDetails for session at %s on %s:\n", sessionTime, date);
-    System.out.println("====================");
+            if (sessionChoice < 1 || sessionChoice > 3) {
+                System.out.println("Invalid selection. Please try again.");
+                return selectSessionFromDate(date, doctorID);
+            }
 
-    boolean hasAppointments = false;
+            return sessions[sessionChoice - 1];
 
-    for (Appointment appointment : appointments) {
-        Calendar appointmentTime = appointment.getAppointmentTime();
-        if (appointmentTime == null) continue;
-
-        LocalDate appointmentDate = toLocalDate(appointmentTime);
-        LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
-
-        if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
-            hasAppointments = true;
-            System.out.printf("Appointment ID: %s\n", appointment.getAppointmentID());
-            System.out.printf("Patient ID: %s\n", appointment.getPatientID());
-            System.out.printf("Patient Name: %s\n", appointment.getPatientName() != null ? appointment.getPatientName() : "N/A");
-            System.out.printf("Doctor Name: %s\n", appointment.getDoctorName() != null ? appointment.getDoctorName() : "N/A");
-            System.out.printf("Appointment Status: %s\n", appointment.getAppointmentStatus());
-            System.out.printf("Diagnosis: %s\n", appointment.getDiagnosis() != null ? appointment.getDiagnosis() : "N/A");
-            System.out.printf("Treatment Plan: %s\n", appointment.getTreatmentPlan() != null ? appointment.getTreatmentPlan() : "N/A");
-            System.out.printf("Medicine: %s\n", appointment.getMedicine() != null ? appointment.getMedicine() : "N/A");
-            System.out.printf("Medicine Status: %s\n", appointment.getMedicineStatus() != null ? appointment.getMedicineStatus() : "N/A");
-            System.out.printf("Notes: %s\n", appointment.getNotes() != null ? appointment.getNotes() : "N/A");
-            System.out.println("--------------------");
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number (1-3) or '~' to return.");
+            return selectSessionFromDate(date, doctorID);
         }
     }
 
-    if (!hasAppointments) {
-        System.out.println("No appointments scheduled for this session.");
-    }
-}
+/**
+     * Prints the details of all appointments for a specific session on a given date.
+     *
+     * @param date The date of the session.
+     * @param sessionTime The time of the session.
+     * @param doctorID The ID of the doctor for whom the session details are displayed.
+     */
+    private void printSessionDetailsForDate(LocalDate date, LocalTime sessionTime, String doctorID) {
+        List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
 
+        System.out.printf("\nDetails for session at %s on %s:\n", sessionTime, date);
+        System.out.println("====================");
 
+        boolean hasAppointments = false;
 
-private void printSessionDetailsAndManage(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
-    // Display the session details for the date and time
-    System.out.printf("\nDetails for session at %s on %s:\n", sessionTime, date);
-    System.out.println("====================");
+        for (Appointment appointment : appointments) {
+            Calendar appointmentTime = appointment.getAppointmentTime();
+            if (appointmentTime == null) continue;
 
-    String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
+            LocalDate appointmentDate = toLocalDate(appointmentTime);
+            LocalTime appointmentLocalTime = toLocalTime(appointmentTime);
 
-    // Check session status to decide if we should allow creation or blocking
-    String status = getSessionStatus(appointments, date, sessionTime, doctorID);
-
-    // Offer options based on the session status
-    switch (status) {
-        case "Available" -> {
-            System.out.println("This session is available.");
-            System.out.print("Do you want to block this session or create a new appointment? (block/create): ");
-            String input = scanner.nextLine().trim();
-
-            if (input.equalsIgnoreCase("block")) {
-                blockSession(date, sessionTime, doctorID, doctorName);
-            } else if (input.equalsIgnoreCase("create")) {
-                newAppointment(date, sessionTime, doctorID, doctorName);
-            } else {
-                System.out.println("Returning to previous menu...");
+            if (appointmentDate.equals(date) && appointmentLocalTime.equals(sessionTime)) {
+                hasAppointments = true;
+                System.out.printf("Appointment ID: %s\n", appointment.getAppointmentID());
+                System.out.printf("Patient ID: %s\n", appointment.getPatientID());
+                System.out.printf("Patient Name: %s\n", appointment.getPatientName() != null ? appointment.getPatientName() : "N/A");
+                System.out.printf("Doctor Name: %s\n", appointment.getDoctorName() != null ? appointment.getDoctorName() : "N/A");
+                System.out.printf("Appointment Status: %s\n", appointment.getAppointmentStatus());
+                System.out.printf("Diagnosis: %s\n", appointment.getDiagnosis() != null ? appointment.getDiagnosis() : "N/A");
+                System.out.printf("Treatment Plan: %s\n", appointment.getTreatmentPlan() != null ? appointment.getTreatmentPlan() : "N/A");
+                System.out.printf("Medicine: %s\n", appointment.getMedicine() != null ? appointment.getMedicine() : "N/A");
+                System.out.printf("Medicine Status: %s\n", appointment.getMedicineStatus() != null ? appointment.getMedicineStatus() : "N/A");
+                System.out.printf("Notes: %s\n", appointment.getNotes() != null ? appointment.getNotes() : "N/A");
+                System.out.println("--------------------");
             }
         }
-        case "Blocked" -> {
-            System.out.println("This session is currently blocked.");
-            System.out.print("Do you want to unblock this session? (yes/no): ");
-            String input = scanner.nextLine().trim();
 
-            if (input.equalsIgnoreCase("yes")) {
-                unblockSessionByDateAndTime(date, sessionTime, appointments);
-            } else {
-                System.out.println("Returning to previous menu...");
-            }
+        if (!hasAppointments) {
+            System.out.println("No appointments scheduled for this session.");
         }
-        case "Booked" -> {
-            System.out.println("This session is booked and cannot be modified.");
-        }
-        default -> System.out.println("Unknown status for the session.");
     }
-}
 
+    /**
+     * Prints session details and provides management options, such as blocking,
+     * unblocking, or creating new appointments based on the session's availability status.
+     *
+     * @param appointments The list of appointments to check for session status.
+     * @param date The date of the session.
+     * @param sessionTime The time of the session.
+     * @param doctorID The ID of the doctor.
+     */
+    private void printSessionDetailsAndManage(List<Appointment> appointments, LocalDate date, LocalTime sessionTime, String doctorID) {
+        System.out.printf("\nDetails for session at %s on %s:\n", sessionTime, date);
+        System.out.println("====================");
 
+        String doctorName = DoctorShared.getcsvUtilities2().getDoctorNameByID(doctorID);
 
+        String status = getSessionStatus(appointments, date, sessionTime, doctorID);
 
-    // Helper method to print session details
-        
-    // Helper method to count booked sessions on a given date
+        switch (status) {
+            case "Available" -> {
+                System.out.println("This session is available.");
+                System.out.print("Do you want to block this session or create a new appointment? (block/create): ");
+                String input = scanner.nextLine().trim();
+
+                if (input.equalsIgnoreCase("block")) {
+                    blockSession(date, sessionTime, doctorID, doctorName);
+                } else if (input.equalsIgnoreCase("create")) {
+                    newAppointment(date, sessionTime, doctorID, doctorName);
+                } else {
+                    System.out.println("Returning to previous menu...");
+                }
+            }
+            case "Blocked" -> {
+                System.out.println("This session is currently blocked.");
+                System.out.print("Do you want to unblock this session? (yes/no): ");
+                String input = scanner.nextLine().trim();
+
+                if (input.equalsIgnoreCase("yes")) {
+                    unblockSessionByDateAndTime(date, sessionTime, appointments);
+                } else {
+                    System.out.println("Returning to previous menu...");
+                }
+            }
+            case "Booked" -> System.out.println("This session is booked and cannot be modified.");
+            default -> System.out.println("Unknown status for the session.");
+        }
+    }
+
+    /**
+     * Counts the number of booked sessions for a specific doctor on a given date.
+     *
+     * @param date The date to check.
+     * @param doctorID The ID of the doctor.
+     * @return The count of booked sessions for the specified date and doctor.
+     */
     private int countBookedSessions(LocalDate date, String doctorID) {
         List<Appointment> appointments = viewAppointmentsByDoctor(doctorID);
         LocalTime[] sessions = {
@@ -413,7 +452,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             for (Appointment appointment : appointments) {
                 Calendar appointmentTime = appointment.getAppointmentTime();
                 
-                // Skip this appointment if appointmentTime is null
                 if (appointmentTime == null) continue;
         
                 LocalDate appointmentDate = LocalDate.of(
@@ -435,7 +473,16 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
         return bookedCount;
     }
-    //Task 1 Block or Unblock Available Dates
+
+    /**
+     * Blocks an available session for a specified doctor on a given date and time.
+     * Ensures that the session has not already elapsed.
+     *
+     * @param date The date of the session to block.
+     * @param time The time of the session to block.
+     * @param doctorID The ID of the doctor.
+     * @param doctorName The name of the doctor.
+     */
     public void blockSession(LocalDate date, LocalTime time, String doctorID, String doctorName) {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
@@ -445,7 +492,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             return;
         }
     
-        // Check if the session is available specifically for the given doctor ID
         String status = getSessionStatus(apptData.getAllAppointments(), date, time, doctorID);
     
         if (status.equals("Available")) {
@@ -453,7 +499,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             appointmentTime.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(),
                                 time.getHour(), time.getMinute());
     
-            // Generate a new appointment ID
             String newAppointmentID = generateNewAppointmentID();
     
             Appointment blockedAppointment = new DoctorAppointment(
@@ -466,10 +511,14 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
             System.out.println("This session is already booked or blocked for Dr. " + doctorName + ".");
         }
     }
-    
-    
-    
 
+    /**
+     * Unblocks a session based on the specified date, time, and appointments list.
+     *
+     * @param date The date of the session to unblock.
+     * @param time The time of the session to unblock.
+     * @param appointments The list of appointments to check for blocked sessions.
+     */
     public void unblockSessionByDateAndTime(LocalDate date, LocalTime time, List<Appointment> appointments) {
         for (Appointment appointment : appointments) {
             Calendar appointmentTime = appointment.getAppointmentTime();
@@ -492,24 +541,30 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
         }
         System.out.println("No blocked session found for the given date and time.");
     }
+
+    /**
+     * Creates a new appointment for a specified patient and doctor at a given date and time.
+     * Prompts for patient details and validates the patient ID.
+     *
+     * @param date The date of the new appointment.
+     * @param time The time of the new appointment.
+     * @param doctorID The ID of the doctor.
+     * @param doctorName The name of the doctor.
+     */
     private void newAppointment(LocalDate date, LocalTime time, String doctorID, String doctorName) {
-        // Prompt the doctor to enter patient details
         System.out.print("Enter Patient ID: ");
         String patientID = scanner.nextLine().trim();
     
-        // Validate if the patient exists
         String patientName = DoctorShared.getcsvUtilities().getPatientNameByID(patientID);
         if (patientName == null || patientName.isEmpty()) {
             System.out.println("Error: Patient ID not found. Please check the ID and try again.");
-            return; // Exit if the patient does not exist
+            return;
         }
     
         System.out.println("The patient name is: " + patientName);
     
-        // Generate a new appointment ID
         String newAppointmentID = generateNewAppointmentID();
     
-        // Create a new appointment object with the status "PendingToPatient"
         Calendar appointmentTime = Calendar.getInstance();
         appointmentTime.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth(),
                             time.getHour(), time.getMinute());
@@ -518,7 +573,6 @@ private void printSessionDetailsAndManage(List<Appointment> appointments, LocalD
                 newAppointmentID, appointmentTime, patientID, patientName,
                 doctorID, doctorName, "PendingToPatient");
     
-        // Add the new appointment to the data
         apptData.addAppointment(newAppointment);
         System.out.println("New appointment created successfully with ID: " + newAppointmentID);
         System.out.println("===========================================");

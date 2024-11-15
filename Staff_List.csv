@@ -1,31 +1,4 @@
 Staff ID,Name,Role,Gender,Age,Office Number,Password
 A001,Sarah Lee,Administrator,Female,40,-,password
-D003,pollo,Doctor,M,98,-,password
-D005,New comer,Doctor,Female,99,-,password
-D007,Hud pi po,Doctor,Male,23,92929292,password
-D006,Hu,Doctor,Male,22,9,password
-D007,Ethan,Doctor,Male,22,9982,password
-D008,Ethan Tan,Doctor,Male,66,223,password
-D009,Ethan LOP,Doctor,Male,2,,password
-D010,POPOPOPOPO,Doctor,Male,5,55,password
-D011,Hud father,Doctor,Female,91,92,password
-D013,ethan father,Doctor,Female,99,23,password
-D014,Ethan mum,Doctor,F,1992,2,password
-D015,gaga,Doctor,Male,231,221,password
-D017,my father,Doctor,Female,2,223,password
-D018,Ur mom,Doctor,Male,33,3,password
-D019,kakaka,Doctor,Male,55,94,password
-D020,Water,Doctor,Male,3,3,password
-D021,Water2,Doctor,Male,3,3,password
-P003,POPOP,Pharmacist,Male,23,23,password
-D024,po2po,Doctor,F,25,222,password
-D027,bad guy,Doctor,M,23,22,password
-P005,ASLDADS,Pharmacist,Male,23,23,password
-P006,Popol,Pharmacist,M,25,9,password
-D029,Newname,Doctor,Male,33,92929292,password
-D030,Ethan and friends,Doctor,Male,299,2020,password
-D031,Popeyes,Doctor,Male,92,92929292,password
-D032,King,Doctor,Female,22,213,password
-D033,EthanHudEthan,Doctor,Female,22,4,password
-D034,kaka,Doctor,Female,24,4,password
-P007,Kukubird,Pharmacist,Female,29,29292929,password
+D001,Smith,Doctor,M,98,-,password
+P001,Ethan,Pharmacist,M,24,-,pasword

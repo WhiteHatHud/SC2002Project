@@ -1,7 +1,6 @@
 package Medicine;
 
-import Utilities.CSVUpdater;
-import Utilities.CSVUtilities;
+import Utilities.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +12,7 @@ import java.util.Map;
 public class PrescriptionData {
     private static final String FILE_PATH = "To be prescribed.csv";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private CSVUpdater csvUpdate = new CSVUpdater(FILE_PATH);
+    private CSVHandler csvUpdate = new CSVUpdater(FILE_PATH);
     private CSVUtilities csvUtilities = new CSVUtilities(FILE_PATH);
     private List<Prescription> prescriptionList;
 

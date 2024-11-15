@@ -4,17 +4,31 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@code MedicineData} class provides methods to manage the data of medicines
+ * stored in a CSV file. It allows fetching, adding, updating, and removing medicine
+ * records. It also provides functionality to check the stock levels of medicines.
+ */
 public class MedicineData {
+
+    /** Path to the CSV file where medicine data is stored */
     private static final String FILE_PATH = "Medicine_List.csv";
 
+    /**
+     * Default constructor for {@code MedicineData}.
+     */
     public MedicineData() {}
 
-    // Fetches all medicines from the file
+    /**
+     * Fetches all medicines from the file.
+     *
+     * @return a list of all medicines
+     */
     public List<Medicine> getAllMedicines() {
         List<Medicine> medicines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
-            reader.readLine(); 
+            reader.readLine(); // Skip header
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length < 3) continue;
@@ -35,11 +49,22 @@ public class MedicineData {
         }
         return medicines;
     }
-    public int getNumMedicines(){
+
+    /**
+     * Gets the number of medicines in the database.
+     *
+     * @return the number of medicines
+     */
+    public int getNumMedicines() {
         return getAllMedicines().size();
     }
-    
-    // Retrieves a single medicine by name , case insensetive
+
+    /**
+     * Retrieves a single medicine by its name, case-insensitively.
+     *
+     * @param name the name of the medicine
+     * @return the {@code Medicine} object if found, or {@code null} if not found
+     */
     public Medicine getMedicineByName(String name) {
         List<Medicine> medicines = getAllMedicines();
         for (Medicine med : medicines) {
@@ -50,7 +75,12 @@ public class MedicineData {
         return null;
     }
 
-    // Adds a new medicine to the database
+    /**
+     * Adds a new medicine to the database.
+     *
+     * @param med the {@code Medicine} object to add
+     * @return {@code true} if the medicine was added, {@code false} if it already exists
+     */
     public boolean addMedicine(Medicine med) {
         if (exists(med.getMedicineName())) {
             return false; // Medicine already exists
@@ -66,7 +96,12 @@ public class MedicineData {
         return false;
     }
 
-    // Checks if a medicine exists (case-insensitive)
+    /**
+     * Checks if a medicine exists in the database, case-insensitively.
+     *
+     * @param name the name of the medicine to check
+     * @return {@code true} if the medicine exists, {@code false} otherwise
+     */
     public boolean exists(String name) {
         List<Medicine> medicines = getAllMedicines();
         for (Medicine med : medicines) {
@@ -77,7 +112,13 @@ public class MedicineData {
         return false;
     }
 
-    // Updates the stock of an existing medicine
+    /**
+     * Updates the stock of an existing medicine.
+     *
+     * @param name         the name of the medicine
+     * @param changeAmount the amount to change the stock by (positive to increase, negative to decrease)
+     * @return {@code true} if the stock was updated, {@code false} if the medicine was not found
+     */
     public boolean updateStock(String name, int changeAmount) {
         List<Medicine> medicineList = getAllMedicines();
         boolean updated = false;
@@ -97,7 +138,12 @@ public class MedicineData {
         return false; // Medicine not found
     }
 
-    // Writes the updated list of all medicines back to the file
+    /**
+     * Writes the updated list of all medicines back to the file.
+     *
+     * @param medicineList the list of medicines to write
+     * @return {@code true} if the file was successfully updated, {@code false} otherwise
+     */
     private boolean updateAllStock(List<Medicine> medicineList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             writer.write("Medicine Name,Initial Stock,Low Stock Level Alert");
@@ -114,12 +160,22 @@ public class MedicineData {
         return false;
     }
 
-    // Checks if the stock of a given medicine is below its low stock alert level
+    /**
+     * Checks if the stock of a given medicine is below its low stock alert level.
+     *
+     * @param med the {@code Medicine} object to check
+     * @return {@code true} if the stock is low, {@code false} otherwise
+     */
     public boolean stockLow(Medicine med) {
         return med.getInitialStock() <= med.getLowStockLevelAlert();
     }
-    
-    // Removes a medicine from the list by name
+
+    /**
+     * Removes a medicine from the list by name, case-insensitively.
+     *
+     * @param name the name of the medicine to remove
+     * @return {@code true} if the medicine was removed, {@code false} if it was not found
+     */
     public boolean removeMedicineByName(String name) {
         List<Medicine> medicineList = getAllMedicines();
         boolean removed = false;
@@ -140,10 +196,16 @@ public class MedicineData {
         return false;
     }
 
+    /**
+     * Sets a new low stock level alert for a medicine by name, case-insensitively.
+     *
+     * @param name            the name of the medicine
+     * @param newLowStockLevel the new low stock level alert to set
+     * @return {@code true} if the alert level was updated, {@code false} if the medicine was not found
+     */
     public boolean setLowStockLevelAlert(String name, int newLowStockLevel) {
         List<String[]> medicinesData = new ArrayList<>();
         boolean updated = false;
-
 
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;

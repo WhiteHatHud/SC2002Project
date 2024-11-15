@@ -6,13 +6,22 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-
+/**
+ * Manages appointment data, including reading from, writing to, and updating appointments in a CSV file.
+ */
 public class ApptData {
     private static final String FILE_PATH = "appointments.csv";
     private static final SimpleDateFormat dateFormatterWithTime = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final SimpleDateFormat dateFormatterWithoutTime = new SimpleDateFormat("yyyy-MM-dd");
 
-    // Method to parse a date with different formats
+    /**
+     * Parses a date string and returns a Calendar object.
+     * Attempts to parse with time included first, and without time if the first attempt fails.
+     * 
+     * @param dateStr The date string to parse.
+     * @return A Calendar object representing the parsed date and time.
+     * @throws ParseException If the date string cannot be parsed.
+     */
     private Calendar parseDate(String dateStr) throws ParseException {
         if (dateStr == null || dateStr.trim().isEmpty() || dateStr.equals("0000-00-00 00:00")) {
             return null;  // Return null if the date string is empty or the placeholder
@@ -27,9 +36,12 @@ public class ApptData {
         }
         return appointmentTime;
     }
-    
 
-    // Method to read all appointments from the CSV file
+    /**
+     * Reads all appointments from the CSV file.
+     *
+     * @return A list of Appointment objects read from the file.
+     */
     public List<Appointment> getAllAppointments() {
         List<Appointment> appointments = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
@@ -73,6 +85,11 @@ public class ApptData {
         return appointments;
     }
 
+    /**
+     * Adds a new appointment to the CSV file.
+     *
+     * @param appointment The Appointment object to add.
+     */
     public void addAppointment(Appointment appointment) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
             writer.write(appointment.toCSV());
@@ -84,7 +101,11 @@ public class ApptData {
         }
     }
 
-    // Method to delete an appointment from the CSV file based on appointment ID
+    /**
+     * Deletes an appointment from the CSV file based on the appointment ID.
+     *
+     * @param appointmentID The ID of the appointment to delete.
+     */
     public void deleteAppointment(String appointmentID) {
         List<Appointment> appointments = getAllAppointments();
         boolean removed = appointments.removeIf(app -> app.getAppointmentID().equals(appointmentID));
@@ -97,7 +118,14 @@ public class ApptData {
         }
     }
 
-    // Method to check the status of an appointment slot
+    /**
+     * Checks the status of an appointment slot for a specific date, time, and doctor.
+     *
+     * @param date The date to check.
+     * @param time The time to check.
+     * @param doctorID The ID of the doctor.
+     * @return The status of the appointment slot ("Available", "Booked", etc.).
+     */
     public String statusAppointment(LocalDate date, LocalTime time, String doctorID) {
         List<Appointment> appointments = getAllAppointments();
         for (Appointment app : appointments) {
@@ -120,6 +148,11 @@ public class ApptData {
         return "Available";
     }
 
+    /**
+     * Updates the CSV file with the current list of appointments.
+     *
+     * @param appointments The list of Appointment objects to write to the file.
+     */
     private void updateCSV(List<Appointment> appointments) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             writer.write("appointmentID,date,patientID,patientName,doctorID,doctorName,status,outcome,service,medicine,medicineStatus,notes");
@@ -134,6 +167,11 @@ public class ApptData {
         }
     }
 
+    /**
+     * Updates a specific appointment in the CSV file.
+     *
+     * @param updatedAppointment The Appointment object with updated information.
+     */
     public void updateAppointmentInCSV(Appointment updatedAppointment) {
         List<Appointment> appointments = getAllAppointments(); // Read existing appointments
     
@@ -160,6 +198,4 @@ public class ApptData {
             e.printStackTrace();
         }
     }
-
-
 }

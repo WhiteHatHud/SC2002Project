@@ -114,7 +114,7 @@ public class ResetPasswordController implements ControllerInt {
         // Validation check
         if (validateStaffIdentity(staff, name, role, officeNumber)) {
             display.divider();
-            DisplayManager.passowrdUpdate();
+            DisplayManager.passwordUpdate();
             String newPassword = input.getNextLine();
             csvUpdaterStaff.updateField(staffID, "Password", newPassword);
             errorMessage = "Password reset successfully";
@@ -144,7 +144,7 @@ public class ResetPasswordController implements ControllerInt {
         // Validation check
         if (validatePatientIdentity(patient, dob)) {
             display.divider();
-            DisplayManager.passowrdUpdate();
+            DisplayManager.passwordUpdate();
             String newPassword = input.getNextLine();
             csvUpdaterPatient.updateField(patientID, "Password", newPassword);
             errorMessage = "Password reset successfully"; 

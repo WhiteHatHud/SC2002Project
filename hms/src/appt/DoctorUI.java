@@ -2,19 +2,34 @@ package appt;
 
 import Doctors.DoctorShared;
 import Login.DisplayManager;
-
 import java.util.InputMismatchException;
+
+/**
+ * The DoctorUI class provides a user interface for doctors, allowing them to view, edit, 
+ * and manage their schedules and appointments. This class interacts with the ApptController 
+ * to access and manipulate appointment data.
+ */
 public class DoctorUI {
-    
+
     private String doctorID;
     private String doctorName;
     ApptController apptController = new ApptController();
-    
+
+    /**
+     * Constructs a DoctorUI with the specified doctor ID and doctor name.
+     *
+     * @param doctorID   The ID of the doctor.
+     * @param doctorName The name of the doctor.
+     */
     public DoctorUI(String doctorID, String doctorName) {
         this.doctorID = doctorID;
         this.doctorName = doctorName;
     }
 
+    /**
+     * Starts the doctor interface, presenting a menu with various options 
+     * to view, edit, and manage appointments.
+     */
     public void start() {
         boolean running = true;
         while (running) {
@@ -44,35 +59,46 @@ public class DoctorUI {
         }
     }
 
-    private void printDoctorScheduleOnDate(){
+    /**
+     * Prints the doctor's schedule on a specified date.
+     */
+    private void printDoctorScheduleOnDate() {
         apptController.printDoctorScheduleOnDate(doctorID);
         DisplayManager.pauseContinue();
     }
 
+    /**
+     * Views pending appointment requests that require the doctor's action.
+     */
     private void viewPendingAppointments() {
         System.out.println("\nViewing Pending Appointments:");
         apptController.viewRequests("doctor", doctorID);
         DisplayManager.pauseContinue();
     }
 
-    // Method to view canceled appointments
+    /**
+     * Views canceled appointments for the doctor.
+     */
     private void viewCanceledAppointments() {
         System.out.println("\nViewing Canceled Appointments:");
         apptController.printCancelledAppointments("doctor", doctorID);
         DisplayManager.pauseContinue();
     }
 
-    private void printUpcomingSessions(){
+    /**
+     * Prints the upcoming appointments for the doctor.
+     */
+    private void printUpcomingSessions() {
         apptController.printUpcomingSessions(doctorID, "doctor");
         DisplayManager.pauseContinue();
-
     }
 
-    // method to record the outcome of completed appointments
+    /**
+     * Records the outcome for completed sessions, allowing the doctor to update details.
+     */
     private void recordAppointmentOutcome() {
         System.out.println("\nRecording Outcome for Completed Sessions:");
         System.out.println("1. Update New Completed Sessions");
-        //System.out.println("2. Edit Existing Completed Sessions");
         System.out.print("Please select an option: ");
         
         int choice;

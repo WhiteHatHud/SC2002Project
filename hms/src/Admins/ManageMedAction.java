@@ -1,9 +1,11 @@
 package Admins;
+
 import Login.DisplayManager;
 import Medicine.Medicine;
 import Medicine.MedicineData;
 import Medicine.MedicineUI;
 import Utilities.UserInputHandler;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -11,24 +13,32 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-
+/**
+ * The ManageMedAction class handles medication inventory management actions within the admin context.
+ * This class provides options for viewing, adding, updating, and removing medications, as well as approving
+ * replenishment requests from pharmacists.
+ */
 public class ManageMedAction {
-    
-    MedicineUI med = new MedicineUI();
-    MedicineData data = new MedicineData();
-    UserInputHandler input = new UserInputHandler();
 
+    private MedicineUI med = new MedicineUI();
+    private MedicineData data = new MedicineData();
+    private UserInputHandler input = new UserInputHandler();
+
+    /**
+     * Starts the medication management menu, allowing the admin to choose from various options
+     * related to medication inventory.
+     */
     public void start() {
         Scanner scanner = new Scanner(System.in);
         int choice;
-    
+
         do {
             DisplayManager.clearScreen();
             AdminShared.getDisplayManager().manageMedicationInvetoryMenu();
-    
+
             System.out.print("Please enter your choice: ");
             choice = input.getPositiveInt();
-    
+
             switch (choice) {
                 case 1 -> viewInventory();
                 case 2 -> addMedication();
@@ -38,169 +48,149 @@ public class ManageMedAction {
                 case 6 -> approveReplenishmentRequests();
                 case 7 -> {
                     System.out.println("Returning to the main menu...");
-                    return;  // Exit the start method to return to the main menu
+                    return;
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
-    
+
             if (choice != 7) {
                 System.out.println("Press Enter to return to the Manage Medication Inventory menu...");
-                scanner.nextLine();  // Consume the newline
+                scanner.nextLine();
             }
-    
+
         } while (true);
     }
-    
 
-
+    /**
+     * Displays the current inventory of medications.
+     */
     private void viewInventory() {
+        DisplayManager.clearScreen();
+        System.out.println("Displaying current medication inventory...\n");
+        med.displayAllMedicines();
+    }
 
-    DisplayManager.clearScreen();
-    System.out.println("Displaying current medication inventory...\n");
-    med.displayAllMedicines();
+    /**
+     * Initiates the process for adding a new medication to the inventory.
+     */
+    private void addMedication() {
+        DisplayManager.clearScreen();
+        System.out.println("Adding a new type of medicine...\n");
+        med.addNewMedicine();
+    }
+
+    /**
+     * Updates the stock level of an existing medication in the inventory.
+     */
+    private void updateStockLevel() {
+        DisplayManager.clearScreen();
+        System.out.println("Updating stock level...\n");
+
+        List<Medicine> medicines = data.getAllMedicines();
+        if (medicines.isEmpty()) {
+            System.out.println("No medicines found in the inventory.");
+            return;
+        }
+
+        System.out.println("Select a medicine to update:");
+        for (int i = 0; i < medicines.size(); i++) {
+            Medicine med = medicines.get(i);
+            System.out.printf("%d. %s (Current stock: %d)\n", i + 1, med.getMedicineName(), med.getInitialStock());
+        }
+
+        System.out.print("Enter the number of the medicine you want to update: ");
+        int choice = input.getPositiveInt();
+
+        if (choice < 1 || choice > medicines.size()) {
+            System.out.println("Invalid choice.");
+            return;
+        }
+
+        Medicine selectedMedicine = medicines.get(choice - 1);
+        System.out.print("Enter the amount to change the stock level (positive to increase, negative to decrease): ");
+        int changeAmount = input.getNonZero();
+
+        int newStockLevel = selectedMedicine.getInitialStock() + changeAmount;
+        if (newStockLevel < 0) {
+            System.out.println("Invalid operation: resulting stock level cannot be negative.");
+            return;
+        }
+
+        med.updateStock(selectedMedicine.getMedicineName(), changeAmount);
+        System.out.println("Stock level updated successfully.");
+    }
+
+    /**
+     * Removes a medication from the inventory.
+     */
+    private void removeMedication() {
+        DisplayManager.clearScreen();
+        System.out.println("Removing Medication...\n");
+
+        List<Medicine> medicines = data.getAllMedicines();
+        if (medicines.isEmpty()) {
+            System.out.println("No medicines found in the inventory.");
+            return;
+        }
+
+        System.out.println("Select a medicine to remove:");
+        for (int i = 0; i < medicines.size(); i++) {
+            Medicine med = medicines.get(i);
+            System.out.printf("%d. %s (Current stock: %d)\n", i + 1, med.getMedicineName(), med.getInitialStock());
+        }
+
+        System.out.print("Enter the number of the medicine you want to remove: ");
+        int choice = input.getPositiveInt();
+
+        if (choice < 1 || choice > medicines.size()) {
+            System.out.println("Invalid choice.");
+            return;
+        }
+
+        Medicine selectedMedicine = medicines.get(choice - 1);
+        System.out.print("Are you sure you want to remove " + selectedMedicine.getMedicineName() + " from the inventory? (yes/no): ");
+        String confirmation = input.getNextLine().trim().toLowerCase();
+        if (!confirmation.equals("yes")) {
+            System.out.println("Operation cancelled. Medicine was not removed.");
+            return;
+        }
+
+        med.removeMedicine(selectedMedicine.getMedicineName());
+        System.out.println("Medicine " + selectedMedicine.getMedicineName() + " has been successfully removed from the inventory.");
+    }
+
+    /**
+     * Updates the low stock alert level for a specified medication.
+     */
+    private void updateLowStockAlert() {
+        DisplayManager.clearScreen();
+        System.out.println("Updating Low Stock Alert Level...\n");
+
+        List<Medicine> medicines = data.getAllMedicines();
+        if (medicines.isEmpty()) {
+            System.out.println("No medicines found in the inventory.");
+            return;
+        }
+
+        System.out.println("Select a medicine to update its low stock alert level:");
+        for (int i = 0; i < medicines.size(); i++) {
+            Medicine med = medicines.get(i);
+            System.out.printf("%d. %s (Current low stock alert: %d, Current stock: %d)\n", 
+                              i + 1, med.getMedicineName(), med.getLowStockLevelAlert(), med.getInitialStock());
+        }
+
+        System.out.print("Enter the number of the medicine you want to update: ");
+        int choice = input.getPositiveInt();
+
+        Medicine selectedMedicine = medicines.get(choice - 1);
+        System.out.print("Enter the new low stock alert level: ");
+        int newLowStockLevel = input.getPositiveInt();
+
+        med.updateLowStockLevelAlert(selectedMedicine.getMedicineName(), newLowStockLevel);
+    
 }
 
-private void addMedication() {
-    DisplayManager.clearScreen();
-    System.out.println("Adding a new type of medicine...\n");
-    med.addNewMedicine();
-}
 
-private void updateStockLevel() {
-    DisplayManager.clearScreen();
-    System.out.println("Updating stock level...\n");
-
-    // Get the list of all medicines
-    List<Medicine> medicines = data.getAllMedicines();
-
-    // Check if there are medicines available
-    if (medicines.isEmpty()) {
-        System.out.println("No medicines found in the inventory.");
-        return;
-    }
-
-    // Display all medicines as options
-    System.out.println("Select a medicine to update:");
-    for (int i = 0; i < medicines.size(); i++) {
-        Medicine med = medicines.get(i);
-        System.out.printf("%d. %s (Current stock: %d)\n", i + 1, med.getMedicineName(), med.getInitialStock());
-    }
-
-    // Prompt the user to select a medicine
-    System.out.print("Enter the number of the medicine you want to update: ");
-    int choice = input.getPositiveInt();
-
-    // Validate the choice
-    if (choice < 1 || choice > medicines.size()) {
-        System.out.println("Invalid choice.");
-        return;
-    }
-
-    // Get the selected medicine
-    Medicine selectedMedicine = medicines.get(choice - 1);
-    String name = selectedMedicine.getMedicineName();
-    int currentStock = selectedMedicine.getInitialStock();
-
-    // Ask the user for the change amount
-    System.out.print("Enter the amount to change the stock level (positive to increase, negative to decrease): ");
-    int changeAmount = input.getNonZero();
-
-    // Calculate new stock level and check if it would be negative
-    int newStockLevel = currentStock + changeAmount;
-    if (newStockLevel < 0) {
-        System.out.println("Invalid operation: resulting stock level cannot be negative.");
-        return; // Exit if the new stock level is invalid
-    }
-
-    // Update stock level if valid
-    med.updateStock(name, changeAmount);
-    System.out.println("Stock level updated successfully.");
-}
-
-private void removeMedication() {
-    DisplayManager.clearScreen();
-    System.out.println("Removing Medication...\n");
-
-    // Get the list of all medicines
-    List<Medicine> medicines = data.getAllMedicines();
-
-    // Check if there are medicines available
-    if (medicines.isEmpty()) {
-        System.out.println("No medicines found in the inventory.");
-        return;
-    }
-
-    // Display all medicines as options
-    System.out.println("Select a medicine to remove:");
-    for (int i = 0; i < medicines.size(); i++) {
-        Medicine med = medicines.get(i);
-        System.out.printf("%d. %s (Current stock: %d)\n", i + 1, med.getMedicineName(), med.getInitialStock());
-    }
-
-    // Prompt the user to select a medicine
-    System.out.print("Enter the number of the medicine you want to remove: ");
-    int choice = input.getPositiveInt();
-
-    // Validate the choice
-    if (choice < 1 || choice > medicines.size()) {
-        System.out.println("Invalid choice.");
-        return;
-    }
-
-    // Get the selected medicine
-    Medicine selectedMedicine = medicines.get(choice - 1);
-    String name = selectedMedicine.getMedicineName();
-
-    // Confirm removal
-    System.out.print("Are you sure you want to remove " + name + " from the inventory? (yes/no): ");
-    String confirmation = input.getNextLine().trim().toLowerCase();
-    if (!confirmation.equals("yes")) {
-        System.out.println("Operation cancelled. Medicine was not removed.");
-        return;
-    }
-
-    // Proceed with removal
-    med.removeMedicine(name);
-    System.out.println("Medicine " + name + " has been successfully removed from the inventory.");
-}
-
-
-private void updateLowStockAlert() {
-    DisplayManager.clearScreen();
-    System.out.println("Updating Low Stock Alert Level...\n");
-
-    // Get the list of all medicines
-    List<Medicine> medicines = data.getAllMedicines();
-
-    // Check if there are medicines available
-    if (medicines.isEmpty()) {
-        System.out.println("No medicines found in the inventory.");
-        return;
-    }
-
-    // Display all medicines as options
-    System.out.println("Select a medicine to update its low stock alert level:");
-    for (int i = 0; i < medicines.size(); i++) {
-        Medicine med = medicines.get(i);
-        System.out.printf("%d. %s (Current low stock alert: %d, Current stock: %d)\n", 
-                          i + 1, med.getMedicineName(), med.getLowStockLevelAlert(), med.getInitialStock());
-    }
-
-    System.out.print("Enter the number of the medicine you want to update: ");
-    int choice = input.getPositiveInt();
-
-    // Get the selected medicine
-    Medicine selectedMedicine = medicines.get(choice - 1);
-    String name = selectedMedicine.getMedicineName();
-
-    // Prompt for the new low stock alert level
-    System.out.print("Enter the new low stock alert level: ");
-    int newLowStockLevel = input.getPositiveInt();
-
-    // Update the low stock level alert
-    med.updateLowStockLevelAlert(name, newLowStockLevel);
-    //System.out.println("Low stock alert level for " + name + " has been updated to " + newLowStockLevel + ".");
-}
 
 public void approveReplenishmentRequests() {
     String requestFilePath = "././RequestFromPharma.csv";
@@ -320,6 +310,4 @@ public void approveReplenishmentRequests() {
 
     System.out.println("Request approved and inventory updated successfully for " + medicineName + ".\n");
 }
-
-
 }

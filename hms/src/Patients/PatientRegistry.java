@@ -7,21 +7,42 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The PatientRegistry class manages a collection of Patient objects, allowing
+ * for operations such as adding, finding, deleting, and updating patient data.
+ * It can also reload the registry from a CSV file.
+ */
 public class PatientRegistry implements UserRegistry<Patient> {
 
     private List<Patient> patients = new ArrayList<>();
     private final String patientCSVFile = "Patient List CSV.csv"; // Ensure this path is correct
 
+    /**
+     * Adds a Patient object to the registry.
+     * 
+     * @param patient The Patient object to add to the registry.
+     */
     @Override
     public void addUser(Patient patient) {
         patients.add(patient);
     }
 
+    /**
+     * Retrieves a list of all patients in the registry.
+     * 
+     * @return A list of all Patient objects.
+     */
     @Override
     public List<Patient> getAllUsers() {
         return patients;
     }
 
+    /**
+     * Finds a patient by their unique ID.
+     * 
+     * @param userID The unique ID of the patient to find.
+     * @return The Patient object if found, or null if not found.
+     */
     @Override
     public Patient findUserByID(String userID) {
         return patients.stream()
@@ -30,7 +51,11 @@ public class PatientRegistry implements UserRegistry<Patient> {
                        .orElse(null);
     }
 
-    // Method to reload the registry from the CSV file
+    /**
+     * Reloads the patient registry by reading from the CSV file.
+     * This method replaces the current list of patients with the refreshed list
+     * loaded from the file.
+     */
     public void reloadRegistry() {
         List<Patient> refreshedPatients = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(patientCSVFile))) {
@@ -52,12 +77,11 @@ public class PatientRegistry implements UserRegistry<Patient> {
                             data[5].trim(),  // Email
                             data[6].trim(),  // Contact Number
                             data[7].trim(),  // Emergency Contact Number
-                            data[8].trim()
+                            data[8].trim()   // Password
                     );
                     refreshedPatients.add(patient);
                 }
             }
-            // Replace the current list with the refreshed list
             this.patients = refreshedPatients;
             System.out.println("Patient registry reloaded successfully.");
         } catch (IOException e) {
@@ -65,7 +89,12 @@ public class PatientRegistry implements UserRegistry<Patient> {
         }
     }
 
-    // Method to delete a patient by ID
+    /**
+     * Deletes a patient by their unique ID.
+     * 
+     * @param userID The unique ID of the patient to delete.
+     * @return true if the patient was found and removed, false if not found.
+     */
     public boolean deletePatientByID(String userID) {
         Patient patientToRemove = findUserByID(userID);
         if (patientToRemove != null) {
@@ -78,7 +107,14 @@ public class PatientRegistry implements UserRegistry<Patient> {
         }
     }
 
-    // Method to update a patient's password by ID
+    /**
+     * Updates the password of a patient identified by their unique ID.
+     * 
+     * @param userID The unique ID of the patient whose password is to be updated.
+     * @param newPassword The new password to set for the patient.
+     * @return true if the password was successfully updated, false if the patient
+     *         was not found.
+     */
     public boolean updatePatientPassword(String userID, String newPassword) {
         Patient patient = findUserByID(userID);
         if (patient != null) {
@@ -91,7 +127,9 @@ public class PatientRegistry implements UserRegistry<Patient> {
         }
     }
 
-    // Method to print each patient in the registry
+    /**
+     * Prints the details of all patients in the registry.
+     */
     public void printAllPatients() {
         for (Patient patient : getAllUsers()) {
             System.out.println("Patient ID: " + patient.getUserID());
